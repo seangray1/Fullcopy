@@ -1,7 +1,7 @@
 public with sharing class AccountControl {
     
     public static void setCustomerNumber(List<Account> accounts) {
-    	
+    	//test
     	// Need to determine the maximum sequential number to use
     	Integer customerSequence = null;
     	try{
