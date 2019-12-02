@@ -1,0 +1,6 @@
+.HeadSec{width:100%; background: #1c426f; padding: 20px 0; box-sizing: border-box; margin: 0 14px;}
+.Container{display: inline-block; padding: 0 15px;}
+.row{margin-left:-13px; margin-right:-13px;display: block;}
+.col-md-3{width:33.33%; display:inline-block; padding: 0 15px; margin-bottom: 20px;}
+.tabletop{margin-top:15px;}
+.jobButton{margin-left:-1px;}

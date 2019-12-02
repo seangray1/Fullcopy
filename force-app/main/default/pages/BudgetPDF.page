@@ -1,0 +1,296 @@
+<apex:page id="BudgetPDF"
+        standardController="Budget__c"
+        extensions="BudgetPDFController"
+        renderAs="pdf"
+        showHeader="false"
+        cache="false">
+        
+        
+        <apex:stylesheet value="{!$Resource.BudgetPDF}"/> 
+
+        <apex:define name="body">
+        
+          <table align='center'>
+              <tr>
+                  <td style="text-align:center;"> <strong>Budget</strong></td>
+              </tr>
+          </table>    <!-- header align='center'>
+                    <h1> Expense Report </h1>
+              </header -->  
+        <!-- I could put my Expense details in here -->
+         
+            <table>
+                     
+           <!-- This is the Reference number where I could put the Expense details as well -->    
+                <tr>
+                    <td colspan="4">
+                    <table cellpadding="3" style="width:10.5in;">
+                      <tr>      
+                          <td style="text-align:Left;">
+                                <strong>Start Date:</strong>&nbsp;<apex:outputText value="{0, date, EEE, MMMM d, yyyy, hh:mm a}">
+                                <apex:param value="{!Budget__c.Start_Date__c}"/>
+                                </apex:outputText>
+                           </td>
+                           <td style="text-align:center;">
+                                <strong>Job:</strong>&nbsp;<apex:outputText value="{!Budget__c.ATI_Job__r.name}"/>
+                           </td>
+                           <td style="text-align:right;">
+                                <strong>Regional Manager:</strong>&nbsp;<apex:outputText value="{!Budget__c.Regional_Manager__r.name}"/>
+                           </td>
+                       </tr>
+                       <tr> 
+                          <td style="text-align:Left;">
+                                <strong>Estimated Completion Date:</strong>&nbsp;<apex:outputText value="{0, date, EEE, MMMM d, yyyy, hh:mm a}">
+                                <apex:param value="{!Budget__c.Estimated_Completion_Date__c}"/>
+                                </apex:outputText>
+                           </td>
+                           <td style="text-align:center;">
+                                <strong>Allocations(%):</strong>&nbsp;<apex:outputText value="{!Budget__c.Allocations__c}"/>
+                           </td>
+                           <td style="text-align:right;">
+                                <strong>Project Director:</strong>&nbsp;<apex:outputText value="{!Budget__c.Project_Director__r.name}"/>
+                           </td>
+                       </tr>
+                       <tr> 
+                          <td style="text-align:Left;">
+                              <strong>GP Goal(%):</strong>&nbsp;<apex:outputText value="{!Budget__c.GP_Goal__c}"/>
+                          </td>
+                           <td style="text-align:center;">
+                                <strong>Program Fees(%):</strong>&nbsp;<apex:outputText value="{!Budget__c.X3_Program_Fees__c}"/>
+                           </td>
+                           <td style="text-align:right;">
+                                <strong>Project Manager:</strong>&nbsp;<apex:outputText value="{!Budget__c.Project_Manager__r.name}"/>
+                           </td>
+                       </tr>
+                   </table>
+                   </td>
+                </tr>
+                
+                
+       <!-- This is where  I should start the table with the method call -->      
+                
+                <tr>
+                    <td colspan="14" style="text-align:center;">
+                        <table border="1" style="width:10.5in; border-collapse : collapse;">
+                            <tr>
+                                <th>Trade</th>
+                                <th>Revenue</th>
+                                <th>Budget Goal </th>
+                                <th>SubContractor</th>
+                                <th>Sub Bid</th>
+                                <th>In-House Hours</th>
+                                <th>In-House Rate</th>
+                                <th>In-House Total</th>
+                                <th>Materials</th>
+                                <th>Actual Costs</th>
+                            </tr>                <!-- this was header information of each column -->
+                            
+                            
+                            
+                            <apex:repeat value="{!lineItems}" var="li">
+                                <tr >
+                                    <td style="text-align:right; vertical-align:top;" >
+                                        <apex:outputField value="{!li.Trade__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.Revenue__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.Budget_Goal_Amount__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.Subcontractor__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                       <apex:outputText value="{!li.Subcontractor_bid__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.In_House_Hours__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.In_House_Rate__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.In_House_Total__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                       <apex:outputText value="{!li.Materials__c}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.Actual_Costs__c}"/>
+                                    </td>
+                                </tr>
+                                
+                            </apex:repeat>
+                            
+                            
+                         
+                     
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <weak>_</weak>
+                                 <apex:outputField value="{!Budget__c.BlankValue__c}"/>  
+                                </td>
+                                
+                            </tr>
+                           
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Subtotal_Revenue__c}"/>
+                                </td>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Overhead</strong>
+                                </td>           
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Overhead__c}"/>
+                                </td>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                
+                           </tr>
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Profit</strong>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Profit__c}"/>
+                                </td>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Sales Tax</strong>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Sales_Tax__c}"/>
+                                </td>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                
+                            </tr> 
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Total Program Fees</strong>
+                                </td>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Program_Fees_New__c}"/>
+                                </td>
+                                
+                            </tr> 
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Total Allocations</strong>
+                                </td>
+                                <th></th>
+                               <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Allocations__c}"/>
+                                </td>
+                                
+                                   
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <strong>Total</strong>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Revenue__c}"/>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Budget_Goal__c}"/>
+                                </td>
+                                <td></td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Subcontractor_bid__c}"/>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_In_House_Total__c}"/>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Materials__c}"/>
+                                </td>
+                                <td style="text-align:right; vertical-align:top;">
+                                    <apex:outputField value="{!Budget__c.Total_Actual_Costs__c}"/>
+                                </td>
+                                
+                                   
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            <td style="text-align:left; vertical-align:top;">
+                                    <strong>GP%(Actual)</strong>
+                                </td>
+                                <td style="text-align:center; vertical-align:top;">
+                                        <apex:outputField value="{!Budget__c.Total_Gross_Profit__c}"/>
+                                    </td>
+                            </tr>
+                            
+                        </table>
+                        
+     
+                    </td>
+                </tr>
+                
+            </table>
+        </apex:define>    
+   
+</apex:page>

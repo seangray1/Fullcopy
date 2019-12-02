@@ -1,0 +1,17 @@
+<apex:page standardController="Opportunity">
+    <apex:pagemessages />
+    <apex:form >
+        <apex:sectionHeader title="Opportunity" subtitle="{!Opportunity.Name}"/>
+        <apex:pageBlock title="Opportunity Address" mode="edit">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Save" action="{!Save}" />
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockButtons>
+            <apex:pageBlockSection title="Address Finder">
+                <pca:AddressFinder label="Project Site Address" record="{!Opportunity}" address="OpportunityAddress" 
+                                 value="{!opportunity.Project_Site_Address__c}</br>{!Opportunity.Project_Site_City__c}, 
+                                        {!Opportunity.Project_Site_State__c} {!Opportunity.Project_Site_Zipcode__c}" />                          
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

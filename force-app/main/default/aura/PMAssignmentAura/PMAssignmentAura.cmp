@@ -1,0 +1,16 @@
+<!--
+  @File Name          : PMAssignmentAura.cmp
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 11/27/2019, 12:50:36 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    10/4/2019   Sean Gray     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+        <lightning:flow aura:id="flowData" />
+        <c:pMAssignment recordId = "{!v.recordId}" onrecordChange="{!c.refreshView}"/>
+</aura:component>

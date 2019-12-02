@@ -1,0 +1,16 @@
+<!--
+  @File Name          : MicaAura.cmp
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 10/7/2019, 6:06:16 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    10/7/2019   Sean Gray     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+
+    <c:micaLWC recordId = "{!v.recordId}" onrecordChange="{!c.refreshView}"/>
+
+</aura:component>

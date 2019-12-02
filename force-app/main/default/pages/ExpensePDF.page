@@ -1,0 +1,139 @@
+<apex:page id="ExpensePDF"
+        standardController="Expense__c"
+        extensions="ExpensePDFController"
+        renderAs="pdf"
+        showHeader="false"
+        cache="false">
+        
+    
+        
+        <apex:stylesheet value="{!$Resource.ExpensePDF}"/> 
+
+        <apex:define name="body">
+        
+          <table align='center'>
+              <tr>
+                  <td style="text-align:center;"> <strong>Expense Report</strong></td>
+              </tr>
+          </table>    <!-- header align='center'>
+                    <h1> Expense Report </h1>
+              </header -->  
+        <!-- I could put my Expense details in here -->
+         
+            <table>
+                     
+           <!-- This is the Reference number where I could put the Expense details as well -->     
+                <tr>
+                    <td colspan="4">
+                    <table cellpadding="10" style="width:10.5in;">
+                      <tr>      
+                          <td style="text-align:Left;">
+                                <strong>Name:</strong>&nbsp;<apex:outputText value="{!Expense__c.Name}"/>
+                           </td>
+                           <td style="text-align:center;">
+                                <strong>Submitted By:</strong>&nbsp;<apex:outputText value="{!Expense__c.CreatedBy.Name}"/>
+                           </td>
+                           <td style="text-align:right;">
+                                <strong>Submitted Date:</strong>&nbsp;<apex:outputText value="{0, date, EEE, MMMM d, yyyy, hh:mm a}">
+                                <apex:param value="{!Expense__c.Date_Submitted__c}" />
+                                </apex:outputText>
+                                
+                           </td>
+                           </tr>
+                           <tr>
+                           <td></td>
+                           <td style="text-align:center;">
+                                <strong>Approved By:</strong>&nbsp;<apex:outputText value="{!Expense__c.Approved_By__c}"/>
+                           </td>
+                           <td colspan="4" style="text-align:right;">
+                                <strong>Approved Date:</strong>&nbsp;<apex:outputText value="{0, date, EEE, MMMM d, yyyy, hh:mm a}">
+                                <apex:param value="{!Expense__c.Approved_Date__c}" />
+                                </apex:outputText>
+                           </td>
+                           
+                      </tr>
+                   </table>
+                   </td>
+                </tr>
+                
+                
+       <!-- This is where  I should start the table with the method call -->         
+                
+                <tr>
+                    <td colspan="9" style="text-align:center;">
+                        <table border="1" style="width:10.5in; border-collapse : collapse;">
+                            <tr>
+                                <th>No.</th>
+                                <th>Date</th>
+                                <th>Payee</th>
+                                <th>Contact</th>
+                                <th>Business Reason</th>
+                                <th>Code</th>
+                                <th>Office</th>
+                                <th>Job</th>
+                                <th>Amount</th>
+                            </tr>                <!-- this was header information of each column -->
+                            
+                            
+                            
+                            <apex:repeat value="{!lineItems}" var="li">
+                                <tr>
+                        
+                                    
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Number_of_item__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Date_of_Expense__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Payee__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Contact__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                       <apex:outputText value="{!li.Name}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Code__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Office__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.ATI_Job__c}"/>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Amount__c}"/>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                            
+                            
+                        </table>
+                        
+                        
+                        <table style="width:15.5in; margin-top:0.1in;" align="right">
+                                                     
+               <!-- This is where I could write my total amount -->
+               
+                            
+                            <tr style="background-color:white;">
+                                <td style="text-align:right;">
+                                    <strong>Total Amount:</strong>
+                                </td>
+                                <td style="text-align:left;">
+                                    <apex:outputField value="{!Expense__c.Total_Amount__c}" />
+                                </td>
+                            </tr>
+                                                       
+             
+                        </table>
+                    </td>
+                </tr>
+                
+            </table>
+        </apex:define>
+   
+</apex:page>

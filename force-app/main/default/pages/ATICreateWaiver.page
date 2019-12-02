@@ -1,0 +1,142 @@
+<!-- 
+*****************************************************************************
+* Description: VisualForce page used to create a new waiver. 
+*              Uses the ATICreateWAiverOrLetterController.cls Extension
+* Author      : Eric Schrage (Perficient)
+* Date        : 08/04/2015
+* Version     : 1.0
+*
+* Version History:
+*
+*****************************************************************************
+-->
+         
+<apex:page standardController="Waiver__c" extensions="ATICreateWaiverOrLetterController">
+    <style type="text/css">
+        textarea {
+            width: 300px;
+            height: 20px;
+        }
+    </style>
+    <div class="bPageTitle">
+        <div class="ptBody">
+            <div class="content">
+                <img src="/s.gif" alt="Waiver" class="pageTitleIcon" title="Waiver"/>
+                <h1 class="pageType">Waiver and Letters<span class="titleSeparatingColon">:</span></h1>
+                <h2 class="pageDescription">New Waiver</h2>
+            </div>
+        </div>
+    </div>
+   
+    <apex:form >
+        <apex:pageMessages id="showmsg"></apex:pageMessages>
+        <apex:pageBlock title="{!$Label.ATI_LBL_Waiver_Section}" mode="edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+
+            <apex:actionRegion >
+            <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_Type_Title}" columns="1">
+                <apex:inputField value="{!Waiver__c.Waiver_Or_Letter_Type__c}" required="true" styleClass="waiverOrLetterPicklist" label="{!$Label.ATI_LBL_Waiver_Field_Title}" >
+                <apex:actionSupport event="onchange" action="{!checkWaiverType}" rerender="waiverFields,signatureSection,signatureFields"/>
+                </apex:inputField>
+               
+            </apex:pageBlockSection>
+            </apex:actionRegion>
+            <apex:pageBlockSection columns="1">
+                <apex:inputField value="{!Waiver__c.Delivery_Method__c}" required="true"/>
+            </apex:pageBlockSection>
+             <apex:outputPanel id="waiverFields" layout="none">
+                <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_Job_Title}" columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Customer Type" />
+                        <apex:actionRegion >
+                        <apex:inputField value="{!Waiver__c.Customer_Type__c}">
+                            <apex:actionSupport event="onchange" action="{!setCustomerType}" rerender="waiverFields"/>
+                        </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:pageBlockSectionItem>
+                    <apex:outputField value="{!Waiver__c.Customer__c}"/>
+                    <apex:inputField value="{!Waiver__c.Change_Customer_Name__c}"/>
+                    <apex:outputField value="{!Waiver__c.ATI_Job__c}"/>
+                    <apex:inputField value="{!Waiver__c.Job_Location__c}" required="true"/>
+                    <apex:outputField value="{!Waiver__c.Invoice__c}"/>
+                    <apex:outputField value="{!Waiver__c.Through_Date__c}" />
+                    <apex:inputField value="{!Waiver__c.Waiver_Owner__c}" required="true"/>
+                    <apex:inputField value="{!Waiver__c.Bill_To_Attention__c}" />
+                    <apex:inputField value="{!Waiver__c.Care_Of__c}" />
+                    <apex:inputField value="{!Waiver__c.Care_Of_Address__c}" />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Bill To Attention Email" style="float:right;font-weight:bold;"/>
+                        <apex:outputText value="{!lookupEmail}" />
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_CF_Title}" columns="1"  id="cfWaiverFields" rendered="{!renderCFWaiverFields}">
+                    <apex:inputField value="{!Waiver__c.Check_Amount__c}" required="true"/>
+                    <apex:inputField value="{!Waiver__c.Exception_Unaffected__c}"/>
+                    <apex:inputField value="{!Waiver__c.Exception_Extras_Disputed_Amount__c}"/>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_UF_Title}" columns="1"  id="ufWaiverFields" rendered="{!renderUFWaiverFields}">
+                    <apex:inputField value="{!Waiver__c.Exception_Unaffected__c}"/>
+                    <apex:inputField value="{!Waiver__c.Exception_Extras_Disputed_Amount__c}"/>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_CP_Title}" columns="1"  id="cpWaiverFields" rendered="{!renderCPWaiverFields}">
+                    
+                    <apex:inputField value="{!Waiver__c.Check_Amount__c}" required="true"/>
+                    <apex:inputField value="{!Waiver__c.Exception_Date_Waiver_Release__c}"/>
+                    <apex:inputField value="{!Waiver__c.Exception_Unpaid_Progress_Pymt_Amt__c}"/>
+                    
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_UP_Title}" columns="1"  id="upWaiverFields" rendered="{!renderUPWaiverFields}">
+                     <apex:inputField value="{!Waiver__c.Received_Progress_Pymt_Amt__c}"/>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+        
+           <!-- SAVED in case of requirement changes
+            <apex:actionRegion>
+            <apex:pageBlockSection title="Signature" columns="1" id="signatureSection">
+                <apex:inputField value="{!Waiver__c.User_Signature__c}" rendered="{!renderSignatureSection}">
+                    <apex:actionSupport event="onchange" action="{!checkSignature}" rerender="signatureFields"/>
+                </apex:inputField>
+                <apex:outputText value="Signature will be added on approval."  rendered="{!!renderSignatureSection}"/>
+            </apex:pageBlockSection>
+            </apex:actionRegion> -->
+            <apex:pageBlockSection title="{!$Label.ATI_LBL_Waiver_Signature_Title}" columns="1" id="signatureSection">
+                <apex:outputField value="{!Waiver__c.User_Signature__c}" rendered="{!renderSignatureSection}" />
+                <apex:outputText value="{!$Label.ATI_LBL_Waiver_Signature_Message}"  rendered="{!!renderSignatureSection}"/>
+            </apex:pageBlockSection>
+            <apex:outputPanel id="signatureFields" layout="none">
+                <apex:pageBlockSection columns="1" rendered="{!(renderSignatureFields && renderSignatureSection)}">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="ATI_LBL_Waiver_Signature_Preview" /><apex:image id="signatureImage" value="{!selectedSignature.Signature_Image_URL__c}" width="200" height="80"/>
+
+                    </apex:pageBlockSectionItem>
+                    <apex:outputField value="{!selectedSignature.Name}"/>
+                    <apex:outputField value="{!selectedSignature.Title}"/>
+                    
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+        </apex:pageBlock>
+
+    </apex:form>
+    <apex:includeScript value="{!URLFOR($Resource.jquery)}" />
+
+    <script>
+    /* This script filters out the options that are not letters*/
+    
+        $(document).ready(function() {
+            var letterOptions = $('select.waiverOrLetterPicklist option');
+            
+            letterOptions.each(function( index ) {
+                if ($(this).text().toLowerCase().indexOf('{!$Label.ATI_LBL_Waiver_Type_Keyword_Lowercase}')<0 && $(this).text().toLowerCase()!='--none--') {
+                    $( this ).remove();
+                    //console.log( index + ": " + $( this ).text() );
+                }
+              
+            });
+        });
+
+    </script>
+</apex:page>

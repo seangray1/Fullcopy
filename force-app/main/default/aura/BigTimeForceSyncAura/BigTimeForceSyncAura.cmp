@@ -1,0 +1,14 @@
+<!--
+  @File Name          : BigTimeForceSyncAura.cmp
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 11/1/2019, 6:58:44 AM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    11/1/2019   Sean Gray     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+        <c:bigTimeForceSync recordId = "{!v.recordId}" onrecordChange="{!c.refreshView}"/>
+</aura:component>

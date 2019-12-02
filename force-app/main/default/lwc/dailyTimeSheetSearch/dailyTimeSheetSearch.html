@@ -1,0 +1,40 @@
+<template>
+        <lightning-card title="Search Timesheet by Job" icon-name="custom:custom57">
+                <div class="slds-m-around_medium">
+                        <lightning-input type="search" class="slds-m-bottom_small" label="Search" onkeyup={SearchJobs} onchange={ChangeSearchKey}></lightning-input>
+                        <lightning-button label="Search" onclick={SearchJobs}></lightning-button>
+                        <template if:true={Jobs}>
+                                <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout tabletop">
+                                        <thead>
+                                                <tr class="slds-text-heading_label">
+                                                  <th scope="col"><div class="slds-truncate" title="Job">Job</div></th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                    <template for:each={Jobs} for:item="Job">
+                                            <tr key={Job.Id}>
+                                                    <th scope="row">                                                           
+                                                            <b><lightning-button variant="base" label={Job.Name} value={Job.Id} title="Base action" onclick={navigateToDailyTimesheetListView} class="slds-m-left_x-small jobButton"></lightning-button>
+                                                            </b>
+                                                            <lightning-formatted-address
+                                                                street={Job.Project_Site_Address__c}
+                                                                city={Job.Project_Site_City__c}
+                                                                country='US'
+                                                                province={Job.Project_Site_State__c}
+                                                                postal-code={Job.Project_Site_Zipcode__c}>
+                                                        </lightning-formatted-address>
+
+                                                </th>
+                                                    
+                                            </tr>
+
+                                    </template>
+                                </tbody>
+                                </table>
+                            </template>
+                            <template if:true={error}>
+                                    <b class="tabletop">{error}</b>
+                                </template>
+                        </div>
+        </lightning-card>
+</template>

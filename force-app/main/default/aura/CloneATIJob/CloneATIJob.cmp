@@ -1,0 +1,69 @@
+<!--
+  @Component Name     : CloneATIJob.cmp
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 8/19/2019, 12:40:25 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/19/2019, 12:40:25 PM   sean.gray@atirestoration.com     Initial Version
+-->
+<aura:component controller="CloneATIJob" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,lightning:actionOverride">
+	<ltng:require styles="/resource/SLDS202/assets/styles/salesforce-lightning-design-system.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <aura:attribute name="recordId" type="Id" description="This attribute is for getting record id"/>
+     <aura:attribute name="cloneRelatedJobs" type="String" />
+    <aura:attribute name="returnMsg" type="String" />
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="jobName" type="String"/>
+    <aura:attribute name="jobNumber" type="String"/>
+    <aura:attribute name="Account" type="Id" />
+    <aura:attribute name ="parentJob" type="String" /> 
+    <aura:attribute name="Contact" type="Id"/>
+    <aura:attribute name="Customer" type="Id"/>
+    <aura:attribute name="leadSource" type="String[]"/>
+    <aura:attribute name="description" type="String"/>
+    <aura:attribute name="jobClass" type="String[]"/>
+    <aura:attribute name="projectSiteContactName" type="Id"/>
+    <aura:attribute name="projectManager" type="Id"/>
+    <aura:attribute name="branchManager" type="Id"/>
+    <aura:attribute name="projectSiteAccount" type="Id"/>
+    <aura:attribute name="office" type="Id"/>
+    <aura:attribute name="stage" type="String"/>
+    <aura:attribute name="TakenBy" type="Id"/>
+    <aura:attribute name="contactInformation" type="String"/>
+    <aura:attribute name="probability" type="Double"/>
+    <aura:attribute name="projectType" type="String"/>
+    <aura:attribute name="referredBy" type="String"/>
+    <aura:attribute name="closedDate" type="Date"/>
+    <aura:attribute name="county" type="String"/>
+    <aura:attribute name="cityofLA" type="String"/>
+    <aura:attribute name="projectSiteAddress" type="String"/>
+    <aura:attribute name="projectSiteAddress2" type="String"/>
+    <aura:attribute name="projectSiteCity" type="String"/>
+    <aura:attribute name="projectSiteState" type="String"/>
+    <aura:attribute name="projectSiteZipCode" type="String"/>
+    <aura:attribute name="yearStructureBuilt" type="String"/>
+    <aura:attribute name="dateOfLoss" type="Date"/>
+    <aura:attribute name="projectSiteContactEmail" type="String"/>
+    <aura:attribute name="noEmailAvailable" type="Boolean"/>
+    <aura:attribute name="policy" type="String"/>
+    <aura:attribute name="deductible" type="String"/>
+    <aura:attribute name="claim" type="String"/>
+    <aura:attribute name="contPOClientJob" type="String"/>
+    <aura:attribute name="PO" type="String"/>
+    <aura:attribute name="sendPrelim" type="String"/>
+    
+    <aura:attribute name="custMessage" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.cloneATIJOB}"/>
+
+    <aura:if isTrue="{!v.custMessage != ''}">
+        {!v.custMessage}
+    </aura:if>
+    
+</aura:component>

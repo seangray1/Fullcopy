@@ -1,0 +1,156 @@
+<!--
+  @Page Name          : InvoicePDFTemplate.page
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 8/14/2019, 12:54:12 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/12/2019, 3:34:56 PM   sean.gray@atirestoration.com     Initial Version
+-->
+<apex:page id="invoicePDF"
+        standardController="Invoice__c"
+        extensions="InvoicePDFController"
+        renderAs="pdf"
+        showHeader="false"
+        cache="false">
+    
+    <head>
+        <style type="text/css" media="print">
+            /* Generates the header and footer content on every page */
+            @page {
+                margin: 2.125in 0in 1.5in 0.25in;
+                size: letter portrait;
+                
+                @top-center {
+                    width: 8.5in;
+                    content: element(header);
+                }
+                @bottom-center {
+                    width: 8.5in;
+                    content: element(footer);
+                }
+            }
+            div.header {
+                height: 1.55in;
+                width: 100%;
+                display: block;
+                margin: 0;
+                position: running(header);
+            }
+            div.footer {
+                height: 1.5in;
+                width: 100%;
+                display: block;
+                padding: 0 0 0.5in;
+                position: running(footer);
+                margin-left: -0.5in;
+            }
+            a,p,div,td,th,span {
+                 font-family:Arial,Helvetica,sans-serif;
+                 font-size:10pt;
+            }
+            .headerTitle {
+                 font-family:Arial,Helvetica,sans-serif;
+                 font-size:9pt !important;
+            }
+        </style>
+    </head>
+    
+    <div id="bodyWrapper" style="width:100%; height:100%;">
+        <!-- Overarching template table.  It contains the letterhead as well
+             as some heading information -->
+        <div class="header">
+        <table style="width:100%; height:1.55in; overflow:visible;">
+            <tr>
+                <td style="width:3.5in; height:1.5in; text-align:left;"> <!-- Letterhead space -->
+                    <apex:outputPanel layout="none" rendered="{!params.displayLetterhead}"> 
+                        <img src="{!$Resource.ATILogoMediumColor}" style="height:1.5in;" />
+                    </apex:outputPanel>
+                </td>
+                <td style="vertical-align:top; padding-top:0.5in; width:2.25in">
+                    <div style="width:1.4in;">&nbsp;</div>
+                    <apex:outputPanel layout="none" rendered="{!params.displayLetterhead}"> 
+                        <span style="color:#333; font-size:3em; font-weight:bold; text-decoration:underline;">INVOICE</span>
+                    </apex:outputPanel>
+                </td>
+                <td style="vertical-align:top; padding-top:0.75in; ">
+                    <table>
+                        <tr>
+                            <td style="text-align:right;" class="headerTitle">Customer ID:</td>
+                            <td style="text-align:left;" class="headerTitle">{!invoice.Bill_To__r.Timberline_Customer_Number__c}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;" class="headerTitle">Invoice ID:</td>
+                            <td style="text-align:left;" class="headerTitle">{!invoice.Name}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;" class="headerTitle">Invoice Date:</td>
+                            <td style="text-align:left;" class="headerTitle"> 
+                                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                    <apex:param value="{!invoice.Due_Date__c}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;" class="headerTitle">Invoice Due Date:</td>
+                            <td style="text-align:left;" class="headerTitle"> 
+                                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                    <apex:param value="{!invoice.Due_Date_New__c}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;" class="headerTitle">Federal ID:</td>
+                            <td style="text-align:left;" class="headerTitle">{!invoice.Federal_ID__c}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <apex:outputPanel layout="none" rendered="{!NOT(invoice.Status__c == 'final')}"> 
+                <tr>
+                    <td colspan="3" style="height:6in; text-align:center;">
+                        <!-- <span style="font-size:10em; color:#999; opacity:0.3;">DRAFT</span> -->
+                    </td>
+                </tr>
+            </apex:outputPanel>
+        </table>
+        </div>
+        <div class="footer">
+        <table style="width:9in">
+                <tr>
+                    <td colspan="3" style="text-align:center">
+                        <apex:outputPanel rendered="{!params.displayLetterhead}">
+                            <span style="color:#333; font-size:2em; font-weight:bold;">PLEASE REMIT ALL PAYMENTS TO CORPORATE OFFICE</span>
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+            <tr>
+                <td colspan="3" style="height:0.6in; text-align:center;">
+                    <apex:outputPanel layout="none" rendered="{!params.displayLetterhead}"> 
+                        <span style="font-family:'Arial Narrow','Nimbus Sans L',sans-serif; letter-spacing:0.2em; font-weight:bold;" class="headerTitle">ATI Headquarters</span><br/>
+                        <span style="font-family:'Arial Narrow','Nimbus Sans L',sans-serif; letter-spacing:0.2em; font-style:italic;" class="headerTitle">3360 E. LA PALMA AVE., ANAHEIM, CA 92806 &bull; 714/283-9990 &bull; 800/400-9353 &bull; 714/283-9996-FAX</span><br/>
+                        <span style="font-family:'Arial Narrow','Nimbus Sans L',sans-serif; letter-spacing:0.2em; font-weight:bold; font-style:italic;" class="headerTitle">WWW.ATIRESTORATION.COM</span>
+                    </apex:outputPanel>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <div class="body">
+        <table >
+            <tr>
+                <td colspan="3">
+                    <!-- This should be the "body" (anything which will not
+                         repeat on each page).  It should be used via an
+                         apex:composition tag defining the name "body" -->
+                    <apex:insert name="body" />
+                </td>
+            </tr>
+        </table>
+        </div>
+        
+    </div>
+</apex:page>

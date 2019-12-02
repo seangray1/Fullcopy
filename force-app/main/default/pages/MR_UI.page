@@ -1,0 +1,477 @@
+<apex:page doctype="html-5.0" showHeader="false" sidebar="false" controller="MRController" standardStylesheets="false">
+ 
+<apex:form id="formid">
+<html lang="en"/>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MR Form</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/bootstrap.min.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/bootstrap-theme.min.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'font-awesome/css/font-awesome.min.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/style.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/datepicker.min.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/datepicker3.min.css')}" />
+
+<apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/jquery.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap-datepicker.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap3-typeahead.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/jquery.slimscroll.min.js')}" />
+
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+
+ <script> 
+         var MRNameList = [];
+         var JobNameArray = []; 
+         
+         
+        window.onload = function() { 
+            var Devrenderer = $('#rightTable1').is(':hidden');
+            DeviceRenderFunc(Devrenderer);
+         } 
+    
+      function changeCollapsibleLabel(){
+      
+      var clearLabel = document.getElementById('{!$Component.label}').value;
+      if(clearLabel == 'More Details')
+      {
+          document.getElementById('{!$Component.label}').value = 'Less Details';
+      }
+      else
+      {
+          document.getElementById('{!$Component.label}').value = 'More Details';
+          
+      }
+      return false;
+      }
+      
+      function JobChangeFunc(val){
+          var jobchangeval = val.value;
+          if(jobchangeval == '' || jobchangeval == null)
+          {
+              JobChangeaction();
+          }
+      } 
+      
+      function SearchNullCheck(val) 
+      {
+            var SrchVal = val.value;
+    
+            if (SrchVal == null || SrchVal == '') 
+            {
+                callClearSearch();
+                return false;
+            }
+      }
+      
+      function clearSearchValidation()
+      {
+         var stext = document.getElementById('{!$Component.searchid}').value;
+          if(stext == null || stext == '')
+          {
+             //alert('Please enter a search text'+stext);
+             document.getElementById('{!$Component.clearButton}').oncomplete = true;
+             return false;
+          }
+          else
+          {
+              callClearSearch();
+              document.getElementById('{!$Component.searchid}').value = '';
+              return false;
+          }
+      }
+      
+      function SearchValidation()
+      {
+         var stext = document.getElementById('{!$Component.searchid}').value;
+         stext = stext.trim();
+          if(stext == null || stext == '')
+          {
+             //alert('Please enter a search text'+stext);
+             document.getElementById('{!$Component.clearButton}').oncomplete = true;
+             document.getElementById('{!$Component.searchid}').value = '';
+             return false;
+          }
+          else
+          {
+              callSearch();
+              document.getElementById('{!$Component.searchid}').value = '';
+              return false;
+          }
+      }
+                
+      function quantityChange(val){
+      var ColValue = val.value;
+      var searchval = '{!searchtext}';
+      if((ColValue == null || ColValue == '') && (searchval == '' || searchval == null))
+      {
+      QuantUpdate();
+      }
+      }
+      
+     function validateKeyUp(element)
+     {
+         var keyValue = element;
+         keyValue.value = element.value.replace(/[^0-9\.]/g, '');
+     } 
+    
+      var options = $('select.locationSelectClass option');      
+    if (typeof options !== "undefined" && options.length > 0)
+    {
+        var selectedValue;
+        if('{!JobLocation}' != null && '{!JobLocation}' != options[0].value && '{!JobLocation}' != '')
+        {
+            selectedValue = '{!JobLocation}';
+        }
+        else
+        {
+            selectedValue = options[0].value;
+        }    
+        var arr = options.map(function(_, o) {
+            return {
+                t: $(o).text(),
+                v: o.value
+            };
+        }).get();
+        arr.sort(function(o1, o2) {
+            return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0;
+        });
+        options.each(function(i, o) {
+            if(arr[i].v == selectedValue)
+            {
+                 o.selected = true;
+            }
+            o.value = arr[i].v;
+            $(o).text(arr[i].t);
+        });
+      }     
+    
+    </script> 
+    <apex:repeat value="{!FullMatList}" var="request"> 
+        <script> 
+            var description = "{!JSENCODE(request.Description__c)}";  
+            MRNameList.push(description +' - '+'{!request.Unit_of_Measurement__c}'); 
+        </script> 
+    </apex:repeat>  
+    <apex:repeat value="{!JobListStr}" var="request1"> 
+        <script> 
+            JobNameArray.push('{!request1}'); 
+        </script>
+    </apex:repeat>
+</head> 
+<body>
+<header>
+    <div class="container">
+        <div class="row">
+        <div class="navbar-header col-xs-12">
+            <a class="navbar-brand col-md-6 col-sm-6 col-xs-12" href="" title="">
+            <apex:image url="{!URLFOR($Resource.MR_CSS,'images/logo.png')}" />
+            </a>
+            <h2 class="col-md-6 col-sm-6 col-xs-12 pull-right">Material Requisition Form</h2>
+            </div><!--end navbar-header-->
+        </div><!--end row-->
+    </div><!--end container-->
+</header>
+<div class="float-center" style="left: 25px;color:red;"><apex:pageMessages escape="false"></apex:pageMessages></div>
+
+            <apex:outputPanel >
+                <apex:actionStatus id="loadingStatus" stopText="" style="align:center">
+                    <apex:facet name="start">
+                        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                            &nbsp;
+                        </div>
+                        <div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                            <div style="display: inline-block; padding: 2px; background-color: white; width: 100px; border: solid 1px skyblue;left: 50%;margin-left: -50px;top: 50%;height: 130px;margin-top: -100px;z-index: 999;position: fixed;">
+                                <img src="{!$Resource.Loading_Sign}" width="100%"/>
+                                <span style="display: inline-block; padding: 12px 0px; font-weight : bold;">Please Wait...</span>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:outputPanel>
+            
+<section class="banner">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-6 col-xs-12 no-padding mb20">
+                <div class="form-group">
+                    <label class="control-label pull-left">Job Name:</label>
+                    <div class="col-md-8 col-sm-8 col-xs-12 no-padding">
+                <input type="text" class="form-control" id="search-input" value="{!JobName}" onkeydown="if(event.keyCode==13){return false;}" onchange="return JobChangeFunc(this);"/>
+                  <!-- <input type="text" class="form-control" id="search-input" value="{!JobName}" onkeydown="if(event.keyCode==13){return false;}" onchange="return JobChangeFunc(this);"/> !-->
+                     <apex:actionFunction name="SearchbyName" action="{!getJobDetails}" reRender="formid" status="loadingStatus">
+                     <apex:param name="jobId" value="JobId" assignTo="{!JobId}"/>
+                     <apex:param name="jobName" value="JobName" assignTo="{!JobName}"/>
+                     </apex:actionFunction>
+                     </div>
+                </div>
+            </div>
+            <div id="mretd"  class="collapse expnd">           
+                
+            <div class="col-md-4 col-sm-6 col-xs-12 no-padding mb20">
+                <div class="form-group">
+                    <label class="control-label pull-left">Job Number:</label>
+                    <div class="col-md-8 col-sm-8 col-xs-12 no-padding">
+                       <apex:outputText value="{!JobNumber}" StyleClass="form-control"></apex:outputText> 
+                    </div>
+                </div>
+            </div> 
+            <div class="col-md-4 col-sm-4 col-xs-12 no-padding mb20">
+                <div class="form-group">
+                    <label class="control-label pull-left">Location:</label>
+                    <div class="col-md-8 col-sm-7 col-xs-12 no-padding">
+                        <apex:selectList styleClass="form-control locationSelectClass" value="{!JobLocation}" multiselect="false" size="1" id="locationId" disabled="{!if(Location.size == 0,true,false)}">
+                          <apex:selectOptions value="{!Location}"/>
+                         </apex:selectList>
+                    </div>
+                </div>
+            </div>          
+            
+            <div class="col-md-4 col-sm-4 col-xs-12 no-padding">
+                            <div class="form-group">
+        <label class="control-label pull-left">Date Ordered:</label>
+        <div class="col-md-8 col-sm-7 col-xs-12 no-padding">
+            
+            <apex:outputText value="{!DateOrdered}" StyleClass="form-control"></apex:outputText>
+                
+            
+        </div>
+    </div>
+                    </div> 
+                    
+            <div class="col-md-4 col-sm-4 col-xs-12 no-padding ">
+                <div class="form-group">
+                    <label class="control-label pull-left">Status:</label>
+                    <div class="col-md-8 col-sm-7 col-xs-12 no-padding">
+                        <apex:outputText value="{!Status}" StyleClass="form-control"></apex:outputText>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+            <div class="col-xs-12 mt20">
+             <!--<button type="button" class="btn-xs btn-default mredte" data-toggle="collapse" data-target="#mretd" id="label" name="More Details"/>!-->
+              <!--<apex:commandButton styleClass="btn-xs btn-default mredte btn-ex" id="label" value="Expand"/>!-->
+              <apex:commandButton styleClass="btn-xs btn-default mredte" html-data-toggle="collapse" html-data-target="#mretd" id="label" value="{!CollapsibleLabel}" onclick="return changeCollapsibleLabel();"/>
+              
+              </div>
+            
+            <!--end col-md-6-->
+        </div><!--end row-->
+    </div><!--end cotainer-->
+</section>
+<div class="clearfix"> </div>
+<section class="form">
+  <div class="container white-bg-cl pd-tb ">
+<div class="row">
+
+<div class="col-md-12 col-sm-12">
+<div class="input-group col-md-12">
+<apex:inputText value="{!searchText}" styleClass="form-control" id="searchid" onkeydown="if(event.keyCode==13){return false;}" onchange="SearchNullCheck(this);"/>
+<!--<apex:actionFunction name="ClearSearch" action="{!ClearSearch}" status="loadingStatus" rerender="formid"/>!-->
+<span class="input-group-btn">
+<apex:commandButton styleClass="btn btn-blue search_btn" id="goButton" onclick="return SearchValidation()" value="Go" status="loadingStatus" rerender="formid"/>
+<apex:param name="searchText" value="" assignTo="{!searchText}"/>
+</span>
+</div>
+</div>
+
+<div class="float-center">
+<apex:commandButton styleClass="btn btn-dark mt20 mb20" action="{!SearchComplete}" id="AddToButton" value="Add To List" disabled="{!NOT(DisableSave)}" status="loadingStatus" rerender="formid" rendered="{!if((MatLineItemLeftTable.size > 0 || MatLineItemRightTable.size > 0),true,false)}"/>
+<apex:commandButton styleClass="btn btn-blue mt20 mb20" onclick="return clearSearchValidation()" id="clearButton" value="Clear Search"/>
+</div>
+<div class="col-xs-12">
+<div class="row">
+<apex:outputPanel rendered="{!IF(MatLineItemLeftTable.size > 0, true,false)}">
+<div class="col-md-6 col-sm-6 hidden-sec">
+<table class="table table-mr">
+
+    <thead>
+      <tr>
+        <th>ATI Description - Unit of Measure</th>
+        <th>Shipped</th>
+        <th>Returned</th>
+        <apex:outputText rendered="{!UnitCostRenderer}"><th>Unit Cost</th></apex:outputText>
+      </tr>
+    </thead>    <tbody class="tbfix">
+     
+      <apex:repeat value="{!MatLineItemLeftTable}" var="mlist1">
+      <tr>
+      <td><apex:outputText styleClass="form-control" value="{!mlist1.Name}"/></td>
+      <td><apex:inputField styleClass="form-control" value="{!mlist1.Shipped__c}" rendered="{!NOT(mlist1.IsPicklist__c)}" onchange="quantityChange(this);" onkeydown="if(event.keyCode==13){return false;}" onkeypress="if(event.which == 46){event.preventDefault();} if(this.value.length == 3){return false;}" onkeyup="return validateKeyUp(this)" />
+      <apex:selectList styleClass="form-control" value="{!mlist1.Shipped__c}" rendered="{!mlist1.IsPicklist__c}" multiselect="false" size="1" onchange="quantityChange(this);">
+      <apex:selectOptions value="{!Shipped}"/>
+      </apex:selectList>
+      </td>
+      <td><apex:inputField styleClass="form-control" value="{!mlist1.Returned__c}" rendered="{!NOT(mlist1.IsPicklist__c)}" onchange="quantityChange(this);" onkeydown="if(event.keyCode==13){return false;}" onkeypress="if(event.which == 46){event.preventDefault();} if(this.value.length == 3){return false;}" onkeyup="return validateKeyUp(this)"/>
+      <apex:selectList styleClass="form-control" value="{!mlist1.Returned__c}" rendered="{!mlist1.IsPicklist__c}" multiselect="false" size="1" onchange="quantityChange(this);">
+      <apex:selectOptions value="{!Returned}"/>
+      </apex:selectList>
+      </td>
+      <apex:outputText rendered="{!UnitCostRenderer}">
+      <td>
+      <apex:outputText styleClass="form-control" value="{!mlist1.Unit_Cost__c}" rendered="{!if(mlist1.Unit_Cost__c == null,false,true)}"/>
+      <apex:outputText styleClass="form-control" value="-" rendered="{!if(mlist1.Unit_Cost__c == null,true,false)}"/>
+      </td>
+      </apex:outputText>
+      </tr>
+      </apex:repeat>
+      <apex:repeat value="{!MatLineItemRightTable}" var="mlist3">
+      <tr class="hidden-lg hidden-md hidden-sm" id="rightTable1">
+      <td><apex:outputText styleClass="form-control" value="{!mlist3.Name}"/></td>
+      <td><apex:inputField styleClass="form-control" value="{!mlist3.Shipped__c}" rendered="{!NOT(mlist3.IsPicklist__c)}" onchange="quantityChange(this);" onkeydown="if(event.keyCode==13){return false;}" onkeypress="if(event.which == 46){event.preventDefault();} if(this.value.length == 3){return false;}" onkeyup="return validateKeyUp(this)"/>
+      <apex:selectList styleClass="form-control" value="{!mlist3.Shipped__c}" rendered="{!mlist3.IsPicklist__c}" multiselect="false" size="1" onchange="quantityChange(this);">
+      <apex:selectOptions value="{!Shipped}"/>
+      </apex:selectList>
+      </td>
+      <td><apex:inputField styleClass="form-control" value="{!mlist3.Returned__c}" rendered="{!NOT(mlist3.IsPicklist__c)}" onchange="quantityChange(this);" onkeydown="if(event.keyCode==13){return false;}" onkeypress="if(event.which == 46){event.preventDefault();} if(this.value.length == 3){return false;}" onkeyup="return validateKeyUp(this)"/>
+      <apex:selectList styleClass="form-control" value="{!mlist3.Returned__c}" rendered="{!mlist3.IsPicklist__c}" multiselect="false" size="1" onchange="quantityChange(this);">
+      <apex:selectOptions value="{!Returned}"/>
+      </apex:selectList>
+      </td>
+      <apex:outputText rendered="{!UnitCostRenderer}">
+      <td>
+      <apex:outputText styleClass="form-control" value="{!mlist3.Unit_Cost__c}" rendered="{!if(mlist3.Unit_Cost__c == null,false,true)}"/>
+      <apex:outputText styleClass="form-control" value="-" rendered="{!if(mlist3.Unit_Cost__c == null,true,false)}"/>
+      </td>
+      </apex:outputText>
+      </tr>
+      </apex:repeat>
+    </tbody>
+  </table>
+</div>
+
+</apex:outputPanel>
+
+
+<apex:outputPanel id="panel2" rendered="{!AND(DeviceRenderer,If(MatLineItemRightTable.size > 0,true,false))}">
+
+<div class="col-md-6 col-sm-6 hidden-xs" id="rightTable2">
+<table class="table table-mr">
+
+    <thead>
+      <tr>
+        <th>ATI Description - Unit of Measure</th>
+        <th>Shipped</th>
+        <th>Returned</th>
+        <apex:outputText rendered="{!UnitCostRenderer}"><th>Unit Cost</th></apex:outputText>
+      </tr>
+    </thead>    <tbody class="tbfix">
+     <apex:repeat value="{!MatLineItemRightTable}" var="mlist2">
+      <tr>
+      <td><apex:outputText styleClass="form-control" value="{!mlist2.Name}"/></td>
+      <td><apex:inputField styleClass="form-control" value="{!mlist2.Shipped__c}" rendered="{!NOT(mlist2.IsPicklist__c)}" onchange="quantityChange(this);" onkeydown="if(event.keyCode==13){return false;}" onkeypress="if(event.which == 46){event.preventDefault();} if(this.value.length == 3){return false;}" onkeyup="return validateKeyUp(this)"/>
+      <apex:selectList styleClass="form-control" value="{!mlist2.Shipped__c}" rendered="{!mlist2.IsPicklist__c}" multiselect="false" size="1" onchange="quantityChange(this);">
+      <apex:selectOptions value="{!Shipped}"/>
+      </apex:selectList>
+      </td>
+      <td><apex:inputField styleClass="form-control" value="{!mlist2.Returned__c}" rendered="{!NOT(mlist2.IsPicklist__c)}" onchange="quantityChange(this);" onkeydown="if(event.keyCode==13){return false;}" onkeypress="if(event.which == 46){event.preventDefault();} if(this.value.length == 3){return false;}" onkeyup="return validateKeyUp(this)"/>
+      <apex:selectList styleClass="form-control" value="{!mlist2.Returned__c}" rendered="{!mlist2.IsPicklist__c}" multiselect="false" size="1" onchange="quantityChange(this);">
+      <apex:selectOptions value="{!Returned}"/>
+      </apex:selectList>
+      </td>
+      <apex:outputText rendered="{!UnitCostRenderer}">
+      <td>
+      <apex:outputText styleClass="form-control" value="{!mlist2.Unit_Cost__c}" rendered="{!if(mlist2.Unit_Cost__c == null,false,true)}"/>
+      <apex:outputText styleClass="form-control" value="-" rendered="{!if(mlist2.Unit_Cost__c == null,true,false)}"/>
+      </td>
+      </apex:outputText>
+      </tr>
+      </apex:repeat>
+ 
+    </tbody>
+  </table>
+</div>
+</apex:outputPanel>
+
+<apex:actionFunction name="QuantUpdate" action="{!QuantityChangeUpdate}" rerender="formid" status="loadingStatus"/>
+<apex:actionFunction name="getJobDetailsFunc" action="{!getJobDetails}" rerender="formid" status="loadingStatus"/>
+<apex:actionfunction name="callClearSearch" action="{!ClearSearch}" rerender="formid" status="loadingStatus"/>
+<apex:actionfunction name="callSearch" action="{!SearchByMaterialName}" rerender="formid" status="loadingStatus"/>
+<apex:actionFunction name="DeviceRenderFunc" rerender="formid" status="loadingStatus">
+<apex:param name="setRenderer" assignTo="{!DeviceRenderer}" value="DeviceRenderer"/>
+</apex:actionFunction>
+<apex:actionFunction name="CollapsibleLabelFunc" reRender="formid" status="loadingStatus">
+<apex:param name="LabelModifier" assignTo="{!CollapsibleLabel}" value="CollapsibleLabel"/>
+</apex:actionFunction>
+<apex:actionFunction name="JobChangeaction" action="{!getJobDetails}" reRender="formid" status="loadingStatus">
+<apex:param name="jobId" value="" assignTo="{!JobId}"/>
+<apex:param name="jobName" value="" assignTo="{!JobName}"/>
+</apex:actionFunction>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="float-center">
+<apex:commandButton styleClass="btn btn-dark mt20 mb20" action="{!FormSave}" oncomplete="window.scrollTo(0,0);" status="loadingStatus" rerender="formid" value="Save" disabled="{!DisableSave}" rendered="{!if((MatLineItemLeftTable.size > 0 || MatLineItemRightTable.size > 0),true,false)}"/>
+<apex:commandButton styleClass="btn btn-blue mt20 mb20" action="{!Cancel}" value="Cancel" status="loadingStatus" rerender="formid" immediate="true"/>
+</div>
+
+</div></div>
+ 
+</section>
+
+<script>
+
+$(document).ready(function() {
+/*$(".btn-ex").click(function() { 
+    $(".expnd1").toggle();
+    return false;
+    if ($(this).attr("value") === 'expand') {
+         $(this).attr("value") = "New text";
+    }
+    else {
+        $(this).attr("value")="text";
+    }
+});*/
+      
+    $('#datePicker')
+        .datepicker({
+            format: 'mm/dd/yyyy'
+        })
+        .on('changeDate', function(e) {
+            // Revalidate the date field
+            $('#eventForm').formValidation('revalidateField', 'date');
+        });
+        
+});
+
+var OppWrprClassObj;
+$("#search-input").autocomplete({
+        minLength: 2,
+        delay: 200,
+        source : function(request,response){
+                                MRController.getMatchedOpportunityList(request.term, function(result,event){
+                                    OppWrprClassObj = result;
+                                    response(OppWrprClassObj);
+                                    
+                                }, { escape: false } );
+                            },
+        select: function(event,ui ) {
+        event.preventDefault();
+        $("#search-input").val(ui.item.Name);
+        SearchbyName(ui.item.value,ui.item.Name);
+    },
+        focus: function (event, ui) {
+        this.value = ui.item.Name;
+        event.preventDefault();
+    },
+    open: function(event, ui) {
+        $('.ui-autocomplete').off('menufocus hover mouseover mouseenter');
+    }                      
+    });
+    
+
+$('.tt-query').css('background-color','#fff');
+$(document).on('scroll','.tbfix',function (el) { $('input').blur(); } ,true); 
+</script>
+
+</body>
+</apex:form>
+</apex:page>

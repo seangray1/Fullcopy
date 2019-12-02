@@ -1,0 +1,29 @@
+<!--
+  @File Name          : ProjectNoteAura.cmp
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 11/27/2019, 12:57:59 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    10/8/2019   Sean Gray     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    
+<!-- <aura:if isTrue="{!$Browser.isPhone}">   -->
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="isPhone" type="Boolean"/>
+    <lightning:flow aura:id="flowData" />
+    <c:projectNote recordId = "{!v.recordId}" onrecordChange="{!c.refreshView}"/>
+   
+    <!-- <aura:set attribute="else">
+         <aura:handler name="init1" value="{!this}" action="{!c.doInit}" /> -->
+        <!-- <c:projectNote onrecordChange="{!c.refreshView}"/> -->
+    <!-- </aura:set>
+  </aura:if>     -->
+    
+
+       
+</aura:component>

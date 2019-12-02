@@ -1,0 +1,18 @@
+<!--
+  @Component Name     : RejectBudgetAura.cmp
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 11/6/2019, 7:58:41 AM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/14/2019, 8:15:52 AM   sean.gray@atirestoration.com     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+
+        <c:rejectbudget recordId = "{!v.recordId}" onrecordChange="{!c.refreshView}" oncancelChange="{!c.cancelView}"/>
+        <!-- <c:rejectbudget /> -->
+</aura:component>

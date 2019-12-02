@@ -1,0 +1,278 @@
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MRSummaryController" standardStylesheets="false">
+<apex:form id="formid">
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>MR Summary Form</title>
+
+    <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/bootstrap-theme.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'font-awesome/css/font-awesome.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/style.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/datepicker.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/datepicker3.min.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap-datepicker.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap3-typeahead.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/jquery.slimscroll.min.js')}" />
+
+<style>
+  .slimScrollDiv, .tbfix{height:auto !important}
+  
+  
+  </style>
+  
+<script>
+
+function changeCollapsibleLabel()
+{
+
+var clearLabel = document.getElementById('{!$Component.label}').value;
+if(clearLabel == 'More Details')
+{
+  document.getElementById('{!$Component.label}').value = 'Less Details';
+}
+else
+{
+  document.getElementById('{!$Component.label}').value = 'More Details';
+  
+}
+return false;
+}
+  
+</script>
+  
+</head> 
+<body>
+
+<header>
+
+    <div class="container">
+        <div class="row">
+        <div class="navbar-header col-xs-12">
+            <a class="navbar-brand col-md-6 col-sm-6 col-xs-12" href="" title="">
+            
+            <apex:image url="{!URLFOR($Resource.MR_CSS,'images/logo.png')}" /></a>
+            
+            <h2 class="col-md-6 col-sm-6 col-xs-12 pull-right">Material Requisition Form</h2>
+            </div>
+        </div>
+    </div>
+</header>
+
+<apex:outputPanel >
+                <apex:actionStatus id="loadingStatus" stopText="" style="align:center">
+                    <apex:facet name="start">
+                        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                            &nbsp;
+                        </div>
+                        <div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                            <div style="display: inline-block; padding: 2px; background-color: white; width: 100px; border: solid 1px skyblue;left: 50%;margin-left: -50px;top: 50%;height: 130px;margin-top: -100px;z-index: 999;position: fixed;">
+                                <img src="{!$Resource.Loading_Sign}" width="100%"/>
+                                <span style="display: inline-block; padding: 12px 0px; font-weight : bold;">Please Wait...</span>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+</apex:outputPanel>
+<apex:outputPanel id="panel1"> 
+<div class="float-center" style="left: 25px;color:red;"><apex:pageMessages escape="false"></apex:pageMessages></div>
+<style>
+.disablefunc{
+  display: {!if(Status = 'In Progress','','none')};
+  }
+</style>           
+<section class="banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-6 no-padding mb20">
+                <div class="form-group">
+                    <label class="control-label pull-left">Job Name:</label>
+                    <div class="col-md-8 col-sm-8   no-padding">
+                        <apex:outputText rendered="{!if(JobName == null,false,true)}"><p>{!JobName}</p></apex:outputText>
+                        <apex:outputText rendered="{!if(JobName == null,true,false)}"><p>-</p></apex:outputText>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div  id="mretd"  class="collapse expnd">
+                <div class="col-md-4 col-sm-6 no-padding mb20">
+                    <div class="form-group">
+                        <label class="control-label pull-left">Job Number:</label>
+                        <div class="col-md-8 col-sm-8   no-padding">
+                            <apex:outputText rendered="{!if(JobNumber == null,false,true)}"><p>{!JobNumber}</p></apex:outputText>
+                            <apex:outputText rendered="{!if(JobNumber == null,true,false)}"><p>-</p></apex:outputText>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div class="col-md-4 col-sm-4 no-padding mb20">
+                <div class="form-group">
+                    <label class="control-label pull-left">Location:</label>
+                    <div class="col-md-8 col-sm-7   no-padding">
+                        <apex:outputText rendered="{!if(LocationName == null,false,true)}"><p>{!LocationName}</p></apex:outputText>
+                        <apex:outputText rendered="{!if(LocationName == null,true,false)}"><p>-</p></apex:outputText>
+                    </div>
+                </div>
+            </div>          
+            
+            <div class="col-md-4 col-sm-4 no-padding">
+                            <div class="form-group">
+        <label class="control-label pull-left">Date Ordered:</label>
+        <div class="col-md-8 col-sm-7 date no-padding">
+           <apex:outputText rendered="{!if(DateOrdered == null,false,true)}"><p>{!DateOrdered}</p></apex:outputText>
+           <apex:outputText rendered="{!if(DateOrdered == null,true,false)}"><p>-</p></apex:outputText>
+        </div>
+    </div>
+                    </div> 
+                    
+            <div class="col-md-4 col-sm-4 no-padding ">
+                <div class="form-group">
+                    <label class="control-label pull-left">Status:</label>
+                    <div class="col-md-8 col-sm-7  no-padding">
+                        <apex:outputText rendered="{!if(Status == null,false,true)}"><p>{!Status}</p></apex:outputText>
+                        <apex:outputText rendered="{!if(Status == null,true,false)}"><p>-</p></apex:outputText>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+            
+             <apex:commandButton styleClass="btn-xs btn-default mredte" html-data-toggle="collapse" html-data-target="#mretd" id="label" value="{!CollapsibleLabel}" onclick="return changeCollapsibleLabel();"/>
+             
+        </div>
+    </div>
+</section>
+</apex:outputPanel>  
+<div class="clearfix"> </div>
+<section class="form">
+  <div class="container white-bg-cl pd-tb ">
+<div class="row">
+<div class="col-md-6 col-sm-6">
+<apex:outputPanel id="table1_id" rendered="{!IF(MRLineItemLeftTable.size > 0,true,false)}">
+<table class="table table-list-view">
+
+    <thead>
+      <tr>
+        <th>ATI Description - Unit of Measure</th>
+        <th>Shipped</th>
+        <th>Returned</th>
+        <apex:outputText rendered="{!UnitCostRenderer}"><th>Unit Cost</th></apex:outputText>
+      </tr>
+    </thead>    <tbody class="tbfix">
+    <apex:repeat var="MRLst1" value="{!MRLineItemLeftTable}" id="table1">
+      <tr Style="{!IF(MRToHighlightMap[MRLst1.Name] == true,'border: solid 3px red;','')}">
+        <td>{!MRLst1.Name}</td>
+        <apex:outputText rendered="{!if(MRLst1.Shipped__c == null,false,true)}"><td>{!MRLst1.Shipped__c}</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst1.Shipped__c == null,true,false)}"><td>-</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst1.Returned__c == null,false,true)}"><td>{!MRLst1.Returned__c}</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst1.Returned__c == null,true,false)}"><td>-</td></apex:outputText>
+        <apex:outputText rendered="{!UnitCostRenderer}">
+          <td>
+          <apex:outputText value="{!MRLst1.Unit_Cost__c}" rendered="{!if(MRLst1.Unit_Cost__c == null,false,true)}"/>
+          <apex:outputText value="-" rendered="{!if(MRLst1.Unit_Cost__c == null,true,false)}"/>
+          </td>
+       </apex:outputText>
+        </tr>
+      </apex:repeat>
+      
+      <apex:repeat var="MRLst2" value="{!MRLineItemRightTable}">
+      <tr class="hidden-lg hidden-md hidden-sm" Style="{!IF(MRToHighlightMap[MRLst2.Name] == true,'border: solid 3px red;','')}">
+        <td>{!MRLst2.Name}</td>
+        <apex:outputText rendered="{!if(MRLst2.Shipped__c == null,false,true)}"><td>{!MRLst2.Shipped__c}</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst2.Shipped__c == null,true,false)}"><td>-</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst2.Returned__c == null,false,true)}"><td>{!MRLst2.Returned__c}</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst2.Returned__c == null,true,false)}"><td>-</td></apex:outputText>
+        <apex:outputText rendered="{!UnitCostRenderer}">
+          <td>
+          <apex:outputText value="{!MRLst2.Unit_Cost__c}" rendered="{!if(MRLst2.Unit_Cost__c == null,false,true)}"/>
+          <apex:outputText value="-" rendered="{!if(MRLst2.Unit_Cost__c == null,true,false)}"/>
+          </td>
+       </apex:outputText>
+      </tr>
+        </apex:repeat>
+    </tbody>
+  </table>
+</apex:outputPanel>
+
+</div>
+
+<div class="col-md-6 col-sm-6 hidden-xs">
+<apex:outputPanel id="table2_id" rendered="{!IF(MRLineItemRightTable.size > 0,true,false)}">
+<table class="table table-list-view">
+
+    <thead>
+      <tr>
+        <th>ATI Description - Unit of Measure</th>
+        <th>Shipped</th>
+        <th>Returned</th>
+        <apex:outputText rendered="{!UnitCostRenderer}"><th>Unit Cost</th></apex:outputText>
+      </tr>
+    </thead>    <tbody class="tbfix">
+    <apex:repeat var="MRLst2" value="{!MRLineItemRightTable}" id="table2">
+      <tr Style="{!IF(MRToHighlightMap[MRLst2.Name] == true,'border: solid 3px red;','')}">
+        <td>{!MRLst2.Name}</td>
+        <apex:outputText rendered="{!if(MRLst2.Shipped__c == null,false,true)}"><td>{!MRLst2.Shipped__c}</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst2.Shipped__c == null,true,false)}"><td>-</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst2.Returned__c == null,false,true)}"><td>{!MRLst2.Returned__c}</td></apex:outputText>
+        <apex:outputText rendered="{!if(MRLst2.Returned__c == null,true,false)}"><td>-</td></apex:outputText>
+        <apex:outputText rendered="{!UnitCostRenderer}">
+          <td>
+          <apex:outputText value="{!MRLst2.Unit_Cost__c}" rendered="{!if(MRLst2.Unit_Cost__c == null,false,true)}"/>
+          <apex:outputText value="-" rendered="{!if(MRLst2.Unit_Cost__c == null,true,false)}"/>
+          </td>
+       </apex:outputText>
+      </tr>
+        </apex:repeat>
+      
+    </tbody>
+  </table>
+</apex:outputPanel>
+</div>
+
+</div>
+<div class="row">
+<apex:outputpanel id="panel2">
+<div class="float-center ">
+        <apex:commandButton styleClass="btn btn-blue mt20 mb20" id="statusid" value="{!MRStatus}" action="{!UpdateStatus}" oncomplete="window.scrollTo(0,0);" rerender="panel1,panel2,formid" status="loadingStatus"/>&nbsp;        
+               
+        <apex:commandButton styleclass="btn btn-dark disablefunc" value="Edit" rerender="formid" status="loadingStatus" action="{!Edit}"/>&nbsp;         
+            
+        <apex:commandButton styleClass="btn btn-default" action="{!Back}" value="Close/Back" rerender="formid" status="loadingStatus"/>               
+               
+</div>
+</apex:outputpanel>
+</div></div>
+
+</section>
+
+
+<script>
+$(document).ready(function() {
+    $('#datePicker')
+        .datepicker({
+            format: 'mm/dd/yyyy'
+        })
+        .on('changeDate', function(e) {
+            // Revalidate the date field
+            $('#eventForm').formValidation('revalidateField', 'date');
+        });
+});
+
+
+$('.tt-query').css('background-color','#fff');
+</script>
+
+
+
+</body>
+</html>
+</apex:form>
+</apex:page>

@@ -1,0 +1,15 @@
+.repaircomments {
+    width: 500px;
+    height: 200px;
+}
+.first {
+    width: 100px;
+    
+}
+.Labels {
+    font-size: 120%;
+}
+.errormessage {
+    font-size: 140%;
+    color: darkred;
+}

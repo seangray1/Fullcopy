@@ -1,0 +1,8 @@
+<aura:component controller="SyncEconzLT" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" >
+    <aura:attribute name="returnMsg" type="String" />
+     <aura:attribute name="job" type="ATI_Job__c" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <div class="recordSaveError">
+            {!v.returnMsg}
+    </div>
+</aura:component>

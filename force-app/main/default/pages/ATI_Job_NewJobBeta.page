@@ -1,0 +1,317 @@
+<!-- 
+@Author: Narasimha (Perficient)
+@Created: 17.MAR.2015
+@Desc: Page to Create a new Job/Opportunity and related records.
+ -->
+
+<apex:page standardController="ATI_Job__c" extensions="CreateNewJobInquiry2" id="jobIntake">
+
+<script type="text/javascript">
+    function blockReleaseBtns(disable){
+        var btns = document.getElementsByClassName('saveBtnClass');
+        for(var i = 0; i < btns.length; i++){
+            if(disable){
+                btns[i].disabled = 'disabled';
+                btns[i].className = 'saveBtnClass btnDisabled'; 
+            }
+            else {
+                btns[i].disabled = '';
+                btns[i].className = 'saveBtnClass btn'; 
+            }
+        }
+    }
+    function reRunPca(){
+      pca.EditPage.apply();
+    }
+
+    function copyAddressToProjectSiteContactInfo(name) {
+      //find css style
+      assign2ProjectSiteContactInfo($('.' + name + 'StreetClass').val(), 
+                                    $('.' + name + 'CityClass').val(), 
+                                    $('.' + name + 'StateClass').val(), 
+                                    $('.' + name + 'ZipClass').val(),
+                                   $('.' + name + 'CountyClass').val());
+    }
+
+</script>
+    <apex:include pageName="pca__Component"/>
+<apex:pageMessages id="pgBlockMsgs" escape="false"/>
+    <apex:form id="Jobs">
+    <apex:actionRegion >
+        <apex:actionFunction name="assign2ProjectSiteContactInfo" action="{!assign2ProjectSiteContactInfo}" reRender="ProjectInfo">
+          <apex:param name="contextProjectSiteContactStreet" value="" assignTo="{!contextProjectSiteContactStreet}" />
+          <apex:param name="contextProjectSiteContactCity" value="" assignTo="{!contextProjectSiteContactCity}" />
+          <apex:param name="contextProjectSiteContactState" value="" assignTo="{!contextProjectSiteContactState}" />
+          <apex:param name="contextProjectSiteContactZip" value="" assignTo="{!contextProjectSiteContactZip}" />
+            <apex:param name="contextProjectSiteContactCounty" value="" assignTo="{!contextProjectSiteContactCounty}" />
+        </apex:actionFunction>
+    </apex:actionRegion>
+        <apex:actionRegion >
+        <apex:pageBlock title="New Job Inquiry" mode="edit" id="JobpageBlock">
+            <apex:pageBlockButtons location="bottom">
+                 <!--<apex:commandButton id="savebutton" value="Save" action="{!Save}"  reRender="pgBlockMsgs" status="saveStatus"  styleClass="saveBtnClass" onclick="blockReleaseBtns(true);" oncomplete="blockReleaseBtns(false);"/>
+                 <apex:actionStatus id="saveStatus">
+                    <apex:facet name="start">
+                     <apex:image value="/img/loading.gif" style="height:20px;"/>
+                    </apex:facet> 
+                </apex:actionStatus>-->
+                <apex:actionStatus id="saveStatus">
+                    <apex:facet name="stop">
+                        <apex:commandButton value="Save" action="{!Save}" status="saveStatus" rerender="pgBlockMsgs" />
+                    </apex:facet>
+                    <apex:facet name="start">
+                        <apex:commandButton value="Saving..." disabled="true" status="saveStatus" />
+                        <apex:image value="/img/loading.gif" style="height:20px;"/>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection id="CallerInfo" title="Caller Information" collapsible="true" columns="1">   
+                <apex:inputField value="{!job.Contact__c}" Label="Caller"/>
+           </apex:pageBlockSection>
+           <!-- New Caller Start-->
+           <apex:pageBlockSection Columns="1" id="newCallerContactInfo">  
+                 <apex:actionRegion >
+                    <apex:commandButton action="{!showOrHideNewCaller}" reRender="newCaller" value="New Caller" oncomplete="reRunPca();"/>
+                 </apex:actionRegion>
+                <apex:pageblockSection id="newCaller" Columns="1"> 
+                    <apex:pageblockSection id="newCallerPageBlockSection" rendered="{!showNewCaller}" Columns="1">
+                       <apex:pageBlockSection Columns="1" id="contactTypePageBlockSection">
+                            <apex:inputField value="{!newCaller.Contact_Type__c}" required="true"/>
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="2" id="contactAddressPageBlockSection">
+                           <apex:inputField value="{!newCaller.firstname}" required="true"/>
+                           <apex:inputField id="con19zip" value="{!newCaller.MailingPostalCode}" styleClass="newCallZipClass"/>
+                           <apex:inputField value="{!newCaller.Lastname}"/>
+                           <apex:inputfield id="con19country" value="{!newCaller.MailingCountry}" />                           
+                           <apex:inputField id="con19street" value="{!newCaller.MailingStreet}" styleClass="newCallStreetClass"/>
+                           <apex:inputField value="{!newCaller.Email}"/>
+                           <apex:inputField id="con19city" value="{!newCaller.MailingCity}" styleClass="newCallCityClass"/>
+                           <apex:inputField value="{!newCaller.Phone}" required="true"/>
+                           <apex:inputField id="con19state" value="{!newCaller.MailingState}" styleClass="newCallStateClass"/>
+                           <apex:inputField value="{!newCaller.Phone_Ext__c}"/>
+                           <apex:inputField id="con19county" value="{!newCaller.Mailing_County__c}" styleClass="newCallCountyClass"/>
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="1">
+                           <apex:inputCheckbox label="If same as project site address" onclick="copyAddressToProjectSiteContactInfo('newCall');"/>
+                       </apex:pageBlockSection>
+                       <!-- New Account Start-->
+                       <apex:pageblockSection Columns="1">        
+                           <apex:inputField value="{!newCaller.accountID}" required="false"/>
+                       </apex:pageblockSection>
+                       <apex:pageBlockSection columns="1" >
+                            <apex:actionRegion >
+                                <apex:commandButton action="{!showOrHideNewAccount}" reRender="newAccount" value="New Account" oncomplete="reRunPca();"/>
+                            </apex:actionRegion>
+                            <apex:pageBlockSection id="newAccount" columns="1" >
+                                <apex:pageBlockSection Columns="2" rendered="{!showNewAccount}">
+                                    <apex:inputField value="{!newAccount.name}"/>
+                                    <apex:inputField value="{!newAccount.type}" required="true"/>
+                                    <apex:inputField id="acc17street" value="{!newAccount.BillingStreet}" required="true"/>
+                                    <apex:inputfield id="acc17country" value="{!newAccount.BillingCountry}"/>
+                                    <apex:inputField id="acc17city" value="{!newAccount.BillingCity}" required="true"/>
+                                    <apex:inputField value="{!newAccount.Phone}" required="false"/>
+                                    <apex:inputField id="acc17state" value="{!newAccount.BillingState}" required="true"/>
+                                    <apex:inputField value="{!newAccount.Phone_Ext__c}"/>
+                                    <apex:inputField id="acc17zip" value="{!newAccount.BillingPostalCode}" required="true"/>
+                                </apex:pageBlockSection>
+                            </apex:pageBlockSection>
+                        </apex:pageBlockSection>
+                       <!-- New Account End-->
+                   </apex:pageblockSection>
+                </apex:pageblockSection>
+            </apex:pageBlockSection>
+            <!-- New Caller End-->
+           
+            <apex:pageblockSection id="ProjectInfo2" title="Project Site Contact Information" collapsible="true" Columns="1">
+                <apex:inputCheckbox label="Same as caller" onclick="{!job.Contact__c}"/>
+                <apex:inputField value="{!job.Project_Site_Contact_Name__c}"/>
+                <apex:actionRegion >              
+                    <apex:commandButton action="{!showOrHideNewProjectSiteContact}" value="New Project Site Contact" reRender="newProjectSiteContact" oncomplete="reRunPca();"/>
+                </apex:actionRegion>
+                <!-- New Project Site Contact Start-->
+                <apex:pageblockSection id="newProjectSiteContact" Columns="1"> 
+                    <apex:pageblockSection rendered="{!showNewProjectSiteContact}" Columns="1">
+                       <apex:pageBlockSection Columns="1">
+                            <apex:inputField value="{!newProjectSiteContact.Contact_Type__c}" required="true"/>
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="2">
+                           <apex:inputField value="{!newProjectSiteContact.firstname}" required="true"/>
+                           <apex:inputField id="con18zip" value="{!newProjectSiteContact.MailingPostalCode}" styleClass="newProjectSiteContactZipClass"/>
+                           <apex:inputField value="{!newProjectSiteContact.Lastname}"/>
+                           <apex:inputfield id="con18country" value="{!newProjectSiteContact.MailingCountry}"/>
+                           <apex:inputField id="con18street" value="{!newProjectSiteContact.MailingStreet}" styleClass="newProjectSiteContactStreetClass"/>
+                           <apex:inputField value="{!newProjectSiteContact.Email}"/>
+                           <apex:inputField id="con18city" value="{!newProjectSiteContact.MailingCity}" styleClass="newProjectSiteContactCityClass"/>
+                           <apex:inputField value="{!newProjectSiteContact.Phone}" required="true"/>
+                           <apex:inputField id="con18state" value="{!newProjectSiteContact.MailingState}" styleClass="newProjectSiteContactStateClass"/>
+                           <apex:inputField value="{!newProjectSiteContact.Phone_Ext__c}"/>
+                           <apex:inputField id="con18county" value="{!newProjectSiteContact.Mailing_County__c}" styleClass="newProjectSiteContactCountyClass"/>
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="1">
+                           <apex:inputCheckbox label="If same as project site address" onclick="copyAddressToProjectSiteContactInfo('newProjectSiteContact');"/>
+                       </apex:pageBlockSection>
+                       <!-- New Account Start-->
+                       <apex:pageblockSection Columns="1">        
+                           <apex:inputField value="{!newProjectSiteContact.accountID}" required="false"/>
+                       </apex:pageblockSection>
+                       <apex:pageBlockSection columns="1" >
+                            <apex:actionRegion >
+                                <apex:commandButton action="{!showOrHideNewProjectSiteContactAccount}" reRender="newProjectSiteAccount" value="New Account" oncomplete="reRunPca();"/>
+                            </apex:actionRegion>
+                            <apex:pageBlockSection id="newProjectSiteAccount" columns="1" >
+                                <apex:pageBlockSection Columns="2" rendered="{!showNewProjectSiteContactAccount}">
+                                    <apex:inputField value="{!newProjectSiteAccount.name}"/>
+                                    <apex:inputField value="{!newProjectSiteAccount.type}" required="true"/>
+                                    <apex:inputField id="acc18street" value="{!newProjectSiteAccount.BillingStreet}" required="true"/>
+                                    <apex:inputfield id="acc18country" value="{!newProjectSiteAccount.BillingCountry}"/>
+                                    <apex:inputField id="acc18city" value="{!newProjectSiteAccount.BillingCity}" required="true"/>
+                                    <apex:inputField value="{!newProjectSiteAccount.Phone}" required="false"/>
+                                    <apex:inputField id="acc18state" value="{!newProjectSiteAccount.BillingState}" required="true"/>
+                                    <apex:inputField value="{!newProjectSiteAccount.Phone_Ext__c}"/>
+                                    <apex:inputField id="acc18zip" value="{!newProjectSiteAccount.BillingPostalCode}" required="true"/>
+                                </apex:pageBlockSection>
+                            </apex:pageBlockSection>
+                        </apex:pageBlockSection>
+                       <!-- New Account End-->
+                   </apex:pageblockSection>
+                </apex:pageblockSection>
+                <!-- New Project Site Contact End-->
+            </apex:pageblockSection>
+            <!--New Customer Start-->
+            <apex:pageBlockSection id="CustomerInfo" title="Customer Information" collapsible="true" columns="1" >   
+                <apex:inputCheckbox label="Same as caller" onclick="{!job.Contact__c}"/>
+                <apex:inputField value="{!job.Owner__c}" Label="Customer"/>
+                <apex:actionRegion >
+                    <apex:commandButton action="{!showOrHideNewCustomerPerson}" reRender="showNewCustomerPerson" value="New Customer Person" oncomplete="reRunPca();"/>
+                 </apex:actionRegion>
+                <apex:pageBlockSection Columns="1" id="newCustomerContactInfo">  
+                <apex:pageblockSection id="showNewCustomerPerson" Columns="1"> 
+                    <apex:pageblockSection id="newCustomerPageBlockSection" rendered="{!showNewCustomerPerson}" Columns="1">
+                       <apex:pageBlockSection Columns="2" id="contactAddressPageBlockSection">
+                           <apex:inputField value="{!newCustomerPerson.firstname}" required="true"/>
+                           <apex:inputField id="con18zip" value="{!newCustomerPerson.MailingPostalCode}" styleClass="newCustomerPersonZipClass"/>
+                           <apex:inputField value="{!newCustomerPerson.Lastname}"/>
+                           <apex:inputfield id="con18country" value="{!newCustomerPerson.MailingCountry}" />                           
+                           <apex:inputField id="con18street" value="{!newCustomerPerson.MailingStreet}" styleClass="newCustomerPersonStreetClass"/>
+                           <apex:inputField value="{!newCustomerPerson.Email}"/>
+                           <apex:inputField id="con18city" value="{!newCustomerPerson.MailingCity}" styleClass="newCustomerPersonCityClass"/>
+                           <apex:inputField value="{!newCustomerPerson.Phone}" required="true"/>
+                           <apex:inputField id="con18state" value="{!newCustomerPerson.MailingState}" styleClass="newCustomerPersonStateClass"/>
+                           <apex:inputField value="{!newCustomerPerson.Phone_Ext__c}"/>
+                           <apex:inputField id="con18county" value="{!newCustomerPerson.Mailing_County__c}" styleClass="newCustomerPersonCountyClass"/>
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="1">
+                           <apex:inputCheckbox label="If same as project site address" onclick="copyAddressToProjectSiteContactInfo('newCustomerPerson');"/>
+                       </apex:pageBlockSection>
+                        </apex:pageblockSection>
+                </apex:pageblockSection>
+            </apex:pageBlockSection>
+                <apex:actionRegion >
+                    <apex:commandButton action="{!showOrHideNewCustomerBusiness}" reRender="newCustomerBusiness" value="New Customer Business" oncomplete="reRunPca();"/>
+                </apex:actionRegion>
+                <apex:pageBlockSection id="newCustomerBusiness" columns="1" >
+                    <apex:pageBlockSection Columns="2" rendered="{!showNewCustomerBusiness}">
+                        <apex:inputField value="{!newCustomerBusiness.name}"/>
+                        <apex:inputField value="{!newCustomerBusiness.type}" required="true"/>
+                        <apex:inputField id="acc19street" value="{!newCustomerBusiness.BillingStreet}" required="true"/>
+                        <apex:inputfield id="acc19country" value="{!newCustomerBusiness.BillingCountry}"/>
+                        <apex:inputField id="acc19city" value="{!newCustomerBusiness.BillingCity}" required="true"/>
+                        <apex:inputField value="{!newCustomerBusiness.Phone}" required="false"/>
+                        <apex:inputField id="acc19state" value="{!newCustomerBusiness.BillingState}" required="true"/>
+                        <apex:inputField value="{!newCustomerBusiness.Phone_Ext__c}"/>
+                        <apex:inputField id="acc19zip" value="{!newCustomerBusiness.BillingPostalCode}" required="true"/>
+                    </apex:pageBlockSection>
+                </apex:pageBlockSection>
+            </apex:pageBlockSection>
+            <!--New Customer End-->
+            <apex:pageblockSection id="InsuranceInfo" title="Insurance Information - If applicable, please select one, not both. Preferably, adjuster, if known." collapsible="true" Columns="1">
+                <apex:inputField value="{!job.Insurance_Adjuster_Broker__c}" label="Adjuster/Broker"/>
+                <apex:actionRegion >
+                    <apex:commandButton action="{!showOrHideNewAdjuster}" value="New Adjuster" reRender="newAdjuster" oncomplete="reRunPca();"/>
+                </apex:actionRegion>
+                <apex:pageblockSection id="newAdjuster" Columns="1"> 
+                    <apex:pageblockSection rendered="{!showNewAdjuster}" Columns="1">
+                       <apex:pageBlockSection Columns="1">
+                            <apex:outputField value="{!newAdjuster.Contact_Type__c}" />
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="2">
+                           <apex:inputField value="{!newAdjuster.firstname}" required="true"/>
+                           <apex:inputField id="con21zip" value="{!newAdjuster.MailingPostalCode}" styleClass="newAdjusterZipClass"/>
+                           <apex:inputField value="{!newAdjuster.Lastname}"/>
+                           <apex:inputfield id="con21country" value="{!newAdjuster.MailingCountry}"/>
+                           <apex:inputField id="constreet" value="{!newAdjuster.MailingStreet}" styleClass="newAdjusterStreetClass"/>
+                           <apex:inputField value="{!newAdjuster.Email}"/>
+                           <apex:inputField id="con21city" value="{!newAdjuster.MailingCity}" styleClass="newAdjusterCityClass"/>
+                           <apex:inputField value="{!newAdjuster.Phone}" required="true"/>
+                           <apex:inputField id="con21state" value="{!newAdjuster.MailingState}" styleClass="newAdjusterStateClass"/>
+                           <apex:inputField value="{!newAdjuster.Phone_Ext__c}"/>
+                           <apex:inputField id="con21county" value="{!newAdjuster.Mailing_County__c}" styleClass="newAdjusterCountyClass"/>
+                       </apex:pageBlockSection>
+                       <apex:pageBlockSection Columns="1">
+                           <apex:inputCheckbox label="If same as project site address" onclick="copyAddressToProjectSiteContactInfo('newAdjuster');"/>
+                       </apex:pageBlockSection>
+                       <!-- New Account Start-->
+                       <apex:pageblockSection Columns="1">        
+                           <apex:inputField value="{!newAdjuster.accountID}" required="false"/>
+                       </apex:pageblockSection>
+                       <apex:pageBlockSection columns="1" >
+                            <apex:actionRegion >
+                                <apex:commandButton action="{!showOrHideNewAdjusterAccount}" reRender="newAdjusterAccount" value="New Account" oncomplete="reRunPca();"/>
+                            </apex:actionRegion>
+                            <apex:pageBlockSection id="newAdjusterAccount" columns="1" >
+                                <apex:pageBlockSection Columns="2" rendered="{!showNewAdjusterAccount}">
+                                    <apex:inputField value="{!newAdjusterAccount.name}"/>
+                                    <apex:inputField value="{!newAdjusterAccount.type}" required="true"/>
+                                    <apex:inputField id="acc20street" value="{!newAdjusterAccount.BillingStreet}" required="true"/>
+                                    <apex:inputfield id="acc20country" value="{!newAdjusterAccount.BillingCountry}"/>
+                                    <apex:inputField id="acc20city" value="{!newAdjusterAccount.BillingCity}" required="true"/>
+                                    <apex:inputField value="{!newAdjusterAccount.Phone}" required="false"/>
+                                    <apex:inputField id="acc20state" value="{!newAdjusterAccount.BillingState}" required="true"/>
+                                    <apex:inputField value="{!newAdjusterAccount.Phone_Ext__c}"/>
+                                    <apex:inputField id="acc20zip" value="{!newAdjusterAccount.BillingPostalCode}" required="true"/>
+                                </apex:pageBlockSection>
+                            </apex:pageBlockSection>
+                        </apex:pageBlockSection>
+                       <!-- New Account End-->
+                   </apex:pageblockSection>
+                </apex:pageblockSection>
+
+                <apex:inputField value="{!job.Account__c}" label="Insurance Company"/>
+                <apex:actionRegion >
+                    <apex:commandButton action="{!showOrHideNewInsuranceCompany}" reRender="newInsuranceCompany" value="New Insurance Company" oncomplete="reRunPca();"/>
+                </apex:actionRegion>
+                <apex:pageBlockSection id="newInsuranceCompany" columns="1" >
+                    <apex:pageBlockSection Columns="2" rendered="{!showNewInsuranceCompany}">
+                        <apex:inputField value="{!newInsuranceCompany.name}"/>
+                        <apex:inputField value="{!newInsuranceCompany.type}" required="true"/>
+                        <apex:inputField id="acc21street" value="{!newInsuranceCompany.BillingStreet}" required="true"/>
+                        <apex:inputfield id="acc21country" value="{!newInsuranceCompany.BillingCountry}"/>
+                        <apex:inputField id="acc21city" value="{!newInsuranceCompany.BillingCity}" required="true"/>
+                        <apex:inputField value="{!newInsuranceCompany.Phone}" required="false"/>
+                        <apex:inputField id="acc21state" value="{!newInsuranceCompany.BillingState}" required="true"/>
+                        <apex:inputField value="{!newInsuranceCompany.Phone_Ext__c}"/>
+                        <apex:inputField id="acc21zip" value="{!newInsuranceCompany.BillingPostalCode}" required="true"/>
+                    </apex:pageBlockSection>
+                </apex:pageBlockSection>
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection id="ProjectInfo" title="Project Site Information" collapsible="true" Columns="2">
+                <apex:inputField value="{!job.Job_Name__c}" required="true" label="{!$Label.Job_Name}"/>
+                <apex:inputField id="vf_PS_state" value="{!job.Project_Site_State__c}" required="true"/>
+                <apex:inputField id="vf_PS_street" value="{!job.Project_Site_Address__c}" required="true"/>
+                <apex:inputField id="vf_PS_Postalcode" value="{!job.Project_Site_Zipcode__c}" required="true"/>
+                <apex:inputField value="{!job.Project_Site_Address_2__c}"/>
+                <apex:inputField id="vf_PS_county" value="{!job.County__c}" required="true"/>
+                <apex:inputField id="vf_PS_city" value="{!job.Project_Site_City__c}" required="true"/>
+            </apex:pageblockSection>
+            
+            <apex:pageBlockSection title="Primary Account" collapsible="false">
+                <apex:inputfield value="{!job.Primary_Account__c}" required="true"/>
+            </apex:pageBlockSection>
+
+            
+        </apex:pageBlock></apex:actionRegion>
+    </apex:form>
+    <apex:includeScript value="{!$Resource.jquery}" />
+</apex:page>

@@ -1,0 +1,10 @@
+<apex:component controller="DisplayChildRecordsController" >
+
+   <apex:attribute name="childRecordsQueryString" description="Query String to get Child Records"
+        type="String" required="true" assignTo="{!ChildRecordQueryString}" />
+
+   <apex:attribute name="pageController" description="Visualforce extended controller"
+        type="PDFController" required="true" assignTo="{!ParentPageController}" />
+
+  <apex:componentBody />
+</apex:component>

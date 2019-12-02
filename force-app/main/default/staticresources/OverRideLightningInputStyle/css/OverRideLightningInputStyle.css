@@ -1,0 +1,82 @@
+.DailyTimesheetWrap .slds-card{background: #f0f0f0;}
+.TableInput .slds-input{padding:0 5px; color: #545454;}
+.slds-input{padding: 0 7px;}
+.PwRit .slds-checkbox_faux{margin-right: 3px!important;}
+.TableInput .slds-form-element__label, .TblDesgnation .slds-form-element__label, .TblLaborcode .slds-form-element__label{display: none;}
+.HeadSec .slds-form-element__label{color: #fff;}
+.slds-checkbox__label .slds-form-element__label{padding: 0;}
+.OverallTotal .slds-form-element__label{font-weight: 700; color: #333; font-size:13px;}
+.OverallTotal .slds-input{background: #fff; padding: 0 5px; margin-top: 5px;}
+.FullContainer .slds-input[readonly] {background: #e8e8e8; padding: 0 5px; border: 1px solid #d0d0d0; }
+.FullContainer .slds-input.slds-combobox__input[readonly], .FullContainer .DailySPh .slds-input[readonly],  .FullContainer .DailyCMh .slds-input[readonly],  .FullContainer .OverallTotal .slds-input[readonly]{background: #fff;}
+.FinalComments .slds-form-element__label{display: none;}
+.FinalComments .slds-textarea{height: 100px; border-radius: 0;}
+.TblCopy .slds-checkbox__label .slds-form-element__label{display: none;}
+table .slds-has-error .slds-form-element__help{display: none;}
+.BtnSave .slds-button{
+    background: #013473;
+text-transform: uppercase;
+color: #fff;
+padding: 3px 40px;
+border-radius: 5px;
+border: 0px;
+margin: 0px 10px 0px 0px;
+}
+.BtnCancel .slds-button{
+    background: #4D4D4D;
+text-transform: uppercase;
+color: #fff;
+padding: 3px 40px;
+border-radius: 5px;
+border: 0px;
+margin: 0px 10px 0px 0px;
+}
+.CopyRow .slds-button{
+float: right;
+background: #013473;
+padding: 0px 10px;
+color: #fff;
+border-radius: 5px;
+text-decoration: none;
+}
+.copy-link .slds-button{
+       float: left;
+    background: #979797;
+    color: #fff;
+    text-decoration: none;
+    padding: 0px 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+    border: none;
+    font-size: 12px;
+}
+.add-row .slds-button{
+	float: left;
+    background: #333333;
+    color: #fff;
+    text-decoration: none;
+    padding: 0px 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+    border: none;
+    font-size: 12px;
+}
+.delete-icon .slds-button{    
+    border: none;
+    padding: 0;
+    background: transparent;
+    margin: 0 0 0 7px;
+    font-size: 28px;
+    color: #f75050;}
+.DateLeft .slds-button, .DateRit .slds-button{border: none; padding: 0; background: transparent; color:#fff;}
+
+.delete-icon .slds-button[disabled], .DateLeft .slds-button[disabled], .DateRit .slds-button[disabled], .add-row .slds-button[disabled], .add-row .slds-button[disabled], .BtnSave .slds-button[disabled], .BtnCancel .slds-button[disabled], .CopyRow .slds-button[disabled], .copy-link .slds-button[disabled], .slds-button[disabled] {opacity: 0.8;} 
+
+@media only screen and (max-width: 760px),(min-device-width: 768px) and (max-device-width: 1106px)  {
+    .TblCopy .slds-checkbox__label .slds-form-element__label{display: block;}
+    .CopyRow .slds-button__icon{margin-right: 0;}
+}
+
+@media only screen and (max-width: 430px){
+    .copy-link .slds-button, .add-row .slds-button{width: 95%; margin-top:10px;}
+}

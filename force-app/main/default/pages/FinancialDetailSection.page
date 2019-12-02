@@ -1,0 +1,102 @@
+<apex:page standardController="ATI_Job__c" showHeader="false"  extensions="FinancialController" rendered="true"  >  
+   <apex:slds />
+    
+    
+     <style type="text/css">
+        .container { 
+        overflow:hidden;
+        height:100%; 
+        width: 100%; }
+     </style>
+     
+     <apex:outputPanel styleClass="container" >
+        <apex:form style="overflow:hidden;width:1050px;height:600;">
+            <apex:pageBlock mode="InlineEdit" id="pagerefresh">
+                <apex:pageBlockButtons >
+                    <div class="slds-p-horizontal--small slds-m-top--medium slds-size--1-of-1">
+                    <apex:commandButton styleClass="slds-button slds-button--brand" value="Save" id="saveButton"   action="{!saveChanges}" style="display: none"/>                  
+                    <apex:commandButton styleClass="slds-button slds-button--neutral" id="cancelButton" action="{!cancel}" reRender="pagerefresh"  onclick="window.location.reload()" value="Cancel"  style="display: none"/>
+           <!--         <apex:commandButton styleClass="slds-button slds-button--neutral"  id="Edit" value="Edit"  action="{!EdittheSection}" immediate="true" reRender="refresh" /> 
+                    <apex:commandButton styleClass="slds-button slds-button_neutral"  id="Refresh" value="Refresh"  immediate="true" reRender="pagerefresh" onclick="window.location.reload()"/> -->     
+                    </div>   
+                </apex:pageBlockButtons>
+                
+                <apex:pageBlockSection title="Financial Section" collapsible="false" showHeader="false" columns="2"  > 
+                    <apex:inlineEditSupport rendered="true" showOnEdit="saveButton, cancelButton" hideOnEdit="Edit,Refresh"
+                         event="ondblclick " changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
+                         
+                    <apex:outputField title="Job-to-Date Work Billed" value="{!Finance_Record.Job_to_Date_Work_Billed__c}"/>
+                    <apex:outputField title="Quarter-to-Date Work Billed" value="{!Finance_Record.Quarter_to_Date_Work_Billed__c}"/>
+                    
+                    <apex:outputField title="Job-to-Date Costs" value="{!Finance_Record.Job_to_Date_Costs__c}"/>
+                    <apex:outputField title="Quarter-to-Date Costs" value="{!Finance_Record.Quarter_to_Date_Costs__c}"/>
+                    
+    <!--include-->  <apex:outputField title="Job-to-Date GP" value="{!Finance_Record.JTD_Profit__c}"/>
+      <!--New-->    <apex:outputField title="Quarter-to-Date GP" value="{!Finance_Record.Quarter_to_Date_GP__c}"/>
+                    
+      <!--New-->    <apex:outputField title="Job-to-Date GP%" value="{!Finance_Record.Job_to_Date_GP_Percent__c}"/>
+      <!--New-->    <apex:outputField title="Quarter-to-Date GP%" value="{!Finance_Record.Quarter_to_Date_GP_Percent__c}"/>
+                    
+                            <apex:pageBlockSectionItem /><apex:pageBlockSectionItem />
+                           
+    <!--include-->  <apex:outputField title="Job-to-Date Work Billed - NM" value="{!Finance_Record.Job_to_Date_Work_Billed_Next_Month__c}"/>
+                    <apex:outputField title="Month-to-Date Work Billed" value="{!Finance_Record.Month_to_Date_Work_Billed__c}"/>
+                    
+    <!--include-->  <apex:outputField title="Job-to-Date Costs - NM" value="{!Finance_Record.Job_to_Date_Costs_Next_Month_Costs__c}"/>
+                    <apex:outputField title="Month-to-Date Costs" value="{!Finance_Record.Month_to_Date_Costs__c}"/>
+                    
+    <!--include-->  <apex:outputField title="Job-to-Date - NM GP" value="{!Finance_Record.JTD_NM_Profit__c}"/>
+      <!--New-->    <apex:outputField title="Month-to-Date GP" value="{!Finance_Record.Month_to_Date_GP__c}"/> 
+                    
+    <!--include-->  <apex:outputField title="Job-to-Date - NM GP%" value="{!Finance_Record.JTD_NM_GP__c}"/>
+      <!--New-->    <apex:outputField title="Month-to-Date GP%" value="{!Finance_Record.Month_to_Date_GP_Percent__c}"/>
+                    
+                            <apex:pageBlockSectionItem /><apex:pageBlockSectionItem />         
+                    
+                    <apex:outputField title="Year-to-Date Work Billed" value="{!Finance_Record.Year_to_Date_Work_Billed__c}"/>
+                    <apex:outputField title="Next Month Work Billed" value="{!Finance_Record.Next_Month_Work_Billed__c}"/>
+                    
+                    <apex:outputField title="Year-to-Date Costs" value="{!Finance_Record.Year_to_Date_Costs__c}"/>
+                    <apex:outputField title="Next Month Costs" value="{!Finance_Record.Next_Month_Costs__c}"/>
+                    
+      <!--New-->    <apex:outputField title="Year-to-Date GP" value="{!Finance_Record.Year_to_Date_GP__c}"/>
+                             
+                            <BR/>
+                    
+      <!--New-->    <apex:outputField title="Year-to-Date GP%" value="{!Finance_Record.Year_to_Date_GP_Percent__c}"/>              
+                    <apex:outputField title="Total Billing Forecast Amount" value="{!Finance_Record.Total_Billing_Forecast_Amount__c}"/>
+                    
+                            <apex:pageBlockSectionItem />
+                        
+                    <apex:outputField title="Amount not billed" value="{!Finance_Record.Amount_not_billed__c}"/>
+                                         
+    <!--Include-->  <apex:outputField title="Year-to-Date Work Billed - NM" value="{!Finance_Record.Year_to_Date_Work_Billed_Next_Month__c}"/>
+                            <BR/>
+    <!--Include-->  <apex:outputField title="Year-to-Date Costs - NM" value="{!Finance_Record.Year_to_Date_Costs_Next_Month_Cost__c}"/>
+                    <apex:outputField title="Estimated Gross Profit %" value="{!Finance_Record.Gross_Profit__c}"/>
+                    
+     <!--New-->     <apex:outputField title="Year-to-Date - NM GP" value="{!Finance_Record.Year_to_Date_NM_GP__c}"/>
+                    
+                            <BR/>
+                            
+     <!--New-->     <apex:outputField title="Year-to-Date - NM GP%" value="{!Finance_Record.Year_to_Date_NM_GP_Percent__c}"/>
+                    <apex:outputField title="Last Successful Timberline Forecast Sync" value="{!Finance_Record.Last_Successful_Timberline_Forecast_Sync__c}"/>
+                             
+                            <BR/>
+                             
+                    <apex:outputField title="Forecast Last Timberline Update" value="{!Finance_Record.Forecast_Last_Timberline_Update__c}"/>
+     <!--New-->     <apex:outputField title="Receivable Includes Retention" value="{!Finance_Record.Receivable_Includes_Retention__c}"/>
+                    <apex:outputField title="Update Forecast" value="{!Finance_Record.Update_Forecast__c}"/>
+                    <apex:outputField title="Receivable Balance" value="{!Finance_Record.Receivable_Balance__c}"/>
+                            
+                            <BR/>
+                    
+                    <apex:outputField title="Retention Receivable" value="{!Finance_Record.Retention_Receivable__c}"/>
+                            <BR/>
+                            <apex:pageBlockSectionItem />
+                       
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>  
+    </apex:outputPanel> 
+</apex:page>

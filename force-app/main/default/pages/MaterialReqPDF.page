@@ -1,0 +1,99 @@
+<apex:page id="PDF"
+        standardController="Material_Requisition__c"
+        extensions="PDFController"
+        renderAs="pdf"
+        showHeader="false"
+        cache="false"
+        >
+                
+        <apex:stylesheet value="{!$Resource.BudgetPDF}"/> 
+
+<c:DisplayChildRecords pageController="{!ExtController}" childRecordsQueryString="SELECT Id, Name, Shipped__c, Item_Code__c, Quantity__c, Returned__c FROM Material_Requisition_line_item__c where Material_Requisition__c =: RecordId  order by CreatedDate ASC">
+</c:DisplayChildRecords>
+
+        <apex:define name="body">
+        
+          <table align='center'>
+              <tr>
+                  <td style="text-align:center;"> <strong>Material Requisition</strong></td>
+              </tr>
+          </table>    <!-- header align='center'>
+
+              </header -->  
+            
+            <table>
+
+        
+
+           <!-- This is the Reference number where I could put the Expense details as well -->    
+                <tr>
+                    <td colspan="3">
+                    <table cellpadding="10" style="width:10.5in;" align="center">
+                      <tr>      
+                          <td style="text-align:Left;">
+                                <strong>Name:</strong>&nbsp;<apex:outputText value="{!Material_Requisition__c.name}"/>
+                           </td>
+                           <td style="text-align:left;">
+                                <strong>Job Name:</strong>&nbsp;<apex:outputText value="{!Material_Requisition__c.ATI_Job__r.name}"/>
+                           </td>
+                           <td style="text-align:right;">
+                                <strong>Location:</strong>&nbsp;<apex:outputText value="{!Material_Requisition__c.Location_text__c}"/>
+                           </td>
+                       </tr>
+                       <tr> 
+                          <td style="text-align:Left;">
+                                <strong>Date Ordered:</strong>&nbsp;<apex:outputText value="{0, date, EEE, MMMM d, yyyy, hh:mm a}">
+                                <apex:param value="{!Material_Requisition__c.Date_Ordered__c}"/>
+                                </apex:outputText>
+                           </td>
+                           <td style="text-align:left;">
+                                <strong>Status:</strong>&nbsp;<apex:outputText value="{!Material_Requisition__c.Status__c}"/>
+                           </td>
+                       </tr>
+                   </table>
+                   </td>
+                </tr>
+                
+
+                <tr>
+                    <td colspan="3" style="text-align:center;">
+                        <table border="1" style="width:10.5in; border-collapse : collapse;" align="center">
+                            <tr>
+                                <th>Description</th>
+                                <th>Item Code</th>
+                                <th>Shipped</th>
+                                <th>Returned</th>
+                                <th>Quantity</th>
+                            </tr>                <!-- this was header information of each column -->
+                            
+                            <apex:repeat value="{!lineItems}" var="li">
+                                <tr>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li['name']}"/>
+                                    </td>
+                                    <td style="text-align:center; vertical-align:top;">
+                                        <apex:outputField value="{!li['Item_Code__c']}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li['Shipped__c']}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li['Returned__c']}"/>
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li['Quantity__c']}"/>
+                                    </td>
+
+                                </tr>
+                            </apex:repeat>
+                            
+                        </table>
+                        
+     
+                    </td>
+                </tr>
+                
+            </table>
+        </apex:define>    
+   
+</apex:page>

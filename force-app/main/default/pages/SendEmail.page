@@ -1,0 +1,64 @@
+<apex:page standardController="Invoice__c" extensions="SendEmailController" action="{!generateEmailBody}">
+    <style type="text/css">
+    	
+        .toAddress select {
+    		display: none;
+        }
+    </style>
+    
+    <apex:form >
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="1" collapsible="false" id="thePBlockSection" title="Edit Email" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="From"></apex:outputLabel>
+                    <apex:outputText value="{!currentUserEmail}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="To"></apex:outputLabel>
+                    <apex:inputField styleClass="toAddress" value="{!emailTask.WhoId}" />                        
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Related To"></apex:outputLabel>
+                    <apex:outputPanel >
+                    	<apex:outputLabel value="Invoice - "></apex:outputLabel><apex:outputField value="{!invoice.Name}" />                        
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="Manually type in any email address you choose to in this field. You just separate each email address with a comma (,)">
+                    <apex:outputLabel value="Additional To:"></apex:outputLabel>
+                    <apex:inputTextarea cols="65" rows="2" value="{!additionalToAddress}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="Manually type in any email address you choose to in this field. You just separate each email address with a comma (,)">
+                    <apex:outputLabel value="CC:"></apex:outputLabel>
+                    <apex:inputTextarea cols="65" rows="2" value="{!ccAddress}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="Manually type in any email address you choose to in this field. You just separate each email address with a comma (,)">
+                    <apex:outputLabel value="BCC:"></apex:outputLabel>
+                    <apex:inputTextarea cols="65" rows="2" value="{!bccAddress}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Subject"></apex:outputLabel>
+                    <apex:inputText value="{!subject}" maxlength="100" size="75"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Body"></apex:outputLabel>
+                    <apex:inputTextarea value="{!emailBody}" cols="100" rows="15" richText="true" styleClass="emailBody"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>   
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!sendEmail}" value="Send Email"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:pageBlock title="Attachments">
+            <apex:pageBlockTable value="{!attachments}" var="aw" rendered="{!NOT(attachments.size == 0)}">
+                <apex:column headerValue="Title">
+                    <apex:outputLink value="/{!aw.Id}">{!aw.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Size">
+                    <apex:outputField value="{!aw.bodylength}"/>
+                </apex:column>
+            </apex:pageBlockTable>            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
