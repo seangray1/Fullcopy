@@ -1,0 +1,1217 @@
+<template>
+
+        {test}
+    <lightning-card class="DailyTimesheetWrap">    
+        <div class="FullContainer"><!--- Start Full Container-->
+            <div class="HeadSec">
+                <div class="row">
+                    <div class="col-rp-3">
+                        <lightning-input class="HeadInput" label="Job Number" readonly="readonlye" value={displayJobnumber}></lightning-input>
+                    </div>
+                    <div class="col-rp-3">
+                        <lightning-input value={displayJobname} label="Job Name" readonly="readonlye" class="HeadInput"></lightning-input>
+                    </div>
+                    <div class="col-rp-3">
+                        <div class="row">
+                            <div class="col-rp-5">
+                                <lightning-input type="text" readonly="readonly" value={Date_startDate} onchange={Datefill} label="Start Date" class="HeadInput StartDate" name="input1"></lightning-input>
+                                <!-- <lightning-input value="" label="Week Start Date" readonly="readonly" class="HeadInput WeekStartDate"></lightning-input> -->
+                            </div>
+                            <div class="col-rp-5">
+                                <lightning-input type="text" value={Date_endDate} label="End Date" readonly="readonly" class="HeadInput WeekEndDate" name="input189" ></lightning-input>
+                                <!-- <lightning-input value="" label="Week End Date" readonly="readonly" class="HeadInput WeekEndDate"></lightning-input> -->
+                            </div>
+                            <div class="col-rp-2 m0">
+                                <lightning-button class="DateLeft" label='' title="Previous Week" onclick={PrevWeek} icon-name="utility:left"></lightning-button>
+                                <lightning-button class="DateRit" label='' title="Next Week" onclick={NextWeek} disabled ={NextWeekBlock} icon-name="utility:right"></lightning-button>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="col-rp-3">
+                        <template if:true={restrict}>
+                            <lightning-input value={dailyTimesheetLocation} disabled readonly="readonly" label="Location/Work Area" class="HeadInput loc"></lightning-input>
+                        </template>
+                        <template if:false={restrict}>
+                            <lightning-input value={dailyTimesheetLocation} label="Location/Work Area" class="HeadInput loc"></lightning-input>
+                        </template>
+                    </div>
+                    <div class="col-rp-3">
+                        <template if:true={restrict}>
+                            <lightning-combobox name="shift" disabled readonly="readonly" label="Shift" class="HeadInput shift" value={dailyTimesheetShift} options={ShiftOption}></lightning-combobox>
+                        </template>
+                        <template if:false={restrict}>
+                                <lightning-combobox name="shift" label="Shift" class="HeadInput shift" value={dailyTimesheetShift} options={ShiftOption}></lightning-combobox>
+                        </template>
+                    </div>
+                    
+                </div>  
+            </div>
+            <div class="InnerWrapper"><!---END Inner Wrapper-->
+
+                <section class="StaticTitle">
+                    <table class="outer m0">
+                            <thead>
+                                <tr>
+                                    <th class="left-col border0">
+                                    <table class="table week-header">
+                                        <thead>
+                                            <tr>
+                                                <th style="padding-left: 12px;">Designation</th>
+                                                <th>Labor Code</th>
+                                                <th colspan="2">Monday
+                                                <br>
+                                                <span>{Date_mon}</span>
+                                                </th>
+                                                <th colspan="2">Tuesday
+                                                <br>
+                                                <span>{Date_tue}</span>
+                                                </th>
+                                                <th colspan="2">Wednesday
+                                                <br>
+                                                <span>{Date_wed}</span>
+                                                </th>
+                                                <th colspan="2">Thursday
+                                                <br>
+                                                <span>{Date_thu}</span>
+                                                </th>
+                                                <th colspan="2">Friday
+                                                <br>
+                                                <span>{Date_fri}</span>
+                                                </th>
+                                                <th colspan="2">Saturday
+                                                <br>
+                                                <span>{Date_sat}</span>
+                                                </th>
+                                                <th colspan="2">Sunday
+                                                <br>
+                                                <span>{Date_sun}</span>
+                                                </th>
+                                            </tr></thead>
+                                        <tbody>
+                                        <tr>
+                                            <td style="padding-left: 12px;">Name</td>
+                                            <td></td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                            <td class="no-border">REG HRS</td>
+                                            <td>
+                                            <span class="top">OT</span>
+                                            <span class="bottom">DBL</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    </th>
+                                    </tr>
+                            </thead>
+                    </table>
+                </section>
+
+                <section id="ProjDirctorWrapper" class="PDSection"><!-- Start Project Director-->
+                    <div class="row DesgnationTitl">
+                        <div class="col-rp-12">
+                            <h2 class="table-header">PROJECT DIRECTOR / MGR.</h2>
+                            <template if:true={restrict}>
+                                <lightning-button class="copy-link" disabled readonly="readonly" label='Copy to New Row' onclick={CopyProjectManagersRow} icon-name="action:add_file"></lightning-button>
+                                <lightning-button class="add-row" disabled readonly="readonly" label='Add New Row' onclick={AddProjectManagersRow} icon-name="action:add_relationship"></lightning-button>
+                            </template>
+                            <template if:false={restrict}>
+                                    <lightning-button class="copy-link" label='Copy to New Row' onclick={CopyProjectManagersRow} icon-name="action:add_file"></lightning-button>
+                                    <lightning-button class="add-row" label='Add New Row' onclick={AddProjectManagersRow} icon-name="action:add_relationship"></lightning-button>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-rp-12">
+                            <div class="">
+                                <table class="outer">
+                                        <tbody><tr>
+                                          <td class="left-col">
+                                            <table class="table TblRes week-header PMTbl">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Designation</th>
+                                                            <th>Labor Code</th>
+                                                            <th colspan="2">Monday
+                                                            <br>
+                                                            <span>{Date_mon}</span>
+                                                            </th>
+                                                            <th colspan="2">Tuesday
+                                                            <br>
+                                                            <span>{Date_tue}</span>
+                                                            </th>
+                                                            <th colspan="2">Wednesday
+                                                            <br>
+                                                            <span>{Date_wed}</span>
+                                                            </th>
+                                                            <th colspan="2">Thursday
+                                                            <br>
+                                                            <span>{Date_thu}</span>
+                                                            </th>
+                                                            <th colspan="2">Friday
+                                                            <br>
+                                                            <span>{Date_fri}</span>
+                                                            </th>
+                                                            <th colspan="2">Saturday
+                                                            <br>
+                                                            <span>{Date_sat}</span>
+                                                            </th>
+                                                            <th colspan="2">Sunday
+                                                            <br>
+                                                            <span>{Date_sun}</span>
+                                                            </th>
+                                                            <th class="DeleteClmn"></th>
+                                                        </tr></thead>
+                                              <tbody>
+                                                    <template if:true={dailyTimesheetrecord}>
+                                                            <template for:each={ProjectManagers} for:item="projectManager">
+                                                <tr key={projectManager.Name}>
+                                                  <template if:true={restrict}>  
+                                                    <td>
+                                                        <lightning-input value={projectManager.Name} disabled readonly="readonly" class="form-control PMName" ></lightning-input>
+                                                    </td>
+                                                    <td>
+                                                            <lightning-combobox name="progress" disabled readonly="readonly" class="PMLaborCode" value={projectManager.LaborCode} placeholder="" options={LaborCode}></lightning-combobox></div>
+                                                    </td>
+                                                </template>
+                                                   <template if:false={restrict}>  
+                                                        <td>
+                                                          <lightning-input value={projectManager.Name} class="form-control PMName" ></lightning-input>
+                                                        </td>
+                                                        <td>
+                                                              <lightning-combobox name="progress" class="PMLaborCode" value={projectManager.LaborCode} placeholder="" options={LaborCode}></lightning-combobox></div>
+                                                        </td>
+                                                      </template>
+                                                <template if:true={DisableMon}>    
+                                                  <!-- <template if:true={dailyTimesheetFinalCheckbox}> -->
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={projectManager.MondayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Monday PM_Reg" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={projectManager.MondayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Monday PM_OT" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={projectManager.MondayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Monday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                          </td>
+                                                  <!-- </template> -->
+                                                </template>
+                                                <template if:false={DisableMon}>
+                                                  <!-- <template if:false={dailyTimesheetFinalCheckbox}> -->
+
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.MondayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Monday PM_Reg" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.MondayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Monday PM_OT" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.MondayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Monday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        </td>
+                                                  <!-- </template> -->
+                                                </template>
+                                                  <template if:true={DisableTue}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.TuesdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Tuesday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.TuesdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Tuesday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.TuesdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Tuesday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                </template>
+                                                <template if:false={DisableTue}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.TuesdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Tuesday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.TuesdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Tuesday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.TuesdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Tuesday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                  <template if:true={DisableWed}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.WednesdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Wednesday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal"  value={projectManager.WednesdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Wednesday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal"  value={projectManager.WednesdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Wednesday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                </template>
+                                                <template if:false={DisableWed}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.WednesdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Wednesday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal"  value={projectManager.WednesdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Wednesday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal"  value={projectManager.WednesdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Wednesday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                  <template if:true={DisableThu}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.ThursdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Thursday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.ThursdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Thursday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.ThursdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Thursday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                  </template>
+                                                  <template if:false={DisableThu}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.ThursdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Thursday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.ThursdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Thursday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.ThursdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Thursday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                      </template>
+                                                  <template if:true={DisableFri}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.FridayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Friday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.FridayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly}  class="form-control TableInput PM_Friday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.FridayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Friday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                  </template>
+                                                  <template if:false={DisableFri}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input type="decimal" value={projectManager.FridayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Friday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.FridayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly}  class="form-control TableInput PM_Friday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.FridayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Friday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                  </template>
+                                                  <template if:true={DisableSat}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.SaturdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Saturday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.SaturdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Saturday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.SaturdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Saturday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                 </template>
+                                                 <template if:false={DisableSat}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={projectManager.SaturdayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Saturday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.SaturdayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Saturday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.SaturdayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Saturday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:true={DisableSun}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.SundayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Sunday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.SundayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Sunday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={projectManager.SundayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Sunday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:false={DisableSun}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={projectManager.SundayRegHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Sunday PM_Reg" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={projectManager.SundayOTHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Sunday PM_OT" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={projectManager.SundayDBLHours} onchange={ValidatehrsPM} onkeydown={ValidateForNoOnly} class="form-control TableInput PM_Sunday PM_DBL" format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                  <td class="DeleteClmn right-col">
+                                                        <template if:true={restrict}>
+                                                            <lightning-button class="delete-icon DeletePM" title="Delete" label='' disabled="disabled" onclick={DeletePDRow} icon-name="action:delete"></lightning-button>
+                                                        </template>
+                                                        <template if:false={restrict}>
+                                                                <lightning-button class="delete-icon DeletePM" title="Delete" label=''  onclick={DeletePDRow} icon-name="action:delete"></lightning-button>
+
+                                                        </template>
+
+                                                     </td>
+                                              </tr>
+                                            </template>
+                                            </template>
+                                            </tbody>
+                                            </table>
+                                          </td>
+                                          </tr>
+                                      </tbody></table>
+                            </div>
+                        </div>
+                    </div>
+                </section> <!-- END Project Director-->
+
+                <section id="SupervisorWrapper" class="PDSection"><!-- Start SUPERVISORS-->
+                    <div class="row DesgnationTitl">
+                        <div class="col-rp-12">
+                            <h2 class="table-header">SUPERVISORS</h2>
+                            <template if:true={restrict}>
+                                <lightning-button class="copy-link" disabled readonly="readonly" label='Copy to New Row' onclick={CopySuperVisorRow} icon-name="action:add_file"></lightning-button>
+                                <lightning-button class="add-row" disabled readonly="readonly" label='Add New Row' onclick={AddSuperVisorRow} icon-name="action:add_relationship"></lightning-button>
+                            </template>
+                            <template if:false={restrict}>
+                                <lightning-button class="copy-link" label='Copy to New Row' onclick={CopySuperVisorRow} icon-name="action:add_file"></lightning-button>
+                                <lightning-button class="add-row" label='Add New Row' onclick={AddSuperVisorRow} icon-name="action:add_relationship"></lightning-button>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-rp-12">
+                            <div class="">
+                                <table class="outer">
+                                        <tbody><tr>
+                                          <td class="left-col">
+                                            <table class="table TblRes week-header SupTbl">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Designation</th>
+                                                            <th>Labor Code</th>
+                                                            <th colspan="2">Monday
+                                                            <br>
+                                                            <span>{Date_mon}</span>
+                                                            </th>
+                                                            <th colspan="2">Tuesday
+                                                            <br>
+                                                            <span>{Date_tue}</span>
+                                                            </th>
+                                                            <th colspan="2">Wednesday
+                                                            <br>
+                                                            <span>{Date_wed}</span>
+                                                            </th>
+                                                            <th colspan="2">Thursday
+                                                            <br>
+                                                            <span>{Date_thu}</span>
+                                                            </th>
+                                                            <th colspan="2">Friday
+                                                            <br>
+                                                            <span>{Date_fri}</span>
+                                                            </th>
+                                                            <th colspan="2">Saturday
+                                                            <br>
+                                                            <span>{Date_sat}</span>
+                                                            </th>
+                                                            <th colspan="2">Sunday
+                                                            <br>
+                                                            <span>{Date_sun}</span>
+                                                            </th>
+                                                            <th class="DeleteClmn"></th>
+                                                        </tr></thead>
+                                              <tbody>
+                                                    <template if:true={dailyTimesheetrecord} >
+                                                            <template for:each={Supervisors} for:item="Supervisor">
+                                                <tr key={Supervisor.Name}>
+                                                  <template if:true={restrict}>
+                                                  <td class="PWTd">
+                                                    <span class="DesignLft"><lightning-input disabled readonly="readonly" value={Supervisor.Name} class="form-control SupName" ></lightning-input></span>
+                                                    <span class="PwRit"><lightning-input disabled readonly="readonly" type="checkbox" label="PW" class="SupPw" name="ChkPw" checked={Supervisor.PW} onchange={GetOverTotal} ></lightning-input></span>
+                                                  </td>
+                                                  <td>
+                                                        <lightning-combobox name="progress" disabled readonly="readonly" value={Supervisor.LaborCode}  placeholder="" options={LaborCode} class="SupLabourCode" ></lightning-combobox></div>
+                                                  </td>
+                                                 </template>
+                                                 <template if:false={restrict}>
+                                                        <td class="PWTd">
+                                                          <span class="DesignLft"><lightning-input value={Supervisor.Name} class="form-control SupName" ></lightning-input></span>
+                                                          <span class="PwRit"><lightning-input type="checkbox" label="PW" class="SupPw" name="ChkPw" checked={Supervisor.PW} onchange={GetOverTotal} ></lightning-input></span>
+                                                        </td>
+                                                        <td>
+                                                              <lightning-combobox name="progress" value={Supervisor.LaborCode}  placeholder="" options={LaborCode} class="SupLabourCode" ></lightning-combobox></div>
+                                                        </td>
+                                                       
+                                                    </template>
+                                                    <template if:true={DisableMon}>
+                                                  <!-- <template if:true={dailyTimesheetFinalCheckbox}> -->
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={Supervisor.MondayRegHours} class="form-control TableInput Sup_Monday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={Supervisor.MondayOTHours} class="form-control TableInput Sup_Monday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={Supervisor.MondayDBLHours} class="form-control TableInput Sup_Monday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly}  maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                  </template>
+                                                  <template if:false={DisableMon}>
+                                                  <!-- <template if:false={dailyTimesheetFinalCheckbox}> -->
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.MondayRegHours} class="form-control TableInput Sup_Monday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.MondayOTHours} class="form-control TableInput Sup_Monday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.MondayDBLHours} class="form-control TableInput Sup_Monday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly}  maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                      </template>
+                                                  <template if:true={DisableTue}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.TuesdayRegHours} class="form-control TableInput Sup_Tuesday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly}  maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.TuesdayOTHours} class="form-control TableInput Sup_Tuesday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.TuesdayDBLHours} class="form-control TableInput Sup_Tuesday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                </template>
+                                                <template if:false={DisableTue}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.TuesdayRegHours} class="form-control TableInput Sup_Tuesday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly}  maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.TuesdayOTHours} class="form-control TableInput Sup_Tuesday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.TuesdayDBLHours} class="form-control TableInput Sup_Tuesday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:true={DisableWed}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.WednesdayRegHours} class="form-control TableInput Sup_Wednesday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.WednesdayOTHours} class="form-control TableInput Sup_Wednesday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.WednesdayDBLHours} class="form-control TableInput Sup_Wednesday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                </template>
+                                                <template if:false={DisableWed}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.WednesdayRegHours} class="form-control TableInput Sup_Wednesday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.WednesdayOTHours} class="form-control TableInput Sup_Wednesday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.WednesdayDBLHours} class="form-control TableInput Sup_Wednesday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:true={DisableThu}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.ThursdayRegHours} class="form-control TableInput Sup_Thursday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.ThursdayOTHours} class="form-control TableInput Sup_Thursday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.ThursdayDBLHours} class="form-control TableInput Sup_Thursday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:false={DisableThu}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.ThursdayRegHours} class="form-control TableInput Sup_Thursday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.ThursdayOTHours} class="form-control TableInput Sup_Thursday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.ThursdayDBLHours} class="form-control TableInput Sup_Thursday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:true={DisableFri}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.FridayRegHours} class="form-control TableInput Sup_Friday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.FridayOTHours}  class="form-control TableInput Sup_Friday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.FridayDBLHours} class="form-control TableInput Sup_Friday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:false={DisableFri}>
+                                                                <td class="no-border">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.FridayRegHours} class="form-control TableInput Sup_Friday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="top">
+                                                                            <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.FridayOTHours}  class="form-control TableInput Sup_Friday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                    </span>
+                                                                    <span class="bottom">
+                                                                            <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.FridayDBLHours} class="form-control TableInput Sup_Friday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                    </span>
+                                                                </td>
+                                                            </template>
+                                                            <template if:true={DisableSat}>
+                                                                <td class="no-border">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.SaturdayRegHours} class="form-control TableInput Sup_Saturday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="top">
+                                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.SaturdayOTHours} class="form-control TableInput Sup_Saturday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                    </span>
+                                                                    <span class="bottom">
+                                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.SaturdayDBLHours} class="form-control TableInput Sup_Saturday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                    </span>
+                                                                </td>
+                                                            </template>
+                                                            <template if:false={DisableSat}>
+                                                                    <td class="no-border">
+                                                                            <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.SaturdayRegHours} class="form-control TableInput Sup_Saturday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="top">
+                                                                                <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.SaturdayOTHours} class="form-control TableInput Sup_Saturday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                        </span>
+                                                                        <span class="bottom">
+                                                                                <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.SaturdayDBLHours} class="form-control TableInput Sup_Saturday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                        </span>
+                                                                    </td>
+                                                                </template>
+                                                                <template if:true={DisableSun}>
+                                                                    <td class="no-border">
+                                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.SundayRegHours} class="form-control TableInput Sup_Sunday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="top">
+                                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.SundayOTHours} class="form-control TableInput Sup_Sunday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                        </span>
+                                                                        <span class="bottom">
+                                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={Supervisor.SundayDBLHours} class="form-control TableInput Sup_Sunday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                        </span>
+                                                                    </td>
+                                                                </template>
+                                                                <template if:false={DisableSun}>
+                                                                        <td class="no-border">
+                                                                                <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.SundayRegHours} class="form-control TableInput Sup_Sunday Sup_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="top">
+                                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.SundayOTHours} class="form-control TableInput Sup_Sunday Sup_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                            </span>
+                                                                            <span class="bottom">
+                                                                                    <div class="lwcInput"><lightning-input type="decimal" value={Supervisor.SundayDBLHours} class="form-control TableInput Sup_Sunday Sup_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} format="00.00" maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                            </span>
+                                                                        </td>
+                                                                    </template>
+                                                  <td class="DeleteClmn right-col">
+                                                     <template if:true={restrict}>
+                                                        <lightning-button class="delete-icon DeleteSup" title="Delete" label='' disabled="disabled" onclick={DeleteSUPRow} icon-name="action:delete"></lightning-button>
+                                                     </template>
+                                                     <template if:false={restrict}>
+                                                            <lightning-button class="delete-icon DeleteSup" title="Delete" label='' onclick={DeleteSUPRow} icon-name="action:delete"></lightning-button>
+                                                     </template>
+                                                    </td>
+                                              </tr>
+                                            </template></template>
+                                            </tbody>
+                                            </table>
+                                          </td>
+                                          </tr>
+                                      </tbody></table>
+                            </div>
+                        </div>
+                    </div>
+                </section> <!-- END SUPERVISORS-->
+
+                <section id="DailySupHrs"  class="DailySPh"><!-- Start Daily Supervisor Hrs-->
+                    <div class="daily-box">
+                        <table class="DilyHrsTbl">
+                            <tr><td class="left-col border0">
+                            <table class="table week-header">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th><h5 class="table-title">Daily Supervisor Hrs</h5>Monday</th>
+                                        <th>Tuesday</th>
+                                        <th>Wednesday</th>
+                                        <th>Thursday</th>
+                                        <th>Friday</th>
+                                        <th>Saturday</th>
+                                        <th>Sunday</th>
+                                    </tr>
+                                </thead>
+                               <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_MonTot} class="form-control TableInput Sup_MonTot" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_TueTot} class="form-control TableInput Sup_TueTot" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_WedTot} class="form-control TableInput Sup_WedTot" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_ThuTot} class="form-control TableInput Sup_ThuTot" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_FriTot} class="form-control TableInput Sup_FriTot" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_SatTot} class="form-control TableInput Sup_SatTot" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" value={Sup_SunTot} class="form-control TableInput Sup_SunTot" placeholder="0"></lightning-input></td>                                    
+                                </tr>
+                              </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </table>
+
+                    </div>
+                </section><!-- End Daily Supervisor Hrs-->
+
+                <section id="CrewMemberWrapper" class="CMSection"><!-- Start CREW MEMBERS-->
+                    <div class="row DesgnationTitl">
+                        <div class="col-rp-12">
+                            <h2 class="table-header">CREW MEMBERS</h2>
+                            <template if:true={restrict}>
+                                <lightning-button class="copy-link" disabled readonly="readonly" label='Copy to New Row' onclick={CopyCrewMembersRow} icon-name="action:add_file"></lightning-button>
+                                <lightning-button class="add-row" disabled readonly="readonly" label='Add New Row' onclick={AddCrewMembersRow} icon-name="action:add_relationship"></lightning-button>
+                            </template>
+                            <template if:false={restrict}>
+                                    <lightning-button class="copy-link" label='Copy All Row to New Row' onclick={CopyCrewMembersRow} icon-name="action:add_file"></lightning-button>
+                                    <lightning-button class="add-row" label='Add New Row' onclick={AddCrewMembersRow} icon-name="action:add_relationship"></lightning-button>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-rp-12">
+                            <div class="">
+                                <table class="outer">
+                                        <tbody>
+                                            <tr><td class="left-col border0">
+                                                <table class="table TblCopy">
+                                                    <template if:true={restrict}>
+                                                        <tr>
+                                                            <td><lightning-button class="CopyRow" disabled readonly="readonly" label='Copy Selected Row' onclick={CopySelectedDay} icon-name="utility:date_time"></lightning-button></td>
+                                                            <td>Copy Hours </td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="MON" class="cpyhoursMon chkCwMon" name="MonChk"></lightning-input></td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="TUE" class="cpyhoursTue chkCwTue" name="TueChk"></lightning-input></td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="WED" class="cpyhoursWed chkCwWed" name="WedChk"></lightning-input></td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="THU" class="cpyhoursThu chkCwThu" name="ThuChk"></lightning-input></td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="FRI" class="cpyhoursFri chkCwFri" name="FriChk"></lightning-input></td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="SAT" class="cpyhoursSat chkCwSat" name="SatChk"></lightning-input></td>
+                                                            <td style="padding-left: 20px;"><lightning-input type="checkbox" disabled readonly="readonly" label="SUN" class="cpyhoursSun chkCwSun" name="SunChk"></lightning-input></td>
+                                                        </tr>
+                                                    </template>
+                                                    <template if:false={restrict}>
+                                                            <tr>
+                                                                <td><lightning-button class="CopyRow" label='Copy Selected Row ' onclick={CopySelectedDay} icon-name="utility:date_time"></lightning-button></td>
+                                                                <td>Copy Hours</td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="MON" class="cpyhoursMon chkCwMon" name="MonChk"></lightning-input></td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="TUE" class="cpyhoursTue chkCwTue" name="TueChk"></lightning-input></td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="WED" class="cpyhoursWed chkCwWed" name="WedChk"></lightning-input></td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="THU" class="cpyhoursThu chkCwThu" name="ThuChk"></lightning-input></td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="FRI" class="cpyhoursFri chkCwFri" name="FriChk"></lightning-input></td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="SAT" class="cpyhoursSat chkCwSat" name="SatChk"></lightning-input></td>
+                                                                <td style="padding-left: 20px;"><lightning-input type="checkbox" label="SUN" class="cpyhoursSun chkCwSun" name="SunChk"></lightning-input></td>
+                                                            </tr>
+                                                    </template>
+                                                </table>
+                                            </td></tr>
+                                            <tr>
+                                          <td class="left-col border0">
+                                            <table class="table TblRes week-header CWTbl">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Designation</th>
+                                                            <th>Labor Code</th>
+                                                            <th colspan="2">Monday
+                                                            <br>
+                                                            <span>{Date_mon}</span>
+                                                            </th>
+                                                            <th colspan="2">Tuesday
+                                                            <br>
+                                                            <span>{Date_tue}</span>
+                                                            </th>
+                                                            <th colspan="2">Wednesday
+                                                            <br>
+                                                            <span>{Date_wed}</span>
+                                                            </th>
+                                                            <th colspan="2">Thursday
+                                                            <br>
+                                                            <span>{Date_thu}</span>
+                                                            </th>
+                                                            <th colspan="2">Friday
+                                                            <br>
+                                                            <span>{Date_fri}</span>
+                                                            </th>
+                                                            <th colspan="2">Saturday
+                                                            <br>
+                                                            <span>{Date_sat}</span>
+                                                            </th>
+                                                            <th colspan="2">Sunday
+                                                            <br>
+                                                            <span>{Date_sun}</span>
+                                                            </th>
+                                                            <th class="DeleteClmn"></th>
+                                                        </tr></thead>
+                                              <tbody>
+
+                                                    <template if:true={dailyTimesheetrecord}>
+                                                            <template for:each={CrewMembers} for:item="CrewMember">
+
+                                                <tr key={CrewMember.Name}>
+                                                  <template if:true={restrict}>
+                                                    <td class="PWTd">
+                                                        <span class="DesignLft"><lightning-input value={CrewMember.Name} disabled readonly="readonly" class="form-control CwName" ></lightning-input></span>
+                                                        <span class="PwRit"><lightning-input type="checkbox" label="PW" disabled readonly="readonly" name="ChkPw" onchange={GetOverTotal} checked={CrewMember.PW} class="CwPw" ></lightning-input></span>
+                                                    </td>
+                                                    <td>
+                                                            <lightning-combobox name="progress" disabled readonly="readonly" value={CrewMember.LaborCode} class="CwLabourCode" placeholder="" options={LaborCode} ></lightning-combobox></div>
+                                                    </td>
+                                                </template>
+                                                <template if:false={restrict}>
+                                                        <td class="PWTd">
+                                                            <span class="DesignLft"><lightning-input value={CrewMember.Name} class="form-control CwName" ></lightning-input></span>
+                                                            <span class="PwRit"><lightning-input type="checkbox" label="PW" name="ChkPw" onchange={GetOverTotal} checked={CrewMember.PW} class="CwPw" ></lightning-input></span>
+                                                        </td>
+                                                        <td>
+                                                                <lightning-combobox name="progress" value={CrewMember.LaborCode} class="CwLabourCode" placeholder="" options={LaborCode} ></lightning-combobox></div>
+                                                        </td>
+                                                    </template>
+                                                    <template if:true={DisableMon}>
+                                                  <!-- <template if:true={dailyTimesheetFinalCheckbox}> -->
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={CrewMember.MondayRegHours} class="form-control TableInput CM_Monday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly}  maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={CrewMember.MondayOTHours} class="form-control TableInput CM_Monday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input type="decimal" disabled readonly="readonly" value={CrewMember.MondayDBLHours} class="form-control TableInput CM_Monday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                    </template>
+                                                    <template if:false={DisableMon}>
+                                                    <!-- <template if:false={dailyTimesheetFinalCheckbox}> -->
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.MondayRegHours} class="form-control TableInput CM_Monday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly}  maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.MondayOTHours} class="form-control TableInput CM_Monday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.MondayDBLHours} class="form-control TableInput CM_Monday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                            </template>
+                                                  <template if:true={DisableTue}>
+                                                    <td class="no-border">
+                                                            <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.TuesdayRegHours} class="form-control TableInput CM_Tuesday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="top">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.TuesdayOTHours} class="form-control TableInput CM_Tuesday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                        <span class="bottom">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.TuesdayDBLHours} class="form-control TableInput CM_Tuesday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </span>
+                                                    </td>
+                                                </template>
+                                                <template if:false={DisableTue}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.TuesdayRegHours} class="form-control TableInput CM_Tuesday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.TuesdayOTHours} class="form-control TableInput CM_Tuesday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.TuesdayDBLHours} class="form-control TableInput CM_Tuesday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:true={DisableWed}>
+                                                        <td class="no-border">
+                                                                <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.WednesdayRegHours} class="form-control TableInput CM_Wednesday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="top">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.WednesdayOTHours} class="form-control TableInput CM_Wednesday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                            <span class="bottom">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.WednesdayDBLHours} class="form-control TableInput CM_Wednesday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </span>
+                                                        </td>
+                                                    </template>
+                                                    <template if:false={DisableWed}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.WednesdayRegHours} class="form-control TableInput CM_Wednesday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.WednesdayOTHours} class="form-control TableInput CM_Wednesday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.WednesdayDBLHours} class="form-control TableInput CM_Wednesday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:true={DisableThu}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.ThursdayRegHours} class="form-control TableInput CM_Thursday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.ThursdayOTHours} class="form-control TableInput CM_Thursday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.ThursdayDBLHours} class="form-control TableInput CM_Thursday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:false={DisableThu}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.ThursdayRegHours} class="form-control TableInput CM_Thursday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.ThursdayOTHours} class="form-control TableInput CM_Thursday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.ThursdayDBLHours} class="form-control TableInput CM_Thursday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:true={DisableFri}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.FridayRegHours} class="form-control TableInput CM_Friday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.FridayOTHours}  class="form-control TableInput CM_Friday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.FridayDBLHours} class="form-control TableInput CM_Friday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:false={DisableFri}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.FridayRegHours} class="form-control TableInput CM_Friday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.FridayOTHours}  class="form-control TableInput CM_Friday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.FridayDBLHours} class="form-control TableInput CM_Friday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:true={DisableSat}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.SaturdayRegHours} class="form-control TableInput CM_Saturday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.SaturdayOTHours} class="form-control TableInput CM_Saturday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.SaturdayDBLHours} class="form-control TableInput CM_Saturday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:false={DisableSat}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.SaturdayRegHours} class="form-control TableInput CM_Saturday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.SaturdayOTHours} class="form-control TableInput CM_Saturday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.SaturdayDBLHours} class="form-control TableInput CM_Saturday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:true={DisableSun}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.SundayRegHours} class="form-control TableInput CM_Sunday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.SundayOTHours} class="form-control TableInput CM_Sunday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input disabled readonly="readonly" type="decimal" value={CrewMember.SundayDBLHours} class="form-control TableInput CM_Sunday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                        <template if:false={DisableSun}>
+                                                            <td class="no-border">
+                                                                    <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.SundayRegHours} class="form-control TableInput CM_Sunday CM_Reg" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="top">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.SundayOTHours} class="form-control TableInput CM_Sunday CM_OT" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                                <span class="bottom">
+                                                                        <div class="lwcInput"><lightning-input type="decimal" value={CrewMember.SundayDBLHours} class="form-control TableInput CM_Sunday CM_DBL" onchange={GetDayTot}  onkeydown={ValidateForNoOnly} maxlength="5"  placeholder="00.00"></lightning-input></div>
+                                                                </span>
+                                                            </td>
+                                                        </template>
+                                                  <td class="DeleteClmn right-col">
+                                                        <template if:true={restrict}>
+                                                            <lightning-button class="delete-icon DeletePM" title="Delete" label='' disabled="disabled" onclick={DeleteCMRow} icon-name="action:delete"></lightning-button>
+                                                        </template>
+                                                        <template if:false={restrict}>
+                                                                <lightning-button class="delete-icon DeletePM" title="Delete" label='' onclick={DeleteCMRow} icon-name="action:delete"></lightning-button>
+                                                            </template>
+                                                  </td>
+                                              </tr>
+                                            </template></template>
+                                            </tbody>
+                                            </table>
+                                          </td>
+                                          </tr>
+                                      </tbody></table>
+                            </div>
+                        </div>
+                    </div>
+                </section> <!-- END CREW MEMBERS-->
+
+                <section id="DailyCMHrs" class="DailyCMh"><!-- Start Daily Crew Member Hrs-->
+                    <div class="daily-box">
+                        <table class="DilyHrsTbl">
+                            <tr><td class="left-col border0">
+                            <table class="table week-header">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th><h5 class="table-title">Daily Crew Members Hrs</h5>Monday</th>
+                                        <th>Tuesday</th>
+                                        <th>Wednesday</th>
+                                        <th>Thursday</th>
+                                        <th>Friday</th>
+                                        <th>Saturday</th>
+                                        <th>Sunday</th>
+                                    </tr>
+                                </thead>
+                               <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_MonTot" value={CM_MonTot} maxlength="5" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_TueTot" value={CM_TueTot} maxlength="5" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_WedTot" value={CM_WedTot} maxlength="5" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_ThuTot" value={CM_ThuTot} maxlength="5" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_FriTot" value={CM_FriTot} maxlength="5" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_SatTot" value={CM_SatTot} maxlength="5" placeholder="0"></lightning-input></td>
+                                    <td><lightning-input type="decimal" readonly="readonly" class="form-control TableInput CM_SunTot" value={CM_SunTot} maxlength="5" placeholder="0"></lightning-input></td>                                    
+                                </tr>
+                              </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </table>
+
+                    </div>
+                </section><!-- End Daily Crew Member Hrs-->
+
+                <section id="TotalForSup" class="OverallTotal"><!-- Start OVerall Toal for Supervisor-->
+                    <div class="row">
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={NPWReg} label="Total Supervisor Non-PW Reg" type="decimal" class="form-control OverallTotalHrs NPWReg" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={NPWOT} label="Total Supervisor Non-PW OT" type="decimal" class="form-control OverallTotalHrs NPWOT" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={NPWDBL} label="Total Supervisor Non-PW DBL" type="decimal" class="form-control OverallTotalHrs NPWDBL" placeholder="0000.00"></lightning-input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={PWReg} label="Total Supervisor PW Reg" type="decimal" class="form-control OverallTotalHrs PWReg" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={PWOT} label="Total Supervisor PW OT" type="decimal" class="form-control OverallTotalHrs PWOT" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={PWDBL} label="Total Supervisor PW DBL" type="decimal" class="form-control OverallTotalHrs PWDBL" placeholder="0000.00"></lightning-input>
+                        </div>
+                    </div>
+                </section><!-- End OVerall Toal for Supervisor-->
+
+                <section id="TotalForCW" class="OverallTotal"><!-- Start OVerall Toal for Crew Member-->
+                    <div class="row">
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={NPWRegCW} label="Total Crew Non-PW Reg" type="decimal" class="form-control OverallTotalHrs NPWRegCW" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={NPWOTCW} label="Total Crew Non-PW OT" type="decimal" class="form-control OverallTotalHrs NPWOTCW" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={NPWDBLCW} label="Total Crew Non-PW DBL" type="decimal" class="form-control OverallTotalHrs NPWDBLCW" placeholder="0000.00"></lightning-input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={PWRegCW} label="Total Crew PW Reg" type="decimal" class="form-control OverallTotalHrs PWRegCW" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={PWOTCW} label="Total Crew PW OT" type="decimal" class="form-control OverallTotalHrs PWOTCW" placeholder="0000.00"></lightning-input>
+                        </div>
+                        <div class="col-rp-3">
+                            <lightning-input readonly="readonly" value={PWDBLCW} label="Total Crew PW DBL" type="decimal" class="form-control OverallTotalHrs PWDBLCW" placeholder="0000.00"></lightning-input>
+                        </div>
+                    </div>
+                </section><!-- End OVerall Toal for Crew Member-->
+                
+                <section class="FinalComments">
+                    <template if:true={restrict}>
+                        <lightning-textarea name="comments" disabled readonly="readonly" class="Comments" value={comments}></lightning-textarea>
+                    </template>
+                    <template if:false={restrict}>
+                            <lightning-textarea name="comments"  class="Comments" value={comments}></lightning-textarea>
+                    </template>
+                </section>
+
+                <section class="FooterAction">
+                   <lightning-button label="Save" title="Save" class="BtnSave" onclick={SaveUpdatedDailyTimesheet}></lightning-button>
+                   <!-- <lightning-button label="Save as PDF" title="Save as PDF" class="BtnSave" onclick={saveAsPdf}></lightning-button> -->
+                    <lightning-button label="Cancel" title="Cancel" class="BtnCancel" onclick={Cancel} ></lightning-button>
+                    <div class="FinlChkbox" style="display: inline-block; background: #ccc; font-weight: bold; padding: 8px 20px;">
+                        <template if:true={restrict}>
+                            <template if:true={dailyTimesheetFinalCheckbox}>
+                                    <lightning-input type="checkbox" disabled readonly="readonly" checked label="Final" class=" finalcheckbox" name="chekbox1"></lightning-input>
+                                    
+                            </template>
+                            <template if:false={dailyTimesheetFinalCheckbox}>
+                                    <lightning-input type="checkbox" disabled readonly="readonly"  label="Final" class=" finalcheckbox" name="chekbox1"></lightning-input>
+                                   
+                                </template>
+                           
+                        </template>
+                        <template if:false={restrict}>
+                            <template if:true={dailyTimesheetFinalCheckbox}>
+                                    <lightning-input type="checkbox" label="Final" class=" finalcheckbox" checked name="chekbox1"></lightning-input>
+                            </template>
+                            <template if:false={dailyTimesheetFinalCheckbox}>
+                                    <lightning-input type="checkbox" label="Final" class=" finalcheckbox" name="chekbox1"></lightning-input>
+                                </template>   
+                        </template>
+                        
+                    </div>
+                    <template if:true={recordSavedMessage}>
+                        <p key={recordSavedMessage}></p>{recordSavedMessage}</p>
+                    </template>
+                </section>
+
+            </div><!---END Inner Wrapper-->
+        </div><!--- End Full Container-->
+
+        <template if:true={openmodel}>
+        <div class="SavePopup" style="height: 640px; position: absolute;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" size="medium">
+                            </lightning-icon>
+                        </button> -->
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Daily Timesheet</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <center><h2><b>{SaveComments}</b></h2>
+                        </center>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="OK" variant="neutral" onclick={closeModal}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        </template>
+
+
+    </lightning-card>
+    
+</template>

@@ -1,0 +1,215 @@
+<apex:page controller="MRListViewController" docType="html-5.0" sidebar="false" showHeader="false" standardStylesheets="false">
+
+    <apex:form id="formid">
+        <html lang="en">
+
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>MR List View</title>
+
+            <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/bootstrap.min.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/bootstrap-theme.min.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'font-awesome/css/font-awesome.min.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/style.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/datepicker.min.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.MR_CSS, 'css/datepicker3.min.css')}" />
+
+            <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/jquery.min.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap.min.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap-datepicker.min.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/bootstrap3-typeahead.min.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.MR_CSS,'js/jquery.slimscroll.min.js')}" />
+            
+            <script>
+                
+                function checkFormType(val) {
+                    FormTypeFunc(val);
+                }
+
+                function NewFormFunc() {
+
+                    NewForm();
+                }
+               
+                function ClearSearchFunc(val) 
+                {
+                    var src_val = val.value;
+                    if(src_val == '' || src_val == null)
+                    {
+                       //alert("Please enter a search text");
+                       return false;
+                    }
+                    else
+                    {
+                        ClearSearch('Recently Viewed');
+                        return false;
+                    }
+                }
+                
+                function SearchButtonFunc(val) 
+                {
+                    var src_val = (val.value).trim();
+                    if(src_val == '' || src_val == null)
+                    {
+                        //alert('Please enter a valid search text');
+                        document.getElementById('{!$Component.searchid}').value = '';
+                        return false;
+                    }
+                    else
+                    {
+                        SearchFunc();
+                        return false;
+                    }
+                }
+
+                function SearchNullCheck(val) 
+                {
+                    var SrchVal = val.value;
+                    
+                    if (SrchVal == null || SrchVal == '') {
+                        ClearSearch('Recently Viewed');
+                        return false;
+                    }
+                }
+            </script>
+
+            <style>
+                .slimScrollDiv,
+                .tbfix {
+                    height: auto !important
+                }
+            </style>
+        </head>
+
+        <body>
+            <header>
+                <div class="container">
+                    <div class="row">
+                        <div class="navbar-header col-xs-12">
+                            <a class="navbar-brand col-md-6 col-sm-6 col-xs-12" href="" title="">
+                                <apex:image url="{!URLFOR($Resource.MR_CSS,
+                  'images/logo.png')}" />
+                            </a>
+                            <h2 class="col-md-6 col-sm-6 col-xs-12 pull-right">Material Requisition Form</h2>
+                        </div>
+                    </div>
+                </div>
+            </header>
+          
+            <apex:outputPanel >
+                <apex:actionStatus id="loadingStatus" stopText="" style="align:center">
+                    <apex:facet name="start">
+                        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                            &nbsp;
+                        </div>
+                        <div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                            <div style="display: inline-block; padding: 2px; background-color: white; width: 100px; border: solid 1px skyblue;left: 50%;margin-left: -50px;top: 50%;height: 130px;margin-top: -50px;z-index: 999;position: fixed;">
+                                <img src="{!$Resource.Loading_Sign}" width="100%"/>
+                                <span style="display: inline-block; padding: 12px 0px; font-weight : bold;">Please Wait...</span>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:outputPanel>
+
+            <section class="banner">
+                <div class="container">
+                    <div class="row">
+                    
+
+                        <div class="col-md-6 col-sm-5 col-xs-12 mb10 no-padding">
+                        <div class="input-group col-md-12">
+                        <apex:input value="{!SearchText}" styleClass="form-control" id="searchid" onchange="SearchNullCheck(this);"/>
+                        <span class="input-group-btn">
+                        <apex:commandButton styleClass="btn btn-default wd-100" onclick="return SearchButtonFunc(document.getElementById('{!$Component.searchid}'))" value="Search"/>
+                        </span>
+                        </div>
+                        </div>
+                        <apex:actionFunction name="SearchFunc" action="{!SearchByMRName}"  rerender="formid"  status="loadingStatus" >
+                                <apex:param id="Searchname" name="SearchType" assignTo="{!SelectedFormType}" value="Recently Viewed"/>
+                        </apex:actionFunction>
+
+                        <div class="form-group col-md-1 col-sm-2 col-xs-5 pull-left mb10 ">
+                            <apex:commandButton styleClass="btn btn-default xs-wd-100" id="clearSearchid" value="Clear Search" onclick="return ClearSearchFunc(document.getElementById('{!$Component.searchid}'));" status="loadingStatus" reRender="formid"/>
+                                <!--<apex:param name="SelectedTypeOnClear" value="Recently Viewed" assignTo="{!SelectedFormType}" />
+                            </apex:commandButton>!-->
+                        </div>
+                         <div>
+                            <apex:actionFunction name="ClearSearch" action="{!LoadMR}" status="loadingStatus" rerender="formid">
+                                <apex:param name="SelectedTypeOnClear" value="Recently Viewed" assignTo="{!SelectedFormType}" />
+                            </apex:actionFunction>
+                        </div>
+
+                        <div class="form-group col-md-2 col-sm-3 col-xs-7 pull-right no-padding">
+                            <button type="button" class="btn btn-default wd-100" onclick="NewFormFunc();">New Requisition Form</button>
+                            <apex:actionFunction name="NewForm" action="{!NewMR}" />
+                        </div>
+                       <div class="form-group col-md-2 col-sm-2 col-xs-12 pull-right mb10">
+                            <apex:selectList styleClass="form-control" onchange="checkFormType(this.value); return false;" id="selectid" value="{!SelectedFormType}" multiselect="false" size="1">
+                            <apex:selectOptions value="{!SelectFormType}"/>
+                            </apex:selectList>
+                            <apex:actionFunction name="FormTypeFunc" action="{!LoadMR}" reRender="formid" status="loadingStatus">
+                                <apex:param id="formname" name="type" assignTo="{!SelectedFormType}" value="{!SelectedFormType}" />
+                            </apex:actionFunction>
+                        </div>
+                        
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div class="clearfix"> </div>
+            <section class="form">
+                <div class="container white-bg-cl pd-tb ">
+                    <h4>{!ListLabel}</h4>
+
+                    <hr></hr>
+
+                    <apex:outputpanel id="outputpanel" rendered="{!IF(MRList.size > 0,true,false)}">
+                        <table class="table table-list-view">
+                            <thead>
+                                <tr>
+                                    <th>Material Requisition Name</th>
+                                    <th>Status</th>
+                                    <th>Created By</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbfix">
+                                <apex:repeat value="{!MRList}" var="mr_list" id="mr_lst">
+                                    <tr>
+                                      <td><apex:commandLink rerender="formid" status="loadingStatus" action="{!MRLink}">{!mr_list.Name}
+                                      <apex:param name="MRLink" value="{!mr_list.id}" assignTo="{!MRLinkId}"/>
+                                      </apex:commandLink></td>
+                                        <td>{!mr_list.Status__c}</td>
+                                        <td>{!mr_list.createdby.FirstName} {!mr_list.createdby.LastName}</td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </apex:outputpanel>
+                    <div class="float-center">
+                    <!--<apex:commandButton styleClass="btn btn-dark" id="FirstPage" disabled="{!DisablePrevious}" action="{!beginning}" status="loadingStatus" reRender="formid" value="<<" rendered="{!IF(MRList.size > 0,true,false)}"/>
+                     <apex:commandButton styleClass="btn btn-dark" id="PreviousPage" disabled="{!DisablePrevious}" action="{!previous}" status="loadingStatus" reRender="formid" value="Previous" rendered="{!IF(MRList.size > 0,true,false)}"/>
+                     <apex:commandButton styleClass="btn btn-dark" id="NextPage" disabled="{!DisableNext}" action="{!next}" value="Next" status="loadingStatus" reRender="formid" rendered="{!IF(MRList.size > 0,true,false)}"/>
+                     <apex:commandButton styleClass="btn btn-dark" id="LastPage" disabled="{!DisableNext}" action="{!last}" value=">>" status="loadingStatus" reRender="formid" rendered="{!IF(MRList.size > 0,true,false)}"/>-->
+                     <!-----Displays the Paging buttons only if records are more than 5 ------>
+                     <apex:commandButton styleClass="btn btn-dark" id="FirstPage" disabled="{!DisablePrevious}" action="{!beginning}" status="loadingStatus" reRender="formid" value="<<" rendered="{!IF(totalSize > 5,true,false)}"/>
+                     <apex:commandButton styleClass="btn btn-dark" id="PreviousPage" disabled="{!DisablePrevious}" action="{!previous}" status="loadingStatus" reRender="formid" value="Previous" rendered="{!IF(totalSize > 5,true,false)}"/>
+                     <apex:commandButton styleClass="btn btn-dark" id="NextPage" disabled="{!DisableNext}" action="{!next}" value="Next" status="loadingStatus" reRender="formid" rendered="{!IF(totalSize > 5,true,false)}"/>
+                     <apex:commandButton styleClass="btn btn-dark" id="LastPage" disabled="{!DisableNext}" action="{!last}" value=">>" status="loadingStatus" reRender="formid" rendered="{!IF(totalSize > 5,true,false)}"/>
+                   </div>
+                </div>
+                
+            </section>
+                
+
+            
+
+        </body>
+
+        </html>
+    </apex:form>
+</apex:page>

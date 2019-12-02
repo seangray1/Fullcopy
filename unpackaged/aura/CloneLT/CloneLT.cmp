@@ -1,0 +1,17 @@
+<aura:component controller="ClonesObject" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" >
+	<aura:attribute name="returnMsg" type="String" />
+    <aura:attribute name="recordId" type="String"/>
+    
+    <ui:message title="Confirmation" severity="Confirm">
+      Are you sure you want to clone this record?
+  	</ui:message>
+    <ui:button aura:id="button" label="Confirm" press="{!c.doInit}" disabled="false"/>
+    
+    <aura:if isTrue="{!v.hasErrors}">
+        <div class="recordSaveError">
+            <ui:message title="Error" severity="error" closable="true">
+                {!$Label.c.LT_ErrorOnPage}
+            </ui:message>
+        </div>
+    </aura:if>
+</aura:component>

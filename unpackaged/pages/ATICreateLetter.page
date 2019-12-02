@@ -1,0 +1,101 @@
+<!-- 
+*****************************************************************************
+* Description: VisualForce page used to create a new letter. 
+*              Uses the ATICreateWAiverOrLetterController.cls Extension
+* Author      : Eric Schrage (Perficient)
+* Date        : 08/04/2015
+* Version     : 1.0
+*
+* Version History:
+*
+*****************************************************************************
+-->
+         
+<apex:page standardController="Waiver__c" extensions="ATICreateWaiverOrLetterController">
+    <style type="text/css">
+        textarea {
+            width: 300px;
+            height: 60px;
+        }
+    </style>
+    <div class="bPageTitle">
+        <div class="ptBody">
+            <div class="content">
+                <img src="/s.gif" alt="Waiver" class="pageTitleIcon" title="Waiver"/>
+                <h1 class="pageType">Waiver and Letters<span class="titleSeparatingColon">:</span></h1>
+                <h2 class="pageDescription">New Letter</h2>
+            </div>
+        </div>
+    </div>
+   
+    <apex:form >
+        <apex:pageBlock title="{!$Label.ATI_LBL_Letter_Section}" mode="edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+
+        
+            
+            
+            <apex:actionRegion >
+            <apex:pageBlockSection title="{!$Label.ATI_LBL_Letter_Type}" columns="1">
+                <apex:inputField value="{!Waiver__c.Waiver_Or_Letter_Type__c}" required="true" styleClass="waiverOrLetterPicklist" label="{!$Label.ATI_LBL_Letter_Field}" >
+                <apex:actionSupport event="onchange" action="{!checkLetterType}" rerender="letterFields"/>
+                </apex:inputField>
+            </apex:pageBlockSection>
+            </apex:actionRegion>
+            <apex:pageBlockSection title="{!$Label.ATI_LBL_Letter_Job_Section}" columns="1">
+             <!-- <apex:outputField value="{!Waiver__c.Job__c}"/> -->
+   
+                 <apex:outputField value="{!Waiver__c.ATI_Job__c}"/>
+            </apex:pageBlockSection>
+            <apex:actionRegion >
+            <apex:pageBlockSection columns="1">
+                <apex:inputField value="{!Waiver__c.Invoice__c}" required="true">
+                <apex:actionSupport event="onchange" action="{!invoiceChanged}" rerender="letterFields"/>
+                </apex:inputField>
+            </apex:pageBlockSection>
+            </apex:actionRegion>
+            <apex:pageBlockSection title="{!$Label.ATI_LBL_Letter_Details_Section}" columns="1"  id="letterFields">
+                <apex:inputField value="{!Waiver__c.Waiver_Owner__c}" required="true"/>
+                <apex:inputField value="{!Waiver__c.Bill_To_Attention__c}" />
+                <apex:inputField value="{!Waiver__c.Care_Of__c}" />
+                <apex:inputField value="{!Waiver__c.Care_Of_Address__c}" />
+                <apex:inputField value="{!Waiver__c.Billing_Address__c}" required="true"/>
+                <apex:inputField value="{!Waiver__c.Balance_Owing_Amt__c}" required="true"/>
+                <apex:inputField value="{!Waiver__c.Payment_Due_Date__c}" required="true" rendered="{!renderLetterFields}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.ATI_LBL_Letter_Signature_Section}" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.ATI_LBL_Letter_Signature_Name}" /><apex:outputText value="{!$User.FirstName + ' ' + $User.LastName}" id="userName"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.ATI_LBL_Letter_Signature_Title}" /><apex:outputText value="{!$User.Title}" id="userTitle"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$Label.ATI_LBL_Letter_Signature_Email}" /><apex:outputText value="{!$User.Email}" id="userEmail"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+    </apex:form>
+    
+    <apex:includeScript value="{!URLFOR($Resource.jquery)}" />
+    <script>
+    /* This script filters out the options that are not letters*/
+    
+        $(document).ready(function() {
+            var letterOptions = $('select.waiverOrLetterPicklist option');
+            
+            letterOptions.each(function( index ) {
+                if ($(this).text().toLowerCase().indexOf('{!$Label.ATI_LBL_Letter_Type_Keyword_Lowercase}')<0 && $(this).text().toLowerCase()!='--none--') {
+                    $( this ).remove();
+                    //console.log( index + ": " + $( this ).text() );
+                }
+              
+            });
+        });
+
+    </script>
+</apex:page>

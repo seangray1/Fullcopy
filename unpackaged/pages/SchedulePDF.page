@@ -1,0 +1,117 @@
+<apex:page id="SchedulePDF" standardController="Schedule__c" extensions="SchedulePDFController" renderAs="pdf" showHeader="false" cache="false">
+        
+      <head>
+          <style type="text/css" media="print">
+          div.header {
+                       padding: 10px;
+                       position: running(header);
+                    }
+         div.footer {
+                      display: block;
+                      padding: 5px;
+                      position: running(footer);
+                    }
+          </style>
+      </head>  
+        <apex:stylesheet value="{!$Resource.BudgetPDF}"/> 
+
+
+        <apex:define name="body">
+        
+        
+          <table align='center'>
+              <tr>
+                  <td style="text-align:center;"> <strong>Schedule</strong></td>
+              </tr>
+          </table>
+
+            <table>
+                     
+           <!-- This is the Reference number where I could put the Schedule details as well -->    
+                <tr>
+                    <td colspan="1">
+                    <table cellpadding="10" style="width:10.5in;">
+                      <tr>      
+                           <td> <!-- Modified for Opportunity to Job Redesign -->
+                                <strong>Job:</strong>&nbsp;<apex:outputText value="{!Schedule__c.ATI_Job__r.name}"/>
+                           </td>
+                           <td>
+                                <strong>Project Director:</strong>&nbsp;<apex:outputText value="{!Schedule__c.Project_Director__c}" escape="false"/>
+                           </td>
+                       </tr>
+                       <tr>      
+                           <td>
+                                <strong>Project Site Adress:</strong>&nbsp;<apex:outputText value="{!Schedule__c.Project_Site_Address__c}" escape="false"/>
+                           </td>
+                           <td>
+                                <strong>Project Manager:</strong>&nbsp;<apex:outputText value="{!Schedule__c.Project_Manager__c}" escape="false"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>
+                               <strong>Date:</strong>&nbsp;<apex:outputText value="{0, date, EEE, MMMM d, yyyy}">
+                                <apex:param value="{!Schedule__c.Createddate}"/>
+                                </apex:outputText>
+                           </td>
+                       </tr>
+                   </table>
+                   </td>
+                </tr>
+                
+                <div align='center'>The below projected schedule is based upon the scope of work, access, and various trades</div>
+                <br/>
+                
+       <!-- This is where  I should start the table with the method call -->      
+                
+                <tr>
+                    <td colspan="14" style="text-align:center;">
+                        <table border="1" style="width:10.5in; border-collapse : collapse;">
+                            <tr>
+                                <th>Products</th>
+                                <th>Start Date</th>
+                                <th>Completion Date</th>
+
+                            </tr>                <!-- this was header information of each column -->
+                            
+                            
+                            
+                            <apex:repeat value="{!lineItems}" var="li">
+                                <tr>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <apex:outputField value="{!li.Products__c}"/>
+                                    </td>
+                                    <td style="text-align:center; vertical-align:top;">
+                                        <apex:outputField value="{!li.Start_Date__c}"/>
+                                    </td>
+                                    <td style="text-align:center; vertical-align:top;">
+                                        <apex:outputField value="{!li.Completion_Date__c}"/>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                            
+                            <tr>
+                                <td style="text-align:left; vertical-align:top;">
+                                    <strong>Final Completion Date</strong>
+                                </td>
+                                <td style="text-align:center; vertical-align:top;">
+                                    <apex:outputField value="{!Schedule__c.Final_Completion_Date__c}"/>
+                                </td>
+                                <th></th>
+                            </tr>
+             
+                        </table>
+                        
+     
+                    </td>
+                </tr>
+                
+            </table>
+          
+          <br/>
+          
+          <div><Strong>Disclaimer: </Strong>The above projected schedule is subject to change</div>
+          
+        </apex:define>    
+ 
+
+</apex:page>

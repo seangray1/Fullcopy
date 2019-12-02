@@ -1,0 +1,5 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <p style="width:100%; font-size:20px; text-align:center;margin: 45px 0 20px 0;"> Will the cloned job be related to this existing job ?</p><br/>
+    <div style="width:100%; text-align:center;"><button style="padding: 3px 40px;margin-right: 20px;" class="slds-button slds-button_brand" onclick="{!c.gotoCloneATILT}">Yes</button>
+    <button style="padding: 3px 40px;" class="slds-button slds-button_neutral" onclick="{!c.gotoCloneLT}">No</button></div>
+</aura:component>

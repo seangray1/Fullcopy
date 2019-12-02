@@ -1,0 +1,918 @@
+<apex:page id="root" controller="ResourceSchedulerController" cache="false">
+    <apex:form id="f">
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+        <script type="text/javascript">
+        
+            // Remove any VF conflics on the $ symbol
+            var $j = jQuery.noConflict();
+            
+        </script>
+        
+        <style type="text/css">
+            
+            .wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .sizer {
+                padding: 0;
+                margin: 0;
+                border: 0;
+            }
+            
+            /* Style to remove borders and stuff */
+            .layout-only {
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            
+            /******************************************************************
+             * ALLOW FOR TABLE-LIKE ARRANGEMENTS OF DIVS
+             */
+            .layout-grid,
+            .layout-grid-row,
+            .layout-grid-cell {
+                padding: 0;
+                margin: 0;
+                border-spacing: 0;
+                box-sizing: content-box;
+                -moz-box-sizing: content-box;
+            }
+            
+            .layout-grid {
+                display: table;
+            }
+            
+            .layout-grid-row {
+                display: table-row;
+            }
+            
+            .layout-grid-cell {
+                display: table-cell;
+                vertical-align: top;
+            }
+            
+            
+            
+            /******************************************************************
+             * ALLOW FOR TABLE-LIKE DISPLAYS
+             */
+            
+            /* Draw the headers nicely */
+            .data-grid-cell.header {
+                
+                /* Make sure that headers align */
+                height: 32px;
+                vertical-align: bottom;
+                
+                /* Stock SFDC table headers */
+                background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x scroll 0 bottom #FFFFFF;
+                color: #000000;
+                font-size: 0.9em;
+                font-weight: bold;
+                padding: 5px 2px 4px 5px;
+            }
+            
+            /* The basics get the data grid to work like a table */
+            .data-grid,
+            .data-grid-row,
+            .data-grid-cell {
+                border-spacing:0;
+                box-sizing: content-box;
+                -moz-box-sizing: content-box;
+            }
+            
+            .data-grid {
+                display: table;
+            }
+            
+            .data-grid-row {
+                display: table-row;
+            }
+            
+            .data-grid-cell {
+                display: table-cell;
+                padding: 3px;
+            }
+            
+            /* Draw borders around the far left and far right */
+            .data-grid-cell:first-child {
+                border-left: 1px solid #555;
+            }
+            
+            .data-grid-cell:last-child {
+                border-right: 1px solid #555;
+            }
+            
+            /* Draw borders between rows */
+            .data-grid-row .data-grid-cell {
+                border-bottom: 1px solid #555;
+            }
+            
+            .data-grid-row:first-child .data-grid-cell {
+                border-top: 1px solid #555;
+            }
+            
+            
+            
+            
+            /******************************************************************
+             * SIDE-SPECIFIC STYLES
+             */
+            .resources-wrapper {
+                overflow: auto;
+                max-width: 300px;
+                border-left: 1px solid #000;
+            }
+            
+            .resources-wrapper .data-grid-cell {
+                vertical-align: middle;
+                white-space: nowrap;
+            }
+            
+            .resources-wrapper .data-grid-cell.header {
+                vertical-align: bottom;
+            }
+            
+            .bookings-wrapper {
+                overflow: auto;
+                border-left: 2px solid #000;
+                border-right: 1px solid #000;
+            }
+            
+            
+            
+            
+            
+            
+            /******************************************************************
+             * LAYOUT BOOKINGS AND RESOURCE ROWS
+             */
+            .booking-wrapper {
+                position: relative;
+            }
+            
+            .booking-bar {
+                position: absolute;
+                border-radius: 3px;
+                background: #C7EDF2;
+                border: 1px solid #AAA;
+                text-align: center;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                padding: 0 4px;
+                cursor: pointer;
+                box-shadow: inset 0px 2px 5px 0px #FFF;
+                -webkit-box-shadow: inset 0px 2px 5px 0px #FFF;
+            }
+            
+            .booking-bar:hover {
+                text-decoration: underline;
+                border-color: #333;
+            }
+            
+            .booking-bar div {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-wrap: none;
+            }
+            
+            .datePicker {
+                z-index: 1200;
+                margin-top: -100px;
+            }
+            
+            /* Describe the different overlapping modes.  The first number refers
+             * to the number of overlapping bars (0 means 1 bar is displayed, 1
+             * means two bars are displayed, etc) and the second number refers to
+             * which of the overlapping bars is being drawn (starting at 0) */
+            .booking-bar.ol-0-0 { top: 0px; height:48px; padding-top:15px; }
+            .booking-bar.ol-1-0 { top: 0px; height:24px; padding-top: 2px; }
+            .booking-bar.ol-1-1 { top:24px; height:24px; padding-top: 2px; }
+            .booking-bar.ol-2-0 { top: 0px; height:16px; padding-top: 0px; font-size:0.9em; }
+            .booking-bar.ol-2-1 { top:16px; height:16px; padding-top: 0px; font-size:0.9em; }
+            .booking-bar.ol-2-2 { top:32px; height:16px; padding-top: 0px; font-size:0.9em; }
+            
+            .resource-row .data-grid-cell,
+            .booking-row .data-grid-cell {
+                height: 58px;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                overflow: hidden;
+            }
+            
+            /******************************************************************
+             * CLEARFIX STYLES
+             */
+            /* For modern browsers */
+            .cf:before,
+            .cf:after {
+                content:"";
+                display:table;
+            }
+    
+            .cf:after {
+                clear:both;
+            }
+    
+            /* For IE 6/7 (trigger hasLayout) */
+            .cf {
+                *zoom:1;
+            }
+            
+            
+            /******************************************************************
+             * DATE HEADER STYLES
+             */
+            .date-header-container {
+                height: 27px;
+                white-space: nowrap;
+                vertical-align: bottom;
+                position: relative;
+            }
+            
+
+            
+            .month-header {
+                position: absolute;
+                top: 0;
+                /*margin-left: 5px; Needs to match div.td.header padding-left */
+                padding-top: 3px;
+                padding-left: 14px;
+                border-left: 1px dashed #666;
+                height: 100%;
+            }
+            
+            /******************************************************************
+             * MODULAR POP-UP WINDOWS
+             */
+            .page-mask {
+                height: 100%;
+                width: 100%;
+                background: #fff;
+                opacity: 0.65;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1000;
+            }
+            
+            .popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                background: #EDEEF5;
+                opacity: 1;
+                border: 1px solid #FFF;
+                border-radius: 5px;
+                -webkit-box-shadow: 0px 0px 7px rgba(50, 50, 50, 0.75);
+                -moz-box-shadow:    0px 0px 7px rgba(50, 50, 50, 0.75);
+                box-shadow:         0px 0px 7px rgba(50, 50, 50, 0.75);
+                z-index: 1100;
+            }
+            
+            
+            .popup.booking-record {
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                width: 450px;
+                margin-left: -225px;
+                margin-top: -250px;
+                padding: 10px;
+                padding-bottom: 40px;
+            }
+            
+            .button-panel {
+                width: 100%;
+                text-align: center;
+                position: absolute;
+                bottom: -29px;
+            }
+            
+            
+            
+            /** FORM TABLE */
+            .form-wrapper {
+                margin: 0;
+                padding: 0;
+                display: table;
+            }
+            
+            .form-field {
+                display: table-row;
+            }
+            
+            .requiredInput > .requiredBlock {
+                float:left;
+            }
+            
+            .requiredInput > span {
+                float:left;
+            }
+            
+            .form-field-label {
+                vertical-align: top;
+                text-align: right;
+                font-weight: bold;
+                padding: 4px;
+                display: table-cell;
+                padding-top: 6px;
+                min-width: 120px;
+            }
+            
+            .form-field-input {
+                vertical-align: top;
+                padding: 4px;
+                display: table-cell;
+            }
+            
+            .form-field-input textarea {
+                height: 105px;
+                width: 280px;
+            }
+            
+            .loading-animation {
+                text-align: center;
+                font-size: 1.4em;
+            }
+        
+        </style>
+        <apex:messages />
+        <apex:outputPanel id="popupWrapperEditBooking" layout="block" styleClass="popup-wrapper" style="display:none;">
+            <apex:outputPanel id="popupCurtainEditBooking" layout="block" styleClass="page-mask" onClick="return popupBookingEditCancel();">
+            </apex:outputPanel>
+            <apex:outputPanel id="popupWindowEditBooking" layout="block" styleClass="popup booking-record">
+                <apex:outputPanel id="editBookingLoading" layout="block" styleClass="loading-animation">
+                    LOADING
+                </apex:outputPanel>
+                <apex:outputPanel id="editBookingForm" layout="block" styleClass="wrapper" >
+                    <apex:messages styleClass="errorMsg errorStyle"/>
+         <!--           <input id="editBookingStatus" type="hidden" value="{!EditBookingForm.status}" />-->
+                    <apex:outputPanel id="editBookingButtons" layout="block" styleClass="button-panel" >
+                      <!--  <button id="editBookingSave" class="btn" onClick="return popupBookingEditSave();" style="{!IF(NOT(EditBookingForm.IsEditable), 'display:None', '')}">Save</button>
+                        <button id="editBookingDelete" class="btn" onClick="return popupBookingEditDelete();" style="{!IF(OR(NOT(EditBookingForm.IsEditable),ISBLANK(EditBookingForm.record.Id)), 'display:none', '')}" >Delete</button>
+                        <button id="editBookingCancel" class="btn" onClick="return popupBookingEditCancel();" >{!IF(NOT(EditBookingForm.IsEditable), 'Close', 'Cancel')}</button>-->
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="form-wrapper" >
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Job_Resource__c.Fields.Resource_Name__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input cf">
+                             <!--   <apex:inputField value="{!EditBookingForm.record.Resource_Name__c}" />-->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                     <!--   <apex:outputPanel layout="block" styleClass="form-field" rendered="{!NOT(ISBLANK(EditBookingForm.record.Resource_Name__c))}">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                &nbsp;
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                                <a href="/{!EditBookingForm.record.Resource_Name__c}" target="_BLANK">View Resource Detail Page</a>
+                            </apex:outputPanel>
+                        </apex:outputPanel>-->
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input cf">
+                            
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                     <!--   <apex:outputPanel layout="block" styleClass="form-field" >
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                &nbsp;
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                             
+                            </apex:outputPanel>
+                        </apex:outputPanel>-->
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Job_Resource__c.Fields.Start_Date__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input cf">
+                             <!--   <apex:inputField value="{!EditBookingForm.record.Start_Date__c}" />-->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Job_Resource__c.Fields.End_Date__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input cf">
+                            <!--    <apex:inputField value="{!EditBookingForm.record.End_Date__c}" /> -->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <!-- 
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Job_Resource__c.Fields.Resource_Type__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input cf">
+                                <apex:inputField value="{!EditBookingForm.record.Resource_Type__c}" />
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        -->
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Job_Resource__c.Fields.Notes__c.label}" /><br/>
+                                <button class="btn" onClick="return timeStamp($j('[id$=editBookingNotes]'));">Stamp</button>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                              <!--  <apex:inputField id="editBookingNotes" value="{!EditBookingForm.record.Notes__c}" /> -->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                     <!--   <apex:outputPanel layout="block" styleClass="form-field" >
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                &nbsp;
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                             <!--   <a href="/apex/PrintableWorkOrder?id={!EditBookingForm.record.Id}" target="_BLANK">Printable Work Order</a>
+                            </apex:outputPanel>
+                        </apex:outputPanel>-->
+                    </apex:outputPanel>
+                    
+                    
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        <apex:outputPanel id="popupWrapperFilter" layout="block" styleClass="popup-wrapper" style="display:none;">
+            <apex:outputPanel id="popupCurtainFilter" layout="block" styleClass="page-mask" onClick="return popupFilterCancel();">
+            </apex:outputPanel>
+            <apex:outputPanel id="popupWindowFilter" layout="block" styleClass="popup booking-record">
+                <apex:outputPanel id="filterForm" layout="block" styleClass="wrapper" >
+                    <apex:outputPanel id="filterButtons" layout="block" styleClass="button-panel" >
+                    <!--    <apex:commandButton id="filterSave" styleClass="btn" action="{!FilterForm.filterRefresh}" value="Update Filter" />-->
+                        <button id="filterCancel" class="btn" onClick="return popupFilterCancel();" >Cancel</button>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="form-wrapper">
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Scheduler_Filter_Form__c.Fields.Resource_Name__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                            <!--    <apex:inputField value="{!FilterForm.data.Resource_Name__c}" /> -->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                &nbsp;
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                                <em>Filters resources whose first or last name fully or partially match</em>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Scheduler_Filter_Form__c.Fields.Division__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                            <!--    <apex:inputField value="{!FilterForm.data.Division__c}" />-->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Scheduler_Filter_Form__c.Fields.OfficePicklist__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                           <!--     <apex:inputField value="{!FilterForm.data.OfficePicklist__c}" />-->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                &nbsp;
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                                <em>Both Department and Location filters can take multiple values, separated by commas</em>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Scheduler_Filter_Form__c.Fields.Start_Date__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                             <!--   <apex:inputField value="{!FilterForm.data.Start_Date__c}" />-->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="form-field">
+                            <apex:outputPanel layout="block" styleClass="form-field-label">
+                                <apex:outputLabel value="{!$ObjectType.Scheduler_Filter_Form__c.Fields.End_Date__c.label}" />
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" styleClass="form-field-input">
+                              <!--  <apex:inputField value="{!FilterForm.data.End_Date__c}" />-->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        
+        
+        
+        <apex:outputPanel id="SchedulerWrapper" layout="block" >
+            <apex:outputPanel id="SchedulerOptions" layout="block" >
+            </apex:outputPanel>
+            <apex:outputPanel id="SchedulerUI" layout="block" >
+             <!--   <apex:outputPanel layout="block" style="margin:1.1em;">
+                    <strong>Current Filter (<a href="javascript:void(0);" onClick="popupFilter();">Details/Update</a>)</strong><br/>
+                    Date Range:&nbsp;<apex:outputField value="{!FilterForm.data.Start_Date__c}" />&nbsp;thru&nbsp;<apex:outputField value="{!FilterForm.data.End_Date__c}" /><br/>
+                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(FilterForm.data.Resource_Name__c))}">
+                        Name:&nbsp;<apex:outputField value="{!FilterForm.data.Resource_Name__c}" /><br/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(FilterForm.data.OfficePicklist__c))}">
+                        {!$ObjectType.Scheduler_Filter_Form__c.Fields.OfficePicklist__c.label}:&nbsp;<apex:outputField value="{!FilterForm.data.OfficePicklist__c}" /><br/>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(FilterForm.data.Division__c))}">
+                        {!$ObjectType.Scheduler_Filter_Form__c.Fields.Division__c.label}:&nbsp;<apex:outputField value="{!FilterForm.data.Division__c}" /><br/>
+                    </apex:outputPanel>
+                </apex:outputPanel>-->
+                <apex:outputPanel layout="block" styleClass="layout-grid" >
+                    <apex:outputPanel layout="block" styleClass="layout-grid-row">
+                        <apex:outputPanel id="ResourcesWrapper" layout="block" styleClass="layout-grid-cell">
+                            <apex:outputPanel layout="block" styleClass="resources-wrapper">
+                                <apex:outputPanel id="ResourceTable" layout="block" styleClass="data-grid">
+                                    <apex:outputPanel layout="block" styleClass="data-grid-row">
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header">
+                                            Resource
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header">
+                                            Title
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header">
+                                            Resource Type
+                                        </apex:outputPanel>
+                                        <!-- 
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header">
+                                            Department
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header">
+                                            Location
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header">
+                                            Phone
+                                        </apex:outputPanel>
+                                        -->
+                                    </apex:outputPanel>
+                               <!--     <apex:repeat value="{!Resources}" var="curResource">
+                                        <apex:outputPanel layout="block" styleClass="data-grid-row resource-row">
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <a href="/{!curResource.contactData.Id}" title="View the record for {!curResource.contactData.FirstName & ' ' & curResource.contactData.LastName}">
+                                                    <apex:outputText value="{!curResource.contactData.LastName & ', ' & curResource.contactData.FirstName}" />
+                                                </a>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <apex:outputText value="{!curResource.contactData.Title}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <apex:outputText value="{!curResource.contactData.Contact_Type__c}" />
+                                            </apex:outputPanel>
+                                            
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <apex:outputText value="{!curResource.contactData.Department}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <apex:outputText value="{!curResource.contactData.Office__c}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <apex:outputText value="{!curResource.contactData.Phone}" />
+                                            </apex:outputPanel>
+                                            
+                                        </apex:outputPanel>
+                                    </apex:repeat>-->
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="BookingsWrapper" layout="block" styleClass="layout-grid-cell">
+                            <apex:outputPanel layout="block" styleClass="bookings-wrapper">
+                                <apex:outputPanel id="BookingsTable" layout="block" styleClass="data-grid">
+                                    <apex:outputPanel layout="block" styleClass="data-grid-row">
+                                        <apex:outputPanel layout="block" styleClass="data-grid-cell header cf date-header-container">
+                                            <apex:outputPanel layout="block" styleClass="wrapper">
+                                           <!--     <apex:repeat value="{!Dates}" var="monthHeading">
+                                                    <apex:outputPanel layout="block" styleClass="month-header" rendered="{!NOT(ISBLANK(monthHeading.monthText))}" style="left:{!monthHeading.left};">
+                                                        <apex:outputText value="{!monthHeading.monthText}" />
+                                                    </apex:outputPanel>
+                                                </apex:repeat>-->
+                                                <apex:outputPanel layout="block" styleClass="layout-grid" style="height:100%;">
+                                                    <apex:outputPanel layout="block" styleClass="layout-grid-row">
+                                                 <!--       <apex:repeat value="{!Dates}" var="dateHeading">
+                                                            <apex:outputPanel layout="block" styleClass="layout-grid-cell date-header">
+                                                                <div class="sizer"><apex:outputText value="{!dateHeading.dateText}" /></div>
+                                                            </apex:outputPanel>
+                                                        </apex:repeat>-->
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                  <!--  <apex:repeat value="{!Resources}" var="curResource">
+                                        <apex:outputPanel layout="block" styleClass="data-grid-row booking-row" onclick="popupBookingEdit(-1, {!curResource.index}, event);">
+                                            <apex:outputPanel layout="block" styleClass="data-grid-cell">
+                                                <apex:outputPanel layout="block" styleClass="booking-wrapper">
+                                                    <apex:repeat value="{!curResource.bookings}" var="curBooking">
+                                                        <apex:outputPanel layout="block" styleClass="booking-bar {!curBooking.OverlapClass}" style="{!curBooking.InlineStyle}" onclick="popupBookingEdit({!curBooking.index}, {!curResource.index}, event);">
+                                                            <apex:outputPanel layout="block">
+                                                                <apex:outputText value="{!curBooking.bookingData.Scheduler_Display__c}" / 
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </apex:repeat>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:repeat>-->
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        
+     <!--   <apex:actionFunction name="loadBookingData" action="{!EditBookingForm.load}" rerender="editBookingForm" onComplete="popupBookingEditLoadComplete();" immediate="true">
+            <apex:param name="bookingIndex" assignTo="{!EditBookingForm.pBookingIndex}" value=""/>
+            <apex:param name="resourceIndex" assignTo="{!EditBookingForm.pResourceIndex}" value=""/>
+            <apex:param name="clickLocation1" assignTo="{!EditBookingForm.pNewLoc1}" value=""/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="saveBookingData" action="{!EditBookingForm.save}" rerender="BookingsWrapper,editBookingForm" onComplete="popupBookingEditSaveComplete();">
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="deleteBookingData" action="{!EditBookingForm.del}" rerender="BookingsWrapper,editBookingForm" onComplete="popupBookingEditSaveComplete();" immediate="true">
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="cancelBookingData" action="{!EditBookingForm.cancel}" rerender="editBookingForm" onComplete="popupBookingEditSaveComplete();" immediate="true">
+        </apex:actionFunction>-->
+        
+        <script type="text/javascript">
+            
+            // Stores if an ajax request is in progress.  If so, many functions
+            // will not work until it is complete
+            var ajaxInProgress = false;
+            
+            /**********************************************************************
+             * Opens the edit window for booking a resource.  If the bookingIndex
+             * is new, this will allow for a new booking to be created against the
+             * resource listed.
+             */
+            function popupBookingEdit(bookingIndex, resourceIndex, e) {
+                
+                // Make sure that the event stops propogating
+                var evt = e || window.event;
+                evt.stopPropagation();
+                evt.cancelBubble = true;
+                
+                // Synchronize ajax requests
+                if (ajaxInProgress) {
+                    return false;
+                } else {
+                    ajaxInProgress = true;
+                }
+                
+                // Determine the click location so that SFDC can determine the
+                // date that resource should be booked.
+                var width = evt.currentTarget.scrollWidth;
+                if (width == 0) {
+                    width = evt.currentTarget.clientWidth;
+                }
+                var clickPos1 = evt.offsetX / evt.currentTarget.scrollWidth;
+                
+                // Make sure that the loading window is showing
+                $j('[id$=editBookingForm]').hide();
+                $j('[id$=editBookingLoading]').show();
+                
+                // Make sure that the save and cancel buttons look accurate
+                enableButton($j('[id$=editBookingSave]'));
+                enableButton($j('[id$=editBookingDelete]'));
+                enableButton($j('[id$=editBookingCancel]'));
+                $j('[id$=editBookingSave]').text('Save');
+                $j('[id$=editBookingDelete]').text('Delete');
+                $j('[id$=editBookingCancel]').text('Cancel');
+                
+                // Display the popup wrapper
+                $j('[id$=popupWrapperEditBooking]').show();
+                
+                // Begin asyncrhonously getting the booking data
+                loadBookingData(bookingIndex, resourceIndex, clickPos1);
+                
+            }
+            
+            
+            /**********************************************************************
+             * Callback function for once the popup booking loading is complete
+             */
+            function popupBookingEditLoadComplete() {
+                
+                // Allow other ajax actions
+                ajaxInProgress = false;
+                
+                // Display the form part of the popup
+                $j('[id$=editBookingLoading]').hide();
+                $j('[id$=editBookingForm]').show();
+                
+            }
+            
+            
+            function popupBookingEditSave() {
+                
+                // Synchronize ajax requests
+                if (ajaxInProgress) {
+                    return false;
+                } else {
+                    ajaxInProgress = true;
+                }
+                
+                // Ajax the save request
+                saveBookingData();
+                
+                // Make the buttons look Disabled for saving
+                disableButton($j('[id$=editBookingSave]'));
+                disableButton($j('[id$=editBookingDelete]'));
+                disableButton($j('[id$=editBookingCancel]'));
+                $j('[id$=editBookingSave]').text('Saving');
+                $j('[id$=editBookingDelete]').text('Saving');
+                $j('[id$=editBookingCancel]').text('Saving');
+                
+                // Prevent the default form submission behavior
+                return false;
+                
+            }
+            
+            
+            function popupBookingEditDelete() {
+                
+                // Synchronize ajax requests
+                if (ajaxInProgress) {
+                    return false;
+                } else {
+                    ajaxInProgress = true;
+                }
+                
+                // Ajax the save request
+                deleteBookingData();
+                
+                // Make the buttons look Disabled for saving
+                disableButton($j('[id$=editBookingSave]'));
+                disableButton($j('[id$=editBookingDelete]'));
+                disableButton($j('[id$=editBookingCancel]'));
+                $j('[id$=editBookingSave]').text('Deleting');
+                $j('[id$=editBookingDelete]').text('Deleting');
+                $j('[id$=editBookingCancel]').text('Deleting');
+                
+                // Prevent the default form submission behavior
+                return false;
+                
+            }
+            
+            
+            function popupBookingEditCancel() {
+                
+                // Don't allow cancel while ajax is running
+                if (ajaxInProgress) {
+                    return false;
+                } else {
+                    ajaxInProgress = true;
+                }
+                
+                // Ajax the save request
+                cancelBookingData();
+                
+                // Make the buttons look Disabled for saving
+                disableButton($j('[id$=editBookingSave]'));
+                disableButton($j('[id$=editBookingDelete]'));
+                disableButton($j('[id$=editBookingCancel]'));
+                $j('[id$=editBookingSave]').text('Cancelling');
+                $j('[id$=editBookingDelete]').text('Cancelling');
+                $j('[id$=editBookingCancel]').text('Cancelling');
+                
+                // Prevent the default form submission behavior
+                return false;
+                
+            }
+            
+            
+            function popupBookingEditSaveComplete() {
+                
+                // Allow other ajax actions
+                ajaxInProgress = false;
+                
+                // If the save was not successful, allow more user input
+                if ($j('[id$=editBookingStatus]').val() != '1') {
+                    
+                    // Reset the buttons
+                    enableButton($j('[id$=editBookingSave]'));
+                    enableButton($j('[id$=editBookingDelete]'));
+                    enableButton($j('[id$=editBookingCancel]'));
+                    $j('[id$=editBookingSave]').text('Save');
+                    $j('[id$=editBookingDelete]').text('Delete');
+                    $j('[id$=editBookingCancel]').text('Cancel');
+                    
+                    // Do not hide the popup window
+                    return false;
+                }
+                
+                // Hide the popup
+                $j('[id$=editBookingForm]').hide();
+                $j('[id$=popupWrapperEditBooking]').hide();
+                
+            }
+            
+            
+            function timeStamp(textElement) {
+                
+                try {
+                    var d = new Date();
+                    
+                    var MM = d.getMonth()+1;
+                    var dd = d.getDate();
+                    var yyyy = d.getFullYear();
+                    var hh = hh + 1;
+                    hh = (d.getHours() < 13) ? d.getHours() : d.getHours() - 12;
+                    var mm = (d.getMinutes() < 10) ? ('0'+d.getMinutes()) : d.getMinutes();
+                    var ss = (d.getSeconds() < 10) ? ('0'+d.getSeconds()) : d.getSeconds();
+                    var ampm = (d.getHours() < 12) ? 'AM' : 'PM';
+                    var alias = '{!$User.Alias}';
+                    
+                    var timeStamp = MM+'/'+dd+'/'+yyyy+' '+hh+':'+mm+':'+ss+' '+ampm+' '+alias;
+                    textElement.val(textElement.val() + '\n' + timeStamp + '\n');
+                
+                } catch(e) {
+                    return false;
+                }
+                
+                // Prevent default
+                return false;
+                
+            }
+            
+            
+            function disableButton(btn) {
+                btn.addClass('btnDisabled');
+                btn.removeClass('btn');
+                btn.attr('disabled', 'disabled');
+            }
+            
+            
+            function enableButton(btn) {
+                btn.addClass('btn');
+                btn.removeClass('btnDisabled');
+                btn.removeAttr('disabled');
+            }
+            
+            
+            
+            function popupFilter() {
+            
+                // Don't filters while ajax is taking place
+                if (ajaxInProgress) {
+                    return false;
+                }
+                
+                // Display the popup wrapper
+                $j('[id$=popupWrapperFilter]').show();
+                
+                // Prevent default button action
+                return false;
+                
+            }
+            
+            
+            function popupFilterCancel() {
+                
+                // Don't filters while ajax is taking place
+                if (ajaxInProgress) {
+                    return false;
+                }
+                
+                // Hide the popup wrapper
+                $j('[id$=popupWrapperFilter]').hide();
+                
+                // Prevent default button action
+                return false;
+            
+            }
+            
+            
+            function setBookingWidth() {
+                var maxwidth = $j('nav').first().width();
+                var sidebarwidth = $j('#sidebarCell').first().width();
+                var lcolwidth = $j('.resources-wrapper').first().width();
+                var rcol = $j('.bookings-wrapper').first();
+                rcol.width(maxwidth - sidebarwidth - lcolwidth - 50);
+                
+                window.setTimeout(setBookingWidth, 50);
+            }
+            
+            $j(document).ready(setBookingWidth);
+        
+        </script>
+    </apex:form>
+</apex:page>

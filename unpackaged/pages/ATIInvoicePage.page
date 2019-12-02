@@ -1,0 +1,245 @@
+<!--
+AUTHOR:    LENNARD SANTOS
+COMPANY:    CLOUDSHERPAS
+DATE CREATED:  MARCH 4 2013
+DESCRIPTION: Invoice Editor for NEW Invoice record
+HISTORY:  03-04-2013 Created. (LSANTOS)
+          
+-->
+<apex:page standardController="Invoice__c"  extensions="ATIInvoiceController" standardStylesheets="true" >
+
+    <apex:sectionHeader subtitle="{!Invoice__c.Name}" title="{!$Label.ATIInvoicePage_Header}"/>
+                <script type="text/javascript">
+                function changeDesc(plName){
+                    var plFieldId = plName.id;
+                    var plIDsplitted = plFieldId.split(':NamePickList');
+                    var changedPlID = document.getElementById(plIDsplitted[0]+":desc");
+                    changedPlID .value = plName.value;                                   
+                    }
+                function passIDtoCont(fieldName){
+                    var lookUpfieldID = fieldName.id;
+                    var changedLookUpField = document.getElementById(lookUpfieldID + "_lkid").value;                   
+                    afmethod(changedLookUpField);
+                }
+                function passContact(fldName){
+                    var lookUpCon = fldName.id;
+                    var clCon = document.getElementById(lookUpCon + "_lkid").value;
+                    Conmethod(clCon);
+                }
+
+                function passJob(jbFld){
+                    var jobLookup = jbFld.id;
+                    var jlChanged = document.getElementById(jobLookup + "_lkid").value;
+
+                    jbMethod(jlChanged);
+                }
+                function passTxGrp(txGrpFld){
+                    var TxGrpLookup = txGrpFld.id;
+                    var TxChanged = document.getElementById(TxGrpLookup+"_lkid").value;
+                    TxMethod(TxChanged);
+                }
+                function rerenderTaxGroup(txRate){
+      
+                    document.getElementById('$Component.invoiceForm.InvoicepageBlock.TaxGroupRateField.pbsiTaxGroupRateField.otTaxGrpRate').innerHTML = txRate;
+                }
+                function rerenderCCAddress(ccAd){
+      
+                    document.getElementById('$Component.invoiceForm.InvoicepageBlock.billingInfo.pbsiCCAddress.otCCAddress').innerHTML = ccAd;
+                }
+                function rerenderBillingAddress(bAddress){
+      
+                    document.getElementById('$Component.invoiceForm.InvoicepageBlock.billingInfo.pbsiBillingAddress.otBillingAddress').innerHTML = bAddress;
+                }
+                
+              </script>
+    <apex:form id="invoiceForm">
+        <apex:actionFunction name="updateBillingTo" action="{!updateBillingTo}" rerender="billingInfo, careOf">
+            <apex:param name="contextBusinessAddressId" value="" assignTo="{!contextBusinessAddressId}"/>
+            <apex:param name="contextBusinessAddressType" value="" assignTo="{!contextBusinessAddressType}"/>
+        </apex:actionFunction>
+        <apex:pageMessages id="messages"/>
+    <!-- 
+        <apex:actionFunction action="{!populateBillInfo}" reRender="billingInfo" id="jbMethod" name="jbMethod" immediate="true">
+            <apex:param value="jobField" name="jobField" assignTo="{!job}"/>
+        </apex:actionFunction>
+        <apex:actionFunction action="{!PrePopData}" reRender="billingInfo, TaxGroupRateField" id="afmethod" name="afmethod" immediate="true" oncomplete="rerenderBillingAddress('{!sBillingStreet}')">
+                <apex:param value="{!$Component.billingInfo.ifBillTo}" name="accID" assignTo="{!invoiceRecord.Bill_to__c}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!PrePopCon}" reRender="billingInfo" id="Conmethod" name="Conmethod" immediate="true" oncomplete="rerenderCCAddress('{!sMailStr}');">
+                <apex:param value="{!$Component.billingInfo.ifCCTo}" name="conID" assignTo="{!invoiceRecord.CC__c}"/>
+        </apex:actionFunction>
+        
+        
+        
+        <apex:actionFunction action="{!PrePopTxRate}" reRender="TaxGroupRateField" id="TxMethod" name="TxMethod" immediate="true" oncomplete="rerenderTaxGroup('{!sTaxGroupRate}');">
+                <apex:param value="TxGrpField" name="TxGrpField" assignTo="{!invoiceRecord.Bill_to_Tax_Group__c}"/>
+        </apex:actionFunction> 
+         -->
+        
+        <apex:pageBlock title="{!$Label.ATIInvoicePage_SectionHeader}" mode="edit" id="InvoicepageBlock">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="{!$Label.ATIInvoiceSave}" action="{!quickSaveInvoice}" 
+                                    rerender="messages,billingInfo,TaxGroupRateField,invoiceForm,careOf" />
+                <apex:commandButton value="{!$Label.ATIInvoiceSaveClose}" action="{!saveInvoice}"/>
+                <apex:commandButton value="{!$Label.ATIInvoiceCancel}" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection id="InfoSection" title="{!$Label.ATIInvoicePage_InformationSection}" collapsible="false" columns="2" >   
+               <!-- <apex:inputField id="invoiceNameField" value="{!Invoice__c.Name}" required="true"/>-->
+                <apex:inputField value="{!Invoice__c.Name}"/>
+
+                <apex:inputField value="{!Invoice__c.Status__c}"/>
+               <!-- <apex:inputField value="{!Invoice__c.Opportunity__c}" required="true" id="jobField" onchange="passJob(this)"/> -->
+                <apex:inputField value="{!Invoice__c.ATI_Job__c}" required="true" id="ATIjobField" onchange="passJob(this)"/>
+                <apex:inputField value="{!Invoice__c.Internal__c}"/>
+                 <apex:inputField value="{!Invoice__c.Due_Date__c}"/>
+                 
+               
+                 
+                 <apex:inputField value="{!Invoice__c.Is_Dummy_Invoice__c}"/>
+                 <apex:inputField value="{!Invoice__c.Memo__c}" />
+                 <br/>
+                 <apex:inputField value="{!Invoice__c.Reference_Number_New__c}" />
+                 <apex:inputField value="{!Invoice__c.Send_To_Timberline__c}" rendered="{!Invoice__c.RecordType.DeveloperName ='Final_Invoice'}"/>
+                <br/>
+                <br/>
+                <apex:inputField value="{!Invoice__c.Requires_Waiver__c}" />
+                <apex:inputField value="{!Invoice__c.Delivery_Method__c}"/>
+                <br/>
+                <apex:inputField value="{!Invoice__c.Send_scope_contract_with_invoice__c}"/>
+                <br/>
+                <apex:inputField value="{!Invoice__c.Send_authorization_with_invoice__c}"/>
+
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageblockSection Title="Billing Requirement" collapsible="false" columns="2" >
+                <apex:outputfield value="{!invoiceRecord.Billing_Requirement__c}" />
+            </apex:pageblockSection>
+            
+            <apex:pageBlockSection Title="{!$Label.ATIInvoicePage_BillingInfoSection}" collapsible="false" columns="2" id="billingInfo" >                
+                <!--Removed due to changes on sandbox
+                <apex:inputField value="{!Invoice__c.Billing_Customer_Number__c}"/><br/>
+                -->
+                <apex:inputField id="otBillingAddress" value="{!invoiceRecord.Bill_To_Address3__c}" onchange="updateBillingTo(document.getElementById('{!$Component.otBillingAddress}_lkid').value, 'BillToAddress');"/>
+                <apex:pageBlockSectionItem />
+                <apex:inputField value="{!invoiceRecord.Bill_To__c}" />
+                <apex:inputField id="ifCCAddress" value="{!invoiceRecord.CC_Address_Lookup__c}" onchange="updateBillingTo(document.getElementById('{!$Component.ifCCAddress}_lkid').value, 'CCAddress');"/>                
+                <apex:inputField value="{!invoiceRecord.Omit_Bill_To__c}"/><apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:inputField id="ifBillToLookup" value="{!invoiceRecord.Bill_To_Attention_Lookup__c}" /> 
+                <apex:inputField id="ifCCTo" value="{!invoiceRecord.CC_Account__c}"/> <!--  onchange="passContact(this)" -->
+                <!--
+                    <apex:pageBlockSectionItem id="pbsiBillingAddress">
+                    <apex:outputLabel value="{!$ObjectType.Invoice__c.fields.Bill_To_Address1__c.label}"></apex:outputLabel>
+                    <apex:outputField id="otBillingAddress" value="{!Invoice__c.Bill_To_Address1__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="pbsiCCAddress">
+                        <apex:outputLabel value="{!$ObjectType.Invoice__c.fields.CC_Address__c.label}"></apex:outputLabel>
+                        <apex:outputText id="otCCAddress">{!sMailStr}</apex:outputText>
+                    </apex:pageBlockSectionItem>
+                -->
+                <apex:inputField value="{!Invoice__c.Bill_To_Attention__c}"/>
+                <apex:inputField value="{!Invoice__c.CC_Attention__c}"/>
+                <apex:inputField value="{!Invoice__c.Bill_To_Attention_Line_2__c}"/>
+            </apex:pageBlockSection>
+
+            <!--  -->
+            <apex:pageBlockSection Title="{!$Label.ATIInvoicePage_Care_Of_Section}" collapsible="false" columns="2" id="careOf" >                
+                <!--Removed due to changes on sandbox
+                <apex:inputField value="{!Invoice__c.Billing_Customer_Number__c}"/><br/>
+                -->
+                <apex:inputField id="otCareOfAddress" value="{!invoiceRecord.Care_of_Address_lookup__c}" onchange="updateBillingTo(document.getElementById('{!$Component.otCareOfAddress}_lkid').value, 'CareOfAddress');"/> 
+                <apex:inputField id="ifCCAddressCareOf" value="{!Invoice__c.CC_Address_Care_of_lookup__c}" onchange="updateBillingTo(document.getElementById('{!$Component.ifCCAddressCareOf}_lkid').value, 'CCAddressCareOf');" />
+                <apex:inputField id="ifCCCareOfTo" value="{!invoiceRecord.Care_Of__c}" />
+                <apex:inputField id="otCareOfCC" value="{!invoiceRecord.CC_CareOf__c}" />
+                
+                
+
+                <!-- onchange="passIDtoCont(this)" -->
+               
+                <!-- apex:inputField id="ifCCTo" value="{!Invoice__c.CC_CareOf__c}"/ --> <!--  onchange="passContact(this)" -->
+                <!--
+                    <apex:pageBlockSectionItem id="pbsiBillingAddress">
+                        <apex:outputLabel value="{!$ObjectType.Invoice__c.fields.Care_Of_Address__c.label}"></apex:outputLabel>
+                        <apex:outputField id="otBillingAddress" value="{!Invoice__c.Care_of_Address1__c}"/>
+                    </apex:pageBlockSectionItem>
+                -->
+                
+                
+                <!-- apex:pageBlockSectionItem id="pbsiCCAddress" -->
+                    <!-- apex:outputLabel value="{!$ObjectType.Invoice__c.fields.CC_Address__c.label}"></apex:outputLabel>
+                    <!-- apex:outputText id="otCCAddress">{!Invoice__c.CC_Address_careOf__c}</apex:outputText -->
+                <!-- /apex:pageBlockSectionItem -->
+                
+                <!-- apex:inputField value="{!Invoice__c.Care_Of_Attention__c}"/ -->
+                <!-- apex:inputField value="{!Invoice__c.CC_Attention_CareOf__c}"/ -->
+            </apex:pageBlockSection> 
+            <!-- -->
+            <apex:pageBlockSection title="{!$Label.ATIInvoicePage_Cost_Per_Contract_Section}" collapsible="false" columns="2" id="TaxGroupRateField" >
+                <apex:inputField value="{!Invoice__c.Retainage_Held_percent__c}"/>
+                <apex:inputField value="{!Invoice__c.Bill_to_Tax_Group__c}"/> <!--  onchange="passTxGrp(this)" -->
+                <apex:inputField value="{!Invoice__c.Payment_Adjustment__c}"/>
+                <!--<apex:inputField value="{!Invoice__c.Tax_Group_Rate__c}" >-->
+                
+                <apex:pageBlockSectionItem id="pbsiTaxGroupRateField">
+                    <apex:outputLabel value="{!$ObjectType.Invoice__c.fields.Tax_Group_Rate__c.label}"></apex:outputLabel>
+                    <apex:outputText id="otTaxGrpRate">{!sTaxGroupRate}</apex:outputText>
+                </apex:pageBlockSectionItem>
+                
+                <!--</apex:inputField>-->
+            </apex:pageBlockSection>
+            <!--
+            *******************************
+            Invoice Line Item Related List
+            *******************************
+            -->
+            <apex:actionRegion immediate="true">                  
+                <apex:pageBlockSection title="{!$Label.ATIInvoicePage_Line_Item_Section}" >
+                    <apex:commandButton value="{!$Label.ATIInvoicePage_Add_Line_Item_Button}" action="{!addLineItem}" reRender="LineItem"/>
+                    <br/>
+                    <apex:pageBlockTable value="{!wrapInvoice}" var="wrap" id="LineItem">
+                        <apex:column >
+                            <apex:commandButton value="{!$Label.ATIInvoicePage_Delete_Line_Item_Button}" action="{!deleteLineItem}" reRender="LineItem">
+                                <apex:param name="wrpIndxParam" value="{!wrap.indx}" assignTo="{!count}"/>
+                            </apex:commandbutton>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Invoice_Line_Item__c.fields.PickListName__c.Label}">
+                            <apex:inputField value="{!wrap.inv.PickListName__c}" id="NamePickList" onChange="changeDesc(this);">
+                            </apex:inputField> 
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Invoice_Line_Item__c.fields.Order__c.Label}">
+                            <apex:inputText size="2" value="{!wrap.inv.Order__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Invoice_Line_Item__c.fields.Amount__c.Label}">
+                            <apex:inputText value="{!wrap.inv.Amount__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Invoice_Line_Item__c.fields.Taxable__c.Label}">
+                            <apex:inputCheckbox value="{!wrap.inv.Taxable__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Invoice_Line_Item__c.fields.IsCredit__c.Label}" >
+                            <apex:inputCheckbox value="{!wrap.inv.IsCredit__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.Invoice_Line_Item__c.fields.Note__c.Label}">
+                            <apex:inputCheckbox value="{!wrap.inv.Note__c}"/>
+                        </apex:column>
+                        <apex:column breakBefore="true" colspan="1">
+
+                        </apex:column>
+                        <apex:column colspan="6" style="vertical-align:top;" >
+                            <apex:outputLabel style="font-weight:bold;vertical-align:top;">{!$ObjectType.Invoice_Line_Item__c.fields.Description__c.Label}&nbsp;&nbsp;&nbsp;</apex:outputLabel>
+                            <apex:inputTextarea rows="4" cols="71" value="{!wrap.inv.Description__c}" id="desc"/>
+                        </apex:column>
+                        <!--<apex:column colspan="5">
+                            <apex:inputTextarea rows="4" cols="77" value="{!wrap.inv.Description__c}"/>
+                        </apex:column>-->
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:actionRegion>
+            <apex:pageBlockSection columns="2" title="{!$Label.ATIInvoicePage_Total_Section}">
+                <apex:inputField value="{!Invoice__c.Total_Costs_Per_Contract__c}"/>
+                <apex:inputField value="{!Invoice__c.Total_Tax__c}"/>
+                <apex:inputField value="{!Invoice__c.Net_Due__c}"/>       
+            </apex:pageblockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

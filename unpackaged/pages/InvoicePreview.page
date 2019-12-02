@@ -1,0 +1,119 @@
+<apex:page id="invoicePDF"
+        standardController="Invoice__c"
+        extensions="InvoicePreviewController"
+        renderAs="html"
+        cache="false">
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        // Remove any VF conflics on the $ symbol
+        var $j = jQuery.noConflict();
+    </script>
+    <style type="text/css">
+        .previewFrameWrapper {
+            width: 100%;
+            height: 700px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            padding: 20px 100px 20px 10px;
+        }
+        .previewFrameWrapper iframe {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            border: 1px #aaa solid;
+            box-shadow: 0 5px 5px -3px black;
+        }
+        .bodyCopy {
+            margin: 10px 0;
+            max-width: 600px;
+        }
+
+            
+    </style>
+    <script type="text/javascript">
+        function previewWithLetterhead() {
+            $j("[id$='previewFrameWrapperLH']").show();
+            $j("[id$='linkHideLetterhead']").show();
+            $j("[id$='textShowLetterhead']").show();
+            $j("[id$='previewFrameWrapperNoLH']").hide();
+            $j("[id$='linkShowLetterhead']").hide();
+            $j("[id$='textHideLetterhead']").hide();
+        }
+        function previewWithoutLetterhead() {
+            $j("[id$='previewFrameWrapperLH']").hide();
+            $j("[id$='linkHideLetterhead']").hide();
+            $j("[id$='textShowLetterhead']").hide();
+            $j("[id$='previewFrameWrapperNoLH']").show();
+            $j("[id$='linkShowLetterhead']").show();
+            $j("[id$='textHideLetterhead']").show();
+        }
+    </script>
+    <apex:form id="omniform">
+        <apex:messages />
+        <!-- Standard header for invoices copied from the Invoices tab -->
+        <div class="bPageTitle">
+            <div class="ptBody">
+                <div class="content">
+                    <img title="Invoice" class="pageTitleIcon" alt="Invoice" src="/s.gif" />
+                    <h1 class="pageType">Invoices<span class="titleSeparatingColon">:</span></h1>
+                    <h2 class="pageDescription"> Generate PDF</h2><div class="blank">&nbsp;</div>
+                </div>
+                <div class="links">
+                    <a title="Help for this Page (New Window)" href="javascript:openPopupFocusEscapePounds(%27/help/doc/user_ed.jsp?loc=help&amp;target=co_overview.htm&amp;section=CustomObjects%27, %27Help%27, 700, 600, %27width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,menubar=yes,directories=no,location=no,dependant=no%27, false, false);"><span class="helpLink">Help for this Page</span><img class="helpIcon" alt="" src="/s.gif" /></a>
+                </div>
+            </div>
+            <div class="ptBreadcrumb"></div>
+        </div>
+        <!-- Custom PDF preview -->
+        <apex:outputPanel layout="block" styleClass="bodyCopy">
+            The preview for the generated PDF is below.  Please review the
+            preview and, if everything is correct, press the &quot;Save and
+            Attach&quot; button at the bottom of the page.  Selecting this
+            button will save two copies of the PDF to the invoice, one with 
+            letterhead and one without.
+        </apex:outputPanel>
+        <apex:outputPanel layout="block" styleClass="bodyCopy">
+            If revisions are necessary, please use your browser&apos;s &quot;Back&quot;
+            button or the &quot;Cancel&quot; button at the bottom of the page.
+        </apex:outputPanel>
+        <apex:outputPanel layout="block" styleClass="bodyCopy">
+            The attachments will be named the following:
+            <ul>
+                <li><strong>With Letterhead:</strong>&nbsp;{!filenameWithLetterhead}</li>
+                <li><strong>Without Letterhead:</strong>&nbsp;{!filenameWithoutLetterhead}</li>
+            </ul>
+        </apex:outputPanel>
+        <hr />
+        <div class="linkPanel" style="text-align:center;">
+            <span id="textShowLetterhead">Currently previewing <strong>with Letterhead</strong>.&nbsp;</span>
+            <span id="textHideLetterhead" style="display:none">Currently previewing <strong>without Letterhead</strong>.&nbsp;</span>
+            <a id="linkHideLetterhead" href="javascript:void(0);" onclick="previewWithoutLetterhead();return false;">Preview without Letterhead</a>
+            <a id="linkShowLetterhead" href="javascript:void(0);" onclick="previewWithLetterhead();return false;" style="display:none">Preview with Letterhead</a>
+        </div>
+        <apex:outputPanel layout="block" id="previewFrameWrapperLH" styleClass="previewFrameWrapper">
+            <apex:iframe id="previewFrame1"
+                  src="/apex/InvoicePDF?id={!invoice.id}&dlh=1"
+                  scrolling="true"
+                  width="100%"
+                  height="100%" />
+        </apex:outputPanel>
+        <apex:outputPanel layout="block" id="previewFrameWrapperNoLH" styleClass="previewFrameWrapper" style="display:none">
+            <apex:iframe id="previewFrame2"
+                         src="/apex/InvoicePDF?id={!invoice.id}"
+                  scrolling="true"
+                  width="100%"
+                  height="100%" />
+        </apex:outputPanel>
+        <div class="linkPanel" style="text-align:center;">
+            <apex:commandButton id="generatePDFSave" styleClass="btn" action="{!formGeneratePDF.savePDF}" value="Save and Attach" 
+                                rendered="{!NOT(isDeliveryByEmail)}"/>
+            <apex:commandButton id="generatePDFNext" styleClass="btn" action="{!formGeneratePDF.next}" value="Next" 
+                                rendered="{!(isDeliveryByEmail)}"/>&nbsp;&nbsp;
+            <apex:commandButton id="generatePDFCancel" styleClass="btn" action="{!formGeneratePDF.cancelPDF}" value="Cancel" />
+        </div>
+    </apex:form>
+</apex:page>

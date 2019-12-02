@@ -1,0 +1,237 @@
+.banner{width:100%;float: left;background:#000; padding:10px 0;}
+.HeadSec{width:100%; background: #1c426f; padding: 15px 15px 100px 15px; box-sizing: border-box; }
+.FullContainer{display: inline-block; padding: 0 15px; width:100%;}
+.InnerWrapper{padding: 0 15px;}
+
+.table {width: 100%; max-width: 100%; margin-bottom: 20px;}
+.table-responsive-rp{display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;}
+.row{margin-left:-13px; margin-right:-13px;display: block;}
+.col-rp-2{width: 20%; display:inline-block; padding: 0 15px; }
+.col-rp-3{width:33.33%; display:inline-block; padding: 0 15px; }
+.col-rp-5{width:40%; display:inline-block; padding: 0 15px; }
+.col-rp-6{width: 50%; display:inline-block; padding: 0 15px; }
+.col-rp-12{width:100%;display:inline-block; padding: 0 15px; }
+.row .m0{padding:0;}
+label.HeadLbl{color:#fff;position: relative; bottom: -15px;}
+
+.DailyTimesheetWrap > article.slds-card{background:#f0f0f0;}
+
+.HeadSec .col-rp-3{margin-bottom: 20px;}
+
+table.week-header thead tr th.DeleteClmn, table.week-header tbody tr td.DeleteClmn{width:0; padding: 0px; background: none; border: none; box-shadow: none;}
+.lwcInput{display: block; width:47px;}
+.StaticTitle{margin-top: -80px; z-index: 9; position: relative;}
+table {border-spacing: 0;border-collapse: collapse;table-layout: fixed;}
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #8c8c8c;}
+.week-header {box-shadow: 0px 2px 3px #999;}
+.week-header tr th:nth-child(1) {width: 150px;}
+.week-header tr th:nth-child(2) {width: 100px;}
+.week-header tr th:nth-child(3), .week-header tr th:nth-child(4), .week-header tr th:nth-child(5), .week-header tr th:nth-child(6), .week-header tr th:nth-child(7), .week-header tr th:nth-child(8), .week-header tr th:nth-child(9) {width: 112px;}
+.week-header > thead > tr > th {vertical-align: bottom;border-bottom: 1px solid #adadad;}
+.week-header th {font-weight: bold; color: #000; background: #c6c6c8; border-right: 2px solid #adadad; box-shadow: inset 1px 0px 0px #d9d9d9;}
+.week-header th span { color: #808080; font-weight: 400;}
+.week-header tbody {background: #fff;}
+.week-header tbody tr td {
+    color: #003472;
+    vertical-align: middle;
+    padding: 0px 4px;
+    border-right: 1px solid #b1b1b1;
+}
+.week-header tr td:nth-child(1) {
+    width: 150px;
+    padding-right: 8px!important;
+}
+.week-header tr td:nth-child(2) {
+    width: 150px;
+    padding-right: 8px!important;
+}
+.week-header tr td:nth-child(3), .week-header tr td:nth-child(5), .week-header tr td:nth-child(7), .week-header tr td:nth-child(9), .week-header tr td:nth-child(11), .week-header tr td:nth-child(13), .week-header tr td:nth-child(15) {
+    width: 57px;
+    background: #f6f6f6;
+}
+.week-header tr td:nth-child(4), .week-header tr td:nth-child(6), .week-header tr td:nth-child(8), .week-header tr td:nth-child(10), .week-header tr td:nth-child(12), .week-header tr td:nth-child(14), .week-header tr td:nth-child(16) {
+    width: 57px;
+    background: #f6f6f6;
+}
+span.top {
+    width: 47px;
+    float: left;
+    padding: 8px 0;
+    border-bottom: 1px solid #a5a4a4;
+}
+span.bottom {
+    width: 47px;
+    float: left;
+    padding: 8px 0;
+}
+td.no-border {
+    border-right: 0px !important;
+}
+
+.table-header {
+    font-size: 20px;
+    color: #000;
+    float: left;
+    margin: 0px;
+    line-height: 30px;
+    width: 265px;
+}
+.copy-link.THIS buton{
+    float: left;
+    background: #979797;
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+.add-row buton{
+    float: left;
+    background: #333333;
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.PDSection{ margin-top: 15px;}
+.DesgnationTitl{margin-bottom: 9px;}
+table .left-col {
+    width: 99%;
+    padding: 0px !important;
+}
+table .right-col{
+    width: 1%;
+}
+.PWTd{position: relative;}
+.DesignLft{padding-right: 44px; display: inline-block;}
+.PwRit{width: 40px; position: absolute; right: 4px; top: 50%;}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+.table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+    border-bottom-width: 2px;
+}
+.table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+    border: 1px solid #ddd;
+        border-top-color: rgb(221, 221, 221);
+        border-top-style: solid;
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+}
+.copy-title {
+    width: 95px;
+    float: left;
+    font-weight: 700;
+}
+table.DilyHrsTbl{position: relative; margin-top: 35px;}
+table.DilyHrsTbl table.week-header{box-shadow: none;}
+table.DilyHrsTbl table.week-header tr th, table.DilyHrsTbl table.week-header tr td{border: 1px solid #ddd; background: #e4e4e4; padding: 8px;}
+table.DilyHrsTbl table.week-header tr th:nth-child(1), table.DilyHrsTbl table.week-header tr th:nth-child(2), table.DilyHrsTbl table.week-header tr td:nth-child(1), table.DilyHrsTbl table.week-header tr td:nth-child(2){background:#f0f0f0; border:none; box-shadow: none;}
+.table-title{position: absolute; top: -29px;}
+
+.CMSection{margin-top:25px;}
+table.TblCopy{margin-bottom: 7px;}
+table.TblCopy.table tr td{border:none; border-top:1px solid #ccc; border-bottom:1px solid #ccc; vertical-align: middle!important;}
+table.TblCopy tr td:nth-child(1) {width: 150px;}
+table.TblCopy tr td:nth-child(2) {width: 100px; text-align:right;}
+table.TblCopy tr td:nth-child(3), table.TblCopy tr td:nth-child(4), table.TblCopy tr td:nth-child(5), table.TblCopy tr td:nth-child(6), table.TblCopy tr td:nth-child(7), table.TblCopy tr td:nth-child(8), table.TblCopy tr td:nth-child(9) {width: 112px;}
+.FinalComments{width:100%; display:inline-block; padding: 15px;background: #fff;}
+.OverallTotal{background-color:#e4e4e4 ; color: #333; margin-top: 20px; padding: 20px; border: 1px solid #ddd;}
+.OverallTotal .col-rp-3{margin-bottom: 15px;}
+
+.FooterAction{margin: 20px 0;}
+
+@media only screen and (max-width: 768px){
+    .col-rp-3{width: 100%;}
+}
+
+@media only screen and (max-width: 760px),(min-device-width: 768px) and (max-device-width: 1106px)  {
+
+    .DesignLft{width: 97%;}
+    .PwRit{right:23px; top: 42%;}
+    .StaticTitle{display: none;}
+    .table-header{width: 100%;}
+    .HeadSec{padding-bottom: 15px;}
+    table td.right-col{vertical-align: top;}
+    span.top, span.bottom {width:50%; border: none; padding: 0 0 0 0;}
+    span.top .lwcInput:before, span.bottom .lwcInput:before{display: none; content: '';}
+    span.top:before {content:'OT'; color: #535353; font-weight: normal; position: relative; left: 3px;}
+    span.bottom:before {content:'DBL'; color: #535353; font-weight: normal; position: relative; left: 3px;}
+    .lwcInput:before{content: 'HRS'; color: #535353; font-weight: normal; position: relative; left: 3px;}
+    span.top{padding-right: 10px;}
+    .lwcInput{width: 100%;}
+    table.TblRes.week-header tr td:nth-child(1), table.TblRes.week-header tr td:nth-child(2) {width: 100%; padding: 10px 10px 0 10px; height: 85px;}
+    table.TblRes.week-header tr td:nth-child(3), table.TblRes.week-header tr td:nth-child(4), table.TblRes.week-header tr td:nth-child(5), table.TblRes.week-header tr td:nth-child(6), table.TblRes.week-header tr td:nth-child(7), table.TblRes.week-header tr td:nth-child(8), table.TblRes.week-header tr td:nth-child(9), table.TblRes.week-header tr td:nth-child(10), table.TblRes.week-header tr td:nth-child(11), table.TblRes.week-header tr td:nth-child(12), table.TblRes.week-header tr td:nth-child(13), table.TblRes.week-header tr td:nth-child(14), table.TblRes.week-header tr td:nth-child(15), table.TblRes.week-header tr td:nth-child(16) {width: 100%; padding: 30px 10px 0 10px; height: 98px;}
+
+    table.TblRes.week-header tr td:nth-child(4), table.TblRes.week-header tr td:nth-child(6), table.TblRes.week-header tr td:nth-child(8), table.TblRes.week-header tr td:nth-child(10), table.TblRes.week-header tr td:nth-child(12), table.TblRes.week-header tr td:nth-child(14), table.TblRes.week-header tr td:nth-child(16){border-top:0; padding-top: 12px;}
+
+    table.TblRes , table.TblRes thead, table.TblRes tbody, table.TblRes th, table.TblRes td, table.TblRes tr { 
+        display: block; 
+        width:100%;
+    }
+    table.TblRes thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    table.TblRes tr { border: 1px solid #ccc; }
+    
+    table.TblRes td { 
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+    }
+    
+    table.TblRes td:before { 
+        position: absolute;
+        top: 6px;
+        left: 13px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+    }
+    
+    table.TblRes td:nth-of-type(1):before { content: "Designation"; }
+    table.TblRes td:nth-of-type(2):before { content: "Labor Code"; }
+    table.TblRes td:nth-of-type(3):before { content: "Monday"; }
+    table.TblRes td:nth-of-type(4):before { content: ""; }
+    table.TblRes td:nth-of-type(5):before { content: "Tuesday"; }
+    table.TblRes td:nth-of-type(6):before { content: ""; }
+    table.TblRes td:nth-of-type(7):before { content: "Wednesday"; }
+    table.TblRes td:nth-of-type(8):before { content: ""; }
+    table.TblRes td:nth-of-type(9):before { content: "Thursday"; }
+    table.TblRes td:nth-of-type(10):before { content: ""; }
+    table.TblRes td:nth-of-type(11):before { content: "Friday"; }
+    table.TblRes td:nth-of-type(12):before { content: ""; }
+    table.TblRes td:nth-of-type(13):before { content: "Saturday"; }
+    table.TblRes td:nth-of-type(14):before { content: ""; }
+    table.TblRes td:nth-of-type(15):before { content: "Sunday"; }
+
+    table.DilyHrsTbl table.week-header tr th:nth-child(1), table.DilyHrsTbl table.week-header tr th:nth-child(2), table.DilyHrsTbl table.week-header tr td:nth-child(1), table.DilyHrsTbl table.week-header tr td:nth-child(2){display:none;}
+    table.DilyHrsTbl table.week-header tr th{display:none;}
+    table.DilyHrsTbl table.week-header tr td{width: 100%;padding-top: 30px; display:block; position: relative;}
+    table.DilyHrsTbl table.week-header td:before { position: absolute; top: 6px; left: 13px; width: 45%;  padding-right: 10px; white-space: nowrap;}
+    .DailySPh table.DilyHrsTbl td.left-col:before{content:'Daily Supervisors Hrs'; position: relative; top: -13px; font-weight: bold; font-size: 17px;}
+    .DailyCMh table.DilyHrsTbl td.left-col:before{content:'Daily Crew Members Hrs'; position: relative; top: -13px; font-weight: bold; font-size: 17px;}
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(3):before { content: "Monday"; }
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(4):before { content: "Tuesday "; }
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(5):before { content: "Wednesday "; }
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(6):before { content: "Thursday "; }
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(7):before { content: "Friday "; }
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(8):before { content: "Saturday "; }
+    table.DilyHrsTbl table.week-header tr td:nth-of-type(9):before { content: "Sunday "; }
+
+    table.TblCopy{table-layout: auto;}
+
+    table.week-header tbody tr td.DeleteClmn{position: absolute; top: 0; right: 0;}
+    table.table tr{position: relative;}
+}
+@media (max-width:768px){
+    .slds-modal__container{position:fixed;
+    left:57%;margin-left:-10rem;height: auto; bottom:230px;}
+    .SavePopup{position: absolute;}
+    }

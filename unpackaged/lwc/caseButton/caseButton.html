@@ -1,0 +1,133 @@
+<!--
+  @File Name          : caseButton.html
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 11/26/2019, 9:05:03 AM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    10/28/2019   Sean Gray     Initial Version
+-->
+<template>
+    <div class="slds-box slds-theme_shade">
+            <lightning-record-edit-form object-api-name="Case" record-type-id={recordTypeId} onsuccess={handleSuccess}>
+        <fieldset class="slds-form-element slds-form-element_compound">
+                        <div class="slds-form-element__control">
+                          <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                              <div class="slds-form-element">
+                                <!-- <label class="Labels"  for="input-01">Percent of Job Complete: %</label> -->
+                                <div class="slds-form-element__control">
+                                       
+                                                <!-- <lightning-input-field field-name="Id"></lightning-input-field> -->
+                                                <lightning-input-field field-name="OwnerId" value={ownerId}></lightning-input-field>
+                                                <!-- <label class="Labels"  for="input-01">Account</label>  -->
+                                                <lightning-input-field field-name="AccountId"  value={accountId} disabled class="hidden"></lightning-input-field>
+                                                <lightning-input-field field-name="ATI_Job__c" value={recordId}></lightning-input-field>
+                             
+                                                
+                                                <lightning-input-field field-name="Origin"></lightning-input-field>
+                                                <lightning-input-field field-name="Status" value={status}></lightning-input-field>
+                                                <lightning-input-field field-name="Priority" value={priority} onchange={priorityChange} required=""></lightning-input-field>
+                                                
+                                                <!-- <lightning-input-field field-name="RecordTypeId"></lightning-input-field> -->
+                                                
+                                                
+                                                <!-- <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field> -->
+                                            
+                                </div>
+                              </div>
+                            </div>
+                            <div class="slds-size_1-of-2">
+                              <div class="slds-form-element">
+                                <!-- <label class="Labels"  for="input-01">Estimated Completion Date Per PD:</label> -->
+                                <div class="slds-form-element__control">
+                                                
+                                                
+                                                <lightning-input-field field-name="ContactId" value={contact}></lightning-input-field>
+                                                <lightning-input-field field-name="ATI_Main_Contact__c"></lightning-input-field>
+                                                <lightning-input-field field-name="Business_Category__c"></lightning-input-field>
+                                                <lightning-input-field field-name="Case_Type__c"></lightning-input-field>
+                                                
+                                                <lightning-input-field field-name="Resolution_Type__c"></lightning-input-field>
+                                                
+                                                
+                                                <lightning-input-field field-name="Next_Action_Date_Time__c"></lightning-input-field>
+                                                <!-- <lightning-input-field field-name="Next_Action_Date_Time__c"></lightning-input-field> -->
+                                                <!-- <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                                <lightning-input-field field-name="OwnerId"></lightning-input-field> -->
+                                           
+                                </div>
+                              </div>
+                            </div>
+                            <!--<div class="slds-size_1-of-3">
+                              <div class="slds-form-element">
+                                <label class="Labels" for="input-02">Work/trades started/completed since last week:</label>
+                                <div class="slds-form-element__control">
+                                                <lightning-input placeholder="Enter a Number" type="text" required="" onchange={workChange} value={workCompleted}></lightning-input>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="slds-size_1-of-3">
+                                        <div class="slds-form-element">
+                                          <label class="Labels" for="input-03">Work to be started this week:</label>
+                                          <div class="slds-form-element__control">
+                                                <lightning-input placeholder="Enter a Number" required="" type="text" onchange={workStartedChange} value={workStarted}></lightning-input>
+                                          </div>
+                                        </div>
+                                      </div> -->
+                          </div>
+                        </div>
+                      </fieldset>
+
+                        <div class="slds-form-element">
+                            
+                            <div class="slds-form-element__control">
+                                    
+                                            <lightning-input-field field-name="Subject" value={subject} required="" onchange={subjectChange}></lightning-input-field>
+                                            
+                              
+                            </div>
+                          </div>
+                        <div class="slds-form-element">
+                                
+                                <div class="slds-form-element__control">
+                                        
+                                                <lightning-input-field field-name="Description" value={description} required="" onchange={descriptionChange}></lightning-input-field>
+                                                
+                                  
+                                </div>
+                              </div>
+
+                              <lightning-helptext content= "Priority is Required to Create Case" ></lightning-helptext>
+                        <div class="form">
+                                <lightning-button label="Create Case" type="submit" onclick={ButtonClicked} variant="brand" disabled={priority1}> </lightning-button>
+                                 
+                                <lightning-button label="Cancel" onclick={Cancel} variant="brand" class="spaceRight"></lightning-button>
+                        </div>
+                       
+<template if:true={error}>
+       <div class="errormessage">Fill out all required fields</div>
+</template>
+</lightning-record-edit-form>
+<template if:true={loading}>
+        <div class="Spinner">
+            <lightning-spinner size="medium" variant="brand" alternative-text="Creating Case.."></lightning-spinner>
+        </div>
+ </template>
+        </div>
+</template>

@@ -1,0 +1,7 @@
+<apex:page controller="SubmitForApprovalExtension" action="{!submitForApproval}">
+    
+    <apex:pageMessages >    	
+    </apex:pageMessages>
+    <br/><br/>
+    Click <apex:outputLink value="/{!objId}"> here </apex:outputLink> to return to the previous page.
+</apex:page>

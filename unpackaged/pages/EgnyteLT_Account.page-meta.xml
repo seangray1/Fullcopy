@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>40.0</apiVersion>
+    <availableInTouch>true</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>This will make the Egnyte available on the Lightning page. We are using this one only on Account.</description>
+    <label>EgnyteLT_Account</label>
+    <packageVersions>
+        <majorNumber>2</majorNumber>
+        <minorNumber>6</minorNumber>
+        <namespace>efs</namespace>
+    </packageVersions>
+</ApexPage>

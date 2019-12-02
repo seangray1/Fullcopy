@@ -1,0 +1,91 @@
+<!--
+  @Component Name     : newProjectSchedule.html
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 10/6/2019, 1:25:35 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/23/2019, 9:56:08 AM   sean.gray@atirestoration.com     Initial Version
+-->
+<template>
+    <!--Create Project
+    <br>
+    <br>
+    Name:
+    <lightning-input value={schedulename} onchange={UpdateName}></lightning-input>
+    <br>
+    -->
+    
+    <!-- <lightning-layout class="body" >
+      <div class="slds-box slds-theme_shade">
+             <div class="row">
+              <div class="col-rp-12">
+                  <div class="">
+                      <table class="outer">
+                              <tbody><tr>
+                                <td class="left-col">
+                                  
+                                    <table class="table TblRes week-header ProjTbl">
+                                          <thead>
+                                              <tr class="alpha">
+                                                      <th>  Project Line Item Name</th>
+                                                      <th>  Start Date</th>
+                                                      <th>  End Date</th>
+                                                      
+                                                      
+                                                  </tr></thead>
+                                                  
+                                                  <tbody>
+                                                      
+                                                        <template for:each={Budgetlineitems} for:item="Budgetlineitem"> 
+                                              <tr key={Budgetlineitem.name}> 
+                                                    <td> 
+                                                        <lightning:layoutItem>
+                                                              <div class="grid">
+                                                                <lightning-input type="text" value={Budgetlineitem.name} class="form-control ProjName" disabled={test} onchange={handleNameChange}></lightning-input>
+                                                    </div>
+                                                    </lightning:layoutItem>
+                                                      </td>
+                                                      <td> 
+                                                        <lightning:layoutItem>
+                                                              <div class="grid">
+                                                                <lightning-input type="date" value={Budgetlineitem.startDate} onchange={handleStartDateChange} class="form-control ProjStartDate" ></lightning-input>
+                                                    </div>
+                                                    </lightning:layoutItem>
+                                                    
+                                                      </td>
+                                                      <td> 
+                                                        <lightning:layoutItem>
+                                                              <div class="grid">
+                                                                <lightning-input type="date" value={Budgetlineitem.endDate} onchange={handleEndDateChange} class="form-control ProjEndDate" ></lightning-input>
+                                                    </div>
+                                                    </lightning:layoutItem>
+                                                      </td>
+                                                      </tr>
+                                                    </template> 
+                                                      </tbody>
+                                                        </table>
+                                                        </td>
+                                                        </tr>
+                                                        </tbody>
+                                                        </table>
+                                                        </div>
+                                                        </div>
+                                                        </div>
+           <br>                                             
+          <div class="form"><lightning-button label="Create Project" onclick={CreateProject} variant="success"> </lightning-button> 
+               <lightning-button label='Cancel' onclick={Cancel} variant="destructive"></lightning-button>
+    </div>
+    <template if:true={loading}>
+      <div class="Spinner">
+          <lightning-spinner size="large" variant="brand"></lightning-spinner>
+      </div>
+  </template>
+                    </div>  
+                    </lightning-layout> -->
+
+</template>

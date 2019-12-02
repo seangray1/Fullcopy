@@ -1,0 +1,16 @@
+<!--
+  @File Name          : CaseAura.cmp
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 11/5/2019, 7:56:46 AM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    10/28/2019   Sean Gray     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+
+    <c:caseButton recordId = "{!v.recordId}" onrecordChange="{!c.refreshView}" oncancelChange="{!c.closeView}"/>
+
+</aura:component>

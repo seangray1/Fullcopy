@@ -1,0 +1,11 @@
+<apex:page standardController="Opportunity"  standardstylesheets="false" showheader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <style>body{margin: 0px !important;padding: 0px !important;}</style>
+    <apex:includeLightning />
+    <div id="lightningComponent" />
+    <script>
+          var recordId = '{!$CurrentPage.parameters.Id}';
+          var session = '{!$Api.Session_ID}';
+          $Lightning.use("tdc_tsw:Ltng_SMSConversationApp", function() {
+          $Lightning.createComponent("tdc_tsw:Ltng_SMSConversationComp",{recordId: recordId,sessionId: session },"lightningComponent",function(cmp) {});});
+    </script>
+ </apex:page>

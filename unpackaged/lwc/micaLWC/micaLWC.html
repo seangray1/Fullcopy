@@ -1,0 +1,185 @@
+<!--
+  @Component Name     : test.html
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 11/21/2019, 1:40:41 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/5/2019, 9:21:25 AM   sean.gray@atirestoration.com     Initial Version
+-->
+<template>
+        
+<template if:true={selectMethodScreen}>
+        
+  <div class="center">Is this a Main, Supplement, or Change Order?</div>  
+  
+<div class="inline">
+    <div class="mainButton">
+        <button onclick={MainButton} type="button" class="slds-button slds-button_brand">Main</button>
+    </div>
+    <lightning-helptext content= "Main - A comprehensive estimate - original or revised - that will be treated as the total estimate unless non-inclusive supplements or change orders are added" class="helpMain"></lightning-helptext>
+    <div class="mainButton">
+        <button onclick={SupplementButton} type="button" class="slds-button slds-button_brand">Supplement</button>
+    </div>
+    <lightning-helptext content= "Supplement - A separate estimate for additional work that is non-inclusive of the main estimate" class="helpMain"></lightning-helptext>
+    <div class="mainButton">
+        <button  onclick={ChangeOrderButton} type="button" class="slds-button slds-button_brand">Change Order</button>
+    </div>
+    <lightning-helptext content= "Change Order - A separate estimate non-inclusive of the main estimate used for changes requested by the customer" class="helpMain"></lightning-helptext>
+</div>
+
+
+</template>
+
+
+<template if:true={startEmgSvsPGEmpty}>
+    <div class="center2">Is this Job a Water Loss?</div>
+    <div class="moveLeft">
+        <div class="yesButton">
+            <button onclick={categoryclassButton} type="button" class="slds-button slds-button_brand">Yes</button>
+        </div>
+        <div class="noButton">
+            <button onclick={notEmgSvs} class="slds-button slds-button_brand">No</button>
+        </div>
+    </div>
+   
+    
+   
+</template>
+<template if:true={startPGNotEmpty}>
+    <div class="center2">Is this Job a Water Loss?</div>
+    <div class="moveLeft">
+        <div class="yesButton">
+            <button onclick={EstimateClassCategoryScreen} type="button" class="slds-button slds-button_brand">Yes</button>
+        </div>
+        <div class="noButton">
+            <button onclick={estimateUploadNotWater} class="slds-button slds-button_brand">No</button>
+        </div>
+    </div>
+   
+    
+   
+</template>
+
+<template if:true={EstimateClassCategoryScreenBoolean}>
+    <!---
+        <lightning-input label="claim" name="claim"></lightning-input> -->
+        <div class="center3">Select Class and Category #'s</div>
+            <lightning-combobox name="progress"
+            label="Class"
+            value={classValue12}
+            placeholder="-Select-"
+            options={ClassPicklistValues.data.values}
+            onchange={classChangePicklist} >
+        </lightning-combobox>
+        
+        <lightning-combobox name="Test"
+        label="Category"
+        value={categoryValue12}
+        placeholder="-Select-"
+        options={CategoryPicklistValues.data.values}
+        onchange={categoryChangePicklist} >
+    </lightning-combobox>
+            <lightning-button class="slds-m-top_small"
+                              variant="brand"
+                              onclick={EstimateFileUploadButton}
+                              name="update"
+                              label="Next"
+                              disabled={ClassCategoryBlank}>
+                            </lightning-button>
+        
+
+</template>
+<template if:true={categoryclass}>
+        <div class="center3">Select Class and Category #'s</div>
+            <lightning-combobox name="progress"
+            label="Class"
+            value={classValue12}
+            placeholder="-Select-"
+            options={ClassPicklistValues.data.values}
+            onchange={classChangePicklist} >
+        </lightning-combobox>
+        
+        <lightning-combobox name="Test"
+        label="Category"
+        value={categoryValue12}
+        placeholder="-Select-"
+        options={CategoryPicklistValues.data.values}
+        onchange={categoryChangePicklist} >
+    </lightning-combobox>
+            <lightning-button class="slds-m-top_small"
+                              variant="brand"
+                              onclick={WaterUploadFile}
+                              name="update"
+                              label="Next"
+                              disabled={ClassCategoryBlank}>
+            </lightning-button>
+</template>
+<template if:true={startNotEmgSvsPGEmpty}>
+        <div class="maybe">
+            <lightning-file-upload 
+            label="Attach Estimate"
+            name="fileUploader"
+            accept={acceptedFormats1}
+            record-id={recordId}
+            onuploadfinished={NotWaterLoss}
+            >
+        </lightning-file-upload>
+    </div>
+</template>
+<template if:true={Water}>
+        <div class="maybe">
+    <lightning-file-upload
+    label="Attach Estimate"
+    name="fileUploader"
+    accept={acceptedFormats}
+    record-id={recordId}
+    onuploadfinished={WaterLossUpload}>
+</lightning-file-upload>
+</div>
+</template>
+<template if:true={EstimateFileUploadBoolean}>
+        <div class="maybe">
+    <lightning-file-upload
+    label="Attach Estimate"
+    name="fileUploader"
+    accept={acceptedFormats}
+    record-id={recordId}
+    onuploadfinished={UploadEstimate}> 
+</lightning-file-upload>
+</div>
+</template>
+<template if:true={wait}>
+    <div class="waiting">Please Wait for Response From QA Assist</div>
+    <div class="exampleHolder">
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+    </div>
+    
+</template>
+
+<template if:true={msg}>
+    <div class="Message">{ExtraData}</div>
+    <div class="Message">{error}</div>
+    <lightning-button variant="Brand" label="Close" onclick={navigateToRecord} type="button" class="slds-m-left_x-small"></lightning-button>
+        
+</template>
+
+
+</template>
+
+
+<!--<template if:false={data2}>
+        <lightning-file-upload
+        label="Attach receipt"
+        name="fileUploader1"
+        accept={acceptedFormats1}
+        record-id={recordId}>
+    </lightning-file-upload>
+    </template>
+    
+   <lightning-button label="Yes Water Loss" variant="success" onclick={handleClickedButton} type="button"></lightning-button>
+-->

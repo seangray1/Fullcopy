@@ -1,0 +1,110 @@
+<apex:page showheader="false">
+<html>
+<head>
+<script type="text/javascript">
+(function() { 
+  function handlePageLoad() {
+    var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
+    document.getElementById('prechatForm').setAttribute('action',
+    decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
+  } 
+  if (window.addEventListener) {
+    window.addEventListener('load', handlePageLoad, false);
+  } else { 
+    window.attachEvent('onload', handlePageLoad, false);
+  }
+})(); 
+
+
+</script>
+</head>
+<body>
+<style type="text/css">
+.online-chat-form{margin:10px 30px 20px 20px;     text-align: center;}
+.online-chat-form label {
+    width: 100%;
+    float: left;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+    text-align: left;
+    margin-top: 15px;
+    font-family: "Open Sans",sans-serif;
+}
+.online-chat-form input[type="text"] {
+    width: 100%;
+    height: 35px;
+    margin-top: 5px;
+    padding: 0 5px;
+    border-radius: 5px;
+    border: 1px solid silver;
+    margin-bottom: 5px;
+    text-align: left;
+    font-family: "Open Sans",sans-serif;
+}
+.online-chat-form input[type="text"]:focus {
+    border-color: rgba(0,0,0,0.3);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(0,0,0,0.2);
+    outline: 0;
+    }
+    
+.Req-btn{    color: #ffffff;
+    border: #003472;
+    background-color: #003472;
+    font-size: 17px;
+    margin-top: 15px;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: "Open Sans",sans-serif;
+    text-transform: uppercase;
+    }
+    .Req-btn:hover {
+    color: #ffffff;
+    border-color: #030f37;
+    background-color: #030f37;
+    text-shadow: 0 0.075em 0.075em rgba(0,0,0,0.5);
+}
+</style>
+<form method="post" id="prechatForm" class="online-chat-form">
+<apex:outputText style="color:#005ed6;font-size:large;" value="Thank you for using ATI's Live Chat.  Our next available representative will be with you shortly."/><br />
+<!-- Detail inputs -->
+<label >First Name:</label> <input type="text" name="liveagent.prechat:contactFirstName" /><br />
+<label >Last Name:</label> <input type="text" name="liveagent.prechat:contactLastName" /><br />
+<label >Email:</label> <input type="text" name="liveagent.prechat:contactEmail" /><br />
+
+<label >Subject:</label> <input type="text" name="liveagent.prechat:caseSubject" /><br />
+
+<input type="hidden" name="liveagent.prechat:contactLiveChat" id="prechat_field_session_id" value="Yes" />
+
+<!-- Map the detail inputs to the Contact fields --> 
+<input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="FirstName,contactFirstName;LastName,contactLastName;Email,contactEmail;IsLiveChat__c,contactLiveChat;" />
+
+<!-- Try to find the Contact by email (exact match) -->
+<input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Email,true;" />
+<input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Email,true;" />
+
+<!-- If the Contact is not found, then create one with the following fields set -->
+<input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Contact" value="FirstName,true;LastName,true;Email,true;IsLiveChat__c,true;" />
+
+<!-- Save the Contact on the Live Chat Transcript's Contact Loookup -->
+<input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="Contact" />
+
+<!-- Show the Contact when it is found or created -->
+<input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true" />
+
+<!-- Create a Case every time -->
+<input type="hidden" name="liveagent.prechat:caseOrigin" value="Chat" />
+<input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Origin,caseOrigin;Subject,caseSubject;" />
+<input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Origin,true;Subject,true;" />
+<input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Case" value="Case" />
+<input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true" />
+
+<!-- Link the Contact to the Case -->
+<input type= "hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId" />
+
+<input type="submit" class="Req-btn" value="Request Chat" id="prechat_submit" />
+
+</form> 
+</body>
+</html>
+</apex:page>

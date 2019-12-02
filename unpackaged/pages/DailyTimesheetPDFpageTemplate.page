@@ -1,0 +1,494 @@
+<apex:page showHeader="false" controller="DailyTimesheetPDFTmpController">
+  
+    <apex:stylesheet value="{!URLFOR($Resource.GeneratePDFTimesheetCSS)}"/>  
+
+  <div class="PDFHeader">
+      <apex:image url="{!URLFOR($Resource.GeneratePDFDailyTimesheet, 'images/logo.png')}" width="151" height="78" />
+      <div class="HeaderText">Daily Time Sheet</div>
+  </div>
+  
+  <div class="PDFContent">
+      
+      <table class="PDFTittl" cellspacing="5" cellpadding="0">
+          <tr>
+                <td class="LblBold">Job Number:</td>
+                <td>{!JobNumber}</td>
+                <td class="LblBold PDFTxtRit">Dates:</td>
+                <td>{!GetSDate}  -  {!GetEDate}</td>
+          </tr>
+          <tr>
+                <td class="LblBold">Job Name:</td>
+                <td>{!JobName}</td>
+                <td class="LblBold PDFTxtRit">Location/Work Area:</td>
+                <td><apex:outputText style="LblBold PDFTxtRit" value="{!Location}"> </apex:outputText></td>   
+                
+          </tr>
+          <tr>
+                <td class="LblBold">Shift:</td>
+                <td>{!Shift}</td>
+                <td></td>
+                <td></td>
+          </tr>
+    </table>
+    
+    <div class="PDFTblHeader">
+         <table class="outer m0">
+            <thead>
+              <tr>
+                <th class="left-col border0">
+                    
+                    <table class="table week-header">
+                    <thead>
+                      <tr>
+                        <th>Name (Labor Code)</th>
+                        <th colspan="2">Monday <span class="PDFDay">{!Date_mon}</span></th>
+                        <th colspan="2">Tuesday <span class="PDFDay">{!Date_tue}</span></th>
+                        <th colspan="2">Wednesday <span class="PDFDay">{!Date_wed}</span></th>
+                        <th colspan="2">Thursday <span class="PDFDay">{!Date_thu}</span></th>
+                        <th colspan="2">Friday <span class="PDFDay">{!Date_fri}</span></th>
+                        <th colspan="2">Saturday <span class="PDFDay">{!Date_sat}</span></th>
+                        <th colspan="2">Sunday <span class="PDFDay">{!Date_sun}</span></th>
+                    </tr></thead>
+                    <tbody>
+                      <tr class="SubTitle">
+                        <td></td>
+                        <td class="no-border">HRS</td>
+                        <td>
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                        <td class="no-border">HRS</td>
+                        <td>
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                        <td class="no-border">HRS</td>
+                        <td>
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                        <td class="no-border">HRS</td>
+                        <td>
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                        <td class="no-border">HRS</td>
+                        <td>
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                        <td class="no-border">HRS</td>
+                        <td>
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                        <td class="no-border">HRS</td>
+                        <td class="LastLine">
+                          <div class="top">OT</div>
+                          <div class="bottom">DBL</div>
+                        </td>
+                      </tr>
+                      <tr class="PDFDesignation"><td colspan="15">PROJECT DIRECTOR / MGR.</td></tr>
+                      <apex:repeat value="{!DailyTimeSheet.ProjectManagers}" var="timesheet">
+                        <tr>
+                            <td><apex:outputtext value="{!timesheet.Name}"/>(<apex:outputtext value="{!timesheet.LaborCode}"/>)</td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.MondayRegHours}" rendered="{!if(timesheet.MondayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td>
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.MondayOTHours}" rendered="{!if(timesheet.MondayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.MondayDBLHours}" rendered="{!if(timesheet.MondayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.TuesdayRegHours}" rendered="{!if(timesheet.TuesdayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td>
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.TuesdayOTHours}" rendered="{!if(timesheet.TuesdayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.TuesdayDBLHours}" rendered="{!if(timesheet.TuesdayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.WednesdayRegHours}" rendered="{!if(timesheet.WednesdayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td>
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.WednesdayOTHours}" rendered="{!if(timesheet.WednesdayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.WednesdayDBLHours}" rendered="{!if(timesheet.WednesdayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.ThursdayRegHours}" rendered="{!if(timesheet.ThursdayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td>
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.ThursdayOTHours}" rendered="{!if(timesheet.ThursdayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.ThursdayDBLHours}" rendered="{!if(timesheet.ThursdayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.FridayRegHours}" rendered="{!if(timesheet.FridayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td>
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.FridayOTHours}" rendered="{!if(timesheet.FridayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.FridayDBLHours}" rendered="{!if(timesheet.FridayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.SaturdayRegHours}" rendered="{!if(timesheet.SaturdayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td>
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.SaturdayOTHours}" rendered="{!if(timesheet.SaturdayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.SaturdayDBLHours}" rendered="{!if(timesheet.SaturdayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayRegHours == '',True,False)}"/>
+                                <apex:outputtext value="{!timesheet.SundayRegHours}" rendered="{!if(timesheet.SundayRegHours!= '',True,False)}"/>
+                            </td>
+                            <td class="LastLine">
+                                <div class="top">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayOTHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.SundayOTHours}" rendered="{!if(timesheet.SundayOTHours!= '',True,False)}"/>
+                                </div>
+                                <div class="bottom">
+                                    <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayDBLHours == '',True,False)}"/>
+                                    <apex:outputtext value="{!timesheet.SundayDBLHours}" rendered="{!if(timesheet.SundayDBLHours!= '',True,False)}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                        <tr class="PDFDesignation"><td colspan="15">SUPERVISORS</td></tr>     
+                        <apex:repeat value="{!DailyTimeSheet.Supervisors}" var="timesheet">
+    <tr>
+        <td><apex:outputtext value="{!timesheet.Name}"/>(<apex:outputtext value="{!timesheet.LaborCode}"/>)</td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.MondayRegHours}" rendered="{!if(timesheet.MondayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.MondayOTHours}" rendered="{!if(timesheet.MondayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.MondayDBLHours}" rendered="{!if(timesheet.MondayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.TuesdayRegHours}" rendered="{!if(timesheet.TuesdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.TuesdayOTHours}" rendered="{!if(timesheet.TuesdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.TuesdayDBLHours}" rendered="{!if(timesheet.TuesdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.WednesdayRegHours}" rendered="{!if(timesheet.WednesdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.WednesdayOTHours}" rendered="{!if(timesheet.WednesdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.WednesdayDBLHours}" rendered="{!if(timesheet.WednesdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.ThursdayRegHours}" rendered="{!if(timesheet.ThursdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.ThursdayOTHours}" rendered="{!if(timesheet.ThursdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.ThursdayDBLHours}" rendered="{!if(timesheet.ThursdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.FridayRegHours}" rendered="{!if(timesheet.FridayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.FridayOTHours}" rendered="{!if(timesheet.FridayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.FridayDBLHours}" rendered="{!if(timesheet.FridayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.SaturdayRegHours}" rendered="{!if(timesheet.SaturdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SaturdayOTHours}" rendered="{!if(timesheet.SaturdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SaturdayDBLHours}" rendered="{!if(timesheet.SaturdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.SundayRegHours}" rendered="{!if(timesheet.SundayRegHours!= '',True,False)}"/>
+        </td>
+        <td class="LastLine">
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SundayOTHours}" rendered="{!if(timesheet.SundayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SundayDBLHours}" rendered="{!if(timesheet.SundayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+    </tr>
+</apex:repeat> 
+ <tr class="PDFTimelineTotal">
+  <td>Daily Supervisors Hrs</td>
+  <td colspan="2" >{!DailyTimeSheet.TotSupMon}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotSupTue}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotSupWed}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotSupThu}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotSupFri}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotSupSat}</td>
+  <td colspan="2" class="LastLine">{!DailyTimeSheet.TotSupSun}</td>
+</tr>
+<tr class="PDFDesignation"><td colspan="15">CREW MEMBERS</td></tr>
+<apex:repeat value="{!DailyTimeSheet.CrewMembers}" var="timesheet">
+    <tr>
+        <td><apex:outputtext value="{!timesheet.Name}"/>(<apex:outputtext value="{!timesheet.LaborCode}"/>)</td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.MondayRegHours}" rendered="{!if(timesheet.MondayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.MondayOTHours}" rendered="{!if(timesheet.MondayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.MondayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.MondayDBLHours}" rendered="{!if(timesheet.MondayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.TuesdayRegHours}" rendered="{!if(timesheet.TuesdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.TuesdayOTHours}" rendered="{!if(timesheet.TuesdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.TuesdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.TuesdayDBLHours}" rendered="{!if(timesheet.TuesdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.WednesdayRegHours}" rendered="{!if(timesheet.WednesdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.WednesdayOTHours}" rendered="{!if(timesheet.WednesdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.WednesdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.WednesdayDBLHours}" rendered="{!if(timesheet.WednesdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.ThursdayRegHours}" rendered="{!if(timesheet.ThursdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.ThursdayOTHours}" rendered="{!if(timesheet.ThursdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.ThursdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.ThursdayDBLHours}" rendered="{!if(timesheet.ThursdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.FridayRegHours}" rendered="{!if(timesheet.FridayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.FridayOTHours}" rendered="{!if(timesheet.FridayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.FridayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.FridayDBLHours}" rendered="{!if(timesheet.FridayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.SaturdayRegHours}" rendered="{!if(timesheet.SaturdayRegHours!= '',True,False)}"/>
+        </td>
+        <td>
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SaturdayOTHours}" rendered="{!if(timesheet.SaturdayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SaturdayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SaturdayDBLHours}" rendered="{!if(timesheet.SaturdayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+        <td class="no-border">
+            <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayRegHours == '',True,False)}"/>
+            <apex:outputtext value="{!timesheet.SundayRegHours}" rendered="{!if(timesheet.SundayRegHours!= '',True,False)}"/>
+        </td>
+        <td class="LastLine">
+            <div class="top">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayOTHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SundayOTHours}" rendered="{!if(timesheet.SundayOTHours!= '',True,False)}"/>
+            </div>
+            <div class="bottom">
+                <apex:outputtext value="00.00" rendered="{!if(timesheet.SundayDBLHours == '',True,False)}"/>
+                <apex:outputtext value="{!timesheet.SundayDBLHours}" rendered="{!if(timesheet.SundayDBLHours!= '',True,False)}"/>
+            </div>
+        </td>
+    </tr>
+</apex:repeat> 
+ <tr class="PDFTimelineTotal">
+  <td>Daily Crew Members Hrs</td>
+  <td colspan="2" >{!DailyTimeSheet.TotCWMon}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotCWTue}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotCWWed}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotCWThu}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotCWFri}</td>
+  <td colspan="2" >{!DailyTimeSheet.TotCWSat}</td>
+  <td colspan="2" class="LastLine">{!DailyTimeSheet.TotCWSun}</td>
+</tr>
+                        
+                      
+                    </tbody>
+                  </table>
+                
+                </th>
+              </tr>
+            </thead>
+          </table>
+     </div>
+    
+     
+     
+        
+        <div class="PDFOverallTotal">
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Supervisor Non-PW Reg</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotSupNPWReg}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Supervisor Non-PW OT</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotSupNPWOT}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Supervisor Non-PW DBL</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotSupNPWDBL}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Supervisor PW Reg</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotSupPWReg}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Supervisor PW OT</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotSupPWOT}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Supervisor PW DBL</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotSupPWDBL}</label>
+        </div>
+    </div>
+    
+    <div class="PDFOverallTotal">
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Crew Non-PW Reg</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotCWNPWReg}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Crew Non-PW OT</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotCWNPWOT}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Crew Non-PW DBL</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotCWNPWDBL}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Crew PW Reg</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotCWPWReg}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Crew PW OT</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotCWPWOT}</label>
+        </div>
+        <div class="OverallWrap">
+            <label class="WrapTitle">Total Crew PW DBL</label>
+            <label class="WrapTxt">{!DailyTimeSheet.TotCWPWDBL}</label>
+        </div>
+    </div>
+ 
+     </div>           
+        
+  
+</apex:page>

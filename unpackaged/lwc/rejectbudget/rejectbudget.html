@@ -1,0 +1,46 @@
+<!--
+  @Component Name     : rejectbudget.html
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 11/6/2019, 7:56:57 AM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/14/2019, 8:11:46 AM   sean.gray@atirestoration.com     Initial Version
+-->
+<template>
+    <template if:true={ApprovedOrRejected}>
+        <!-- <lightning-record-edit-form object-api-name="Budget__c">
+            <lightning-input-field field-name="ATI_Job__c" value={lineitem} onchange={test}></lightning-input-field>
+          </lightning-record-edit-form>
+          <lightning-button label="test click" onclick={clickInsert}></lightning-button>
+    <br> -->
+     Comments:<br>
+     <lightning-input value={Comments} onchange={updateComments}></lightning-input>
+     <br>
+     <lightning-button label="Reject Budget" onclick={submitRejectBudget} disabled={commentsBlank} variant="brand"></lightning-button>
+     <div if:true={loading}>
+     <div class="Spinner">
+      <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+  </div>
+  </div>
+    </template>
+    <template if:false={ApprovedOrRejected}>
+        <br>
+        <br>
+        Unable to Reject Budget
+        <br>
+        <br>
+        <br>
+        The Budget is either Approved, Rejected, or Submitted for Approval. 
+        <br>
+        <br>
+        <lightning-button label="Close" onclick={ClosePage}></lightning-button>
+
+    </template> 
+ 
+     
+ </template>

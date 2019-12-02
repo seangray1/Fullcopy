@@ -1,0 +1,269 @@
+<!--
+  @Page Name          : InvoicePDF.page
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 8/13/2019, 1:32:03 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/13/2019, 1:03:35 PM   sean.gray@atirestoration.com     Initial Version
+-->
+<apex:page id="invoicePDF"
+        standardController="Invoice__c"
+        extensions="InvoicePDFController"
+        renderAs="pdf"
+        showHeader="false"
+        cache="false">
+    
+    <apex:composition template="InvoicePDFTemplate">
+        <apex:define name="body">
+            <table style="width:7.5in;">
+                <tr>
+                    <td style="width:3.5in; height:1.2in; text-align:left; vertical-align:top; padding-left:0.35in; padding-bottom:0.1in;">
+                        Bill To:<br/>
+                        <apex:outputPanel layout="none" >
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(invoice.Bill_To_Attention__c))}">
+                                <apex:outputText value="{!invoice.Bill_To_Attention__c}"></apex:outputText>
+                                <br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(invoice.Bill_To_Attention_Line_2__c))}">
+                                <apex:outputText value="{!invoice.Bill_To_Attention_Line_2__c}"></apex:outputText>
+                                <br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!AND( invoice.Bill_To__c != null, NOT(invoice.Omit_Bill_To__c))}">
+                                <apex:outputText value="{!invoice.Bill_To__r.Name}" /><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!AND( invoice.Bill_To_Attention_Lookup__c != null, 
+                                                               ( invoice.Bill_To__r.Name != invoice.Bill_To_Attention_Lookup__r.FirstName + ' ' + invoice.Bill_To_Attention_Lookup__r.LastName ),
+                                                               OR(invoice.Bill_To_Attention__c == null, invoice.Omit_Bill_To__c),
+                                                                  ISBLANK(invoice.Bill_To_Attention__c), 
+                                                                  ISBLANK(invoice.Bill_To_Attention_Line_2__c))}">
+                                <apex:outputText value="{!invoice.Bill_To_Attention_Lookup__r.FirstName} {!invoice.Bill_To_Attention_Lookup__r.LastName}" />
+                                <br/>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(invoice.Bill_To_Address_Formula__c)), ISBLANK(invoice.Care_Of__c))}">
+                            <apex:outputText value="{!invoice.Bill_To_Address_Formula__c}" escape="false" /><br/>
+                        </apex:outputPanel>
+                         <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.Care_Of__c))}">
+                            <apex:outputText escape="false" value="C/O {!invoice.Care_Of__r.Name}" /><br/>
+                             <apex:outputText escape="false" value="{!invoice.Care_of_Address_Formula__c}" /><br/>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_CareOf__c))}">  
+                            <apex:outputText escape="false" value="{!SUBSTITUTE(invoice.CC_Address_Care_of_Formula__c, '\n', '<br/>')}" /><br/>
+                        </apex:outputPanel>
+
+                         <apex:outputPanel layout="none" rendered="{!(ISBLANK(invoice.CC_Account__c))}">  
+                            <apex:outputText escape="false" value="{!SUBSTITUTE
+                            (invoice.CC_Address_Lookup__c, '\n', '<br/>')}" /><br/>
+                        </apex:outputPanel>  
+                        
+                        <!--
+                            EDITED BY: Lennard Santos
+                            Company: Cloud Sherpas
+                            Reason: Repeats value of Billing City State and Zip Code
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.Bill_to_City__c))}">
+                            <apex:outputText escape="false" value="{!invoice.Bill_to_City__c}" />,&nbsp;
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.Bill_to_State__c))}">
+                            <apex:outputText escape="false" value="{!invoice.Bill_to_State__c}" />&nbsp;
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.Bill_to_Zip__c))}">
+                            <apex:outputText escape="false" value="{!invoice.Bill_to_Zip__c}" /><br/>
+                        </apex:outputPanel>-->
+                    </td>
+                    <td style="width:3in; height:1.2in; text-align:left; vertical-align:top; padding-left:0.35in; padding-bottom:0.1in;">
+                            <!--
+                            COMPANY: CLOUD SHERPAS
+                            EDITED BY: LENNARD SANTOS
+                            DESCRIPTION: ADDED JOB NAME ON PDF
+                            
+                        Job Name: <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Job_Name__c))}">
+                            <apex:outputText value="{!invoice.ATI_Job__r.Job_Name__c}" /><br/>
+                        </apex:outputPanel>
+                        <br/>
+                        -->
+                        Job Location:<br/>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Job_Name__c))}">
+                            <apex:outputText value="{!invoice.ATI_Job__r.Job_Name__c}" /><br/>
+                        </apex:outputPanel>
+                        <!-- 
+                        <apex:outputPanel layout="none" rendered="{!NOT(OR(invoice.ATI_Job__r.Job_Name__c == invoice.ATI_Job__r.Project_Site_Name__c,ISBLANK(invoice.ATI_Job__r.Project_Site_Name__c)))}">
+                            <apex:outputText value="{!invoice.ATI_Job__r.Project_Site_Name__c}" /><br/>
+                        </apex:outputPanel>
+                         -->
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Project_Site_Address__c))}">
+                            <apex:outputText escape="false" value="{!SUBSTITUTE(invoice.ATI_Job__r.Project_Site_Address__c, '\n', '<br/>')}" /><br/>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Project_Site_Address_2__c))}">
+                            <apex:outputText escape="false" value="{!SUBSTITUTE(invoice.ATI_Job__r.Project_Site_Address_2__c, '\n', '<br/>')}" /><br/>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Project_Site_City__c))}">
+                            <apex:outputText escape="false" value="{!invoice.ATI_Job__r.Project_Site_City__c}" />,&nbsp;
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Project_Site_State__c))}">
+                            <apex:outputText escape="false" value="{!invoice.ATI_Job__r.Project_Site_State__c}" />&nbsp;
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.ATI_Job__r.Project_Site_Zipcode__c))}">
+                            <apex:outputText escape="false" value="{!invoice.ATI_Job__r.Project_Site_Zipcode__c}" /><br/>
+                        </apex:outputPanel>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-bottom:0.2in; text-align:center;">
+                        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.Reference_Number__c))}">
+                           REFERENCE #: <apex:outputText value="{!invoice.Reference_Number__c}" />
+                        </apex:outputPanel>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width:7.5in; margin-left:0.3in; height:2.5in;">
+                            <tr>
+                                <td style="text-decoration:underline; text-align:left; padding-left:0.25in; font-size:1.2em; vertical-align:top; height: 1em;">
+                                    DESCRIPTION
+                                </td>
+                                <td style="text-decoration:underline; text-align:right; width:1.25in; font-size:1.2em; vertical-align:top; height: 1em;">
+                                    AMOUNT
+                                </td>
+                            </tr>
+                            <apex:repeat value="{!lineItems}" var="li">
+                                <tr>
+                                    <td style="text-align:left; vertical-align:top;">
+                                        <!--
+                                        COMPANY: CLOUD SHERPAS
+                                        EDITED BY: LENNARD SANTOS
+                                        DESCRIPTION: ADDED RENDERING CONDITION OF LINE ITEMS
+                                        -->
+                                        <apex:outputText value="{!li.Description__c}" rendered="{!(li.Description__c!=''&& (li.Amount__c!=0||li.Note__c==true))}"/>
+                                        <!--  <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(li.Description__c))}">
+                                            <br/>*&nbsp;<apex:outputText value="{!li.Description__c}" />
+                                        </apex:outputPanel>-->
+                                    </td>
+                                    <td style="text-align:right; vertical-align:top;">
+                                        <apex:outputField value="{!li.Amount__c}" rendered="{!NOT(li.Note__c)}"/>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                        <table style="width:7.5in; margin-left:0.3in; height:1.6in;">
+                            <tr>
+                                <!-- This row should match the column headings in style so that the table
+                                     is roughly the same size -->
+                                <td style="text-decoration:underline; text-align:left; padding-left:0.25in; font-size:0.1em; height:0.01in;">
+                                    &nbsp;
+                                </td>
+                                <td style="text-decoration:underline; text-align:right; width:1.25in; font-size:0.1em; height:0.01in;">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr style="background-color:white;">
+                                <td style="height:1.1in;">
+                                    <table>
+                                        <tr>
+                                            <td style="text-align:right; vertical-align:top; padding-top:0.15in;">
+                                                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_Account__c))}">
+                                                     cc:
+                                                </apex:outputPanel>
+                                            </td>
+                                            <td style="text-align:left; vertical-align:top; padding-top:0.15in;">
+                                                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_Attention__c))}">
+                                                    <apex:outputText value="{!invoice.CC_Attention__c}" /><br/>
+                                                </apex:outputPanel>                                                
+                                                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_Account__c))}">
+                                                    <apex:outputText value="{!invoice.CC_Account__r.Name}" /><br/>
+                                                </apex:outputPanel>
+                                                <!--<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_Company__c))}">
+                                                    <apex:outputText value="{!invoice.CC_Company__c}" /><br/>
+                                                </apex:outputPanel> -->
+                                                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_Address_Formula__c))}">
+                                                    <apex:outputText escape="false" value="{!SUBSTITUTE(invoice.CC_Address_Formula__c, '/n', '<br/>')}" /><br/>
+                                                </apex:outputPanel>
+                                              <!--  <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(invoice.CC_Account__c))}">
+                                                    <apex:outputText value="{!invoice.CC__r.Email}" /><br/>
+                                                </apex:outputPanel> -->
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr style="background-color:white;">
+                                <td style="text-align:right; padding-right:0.2in;">
+                                    Amount Billed
+                                </td>
+                                <td style="text-align:right;">
+                                    <apex:outputField value="{!invoice.Total_Costs_Per_Contract__c}" />
+                                </td>
+                            </tr>
+                            <tr style="background-color:white;">
+                                <td style="text-align:right; padding-right:0.2in;">
+                                    Total Tax
+                                </td>
+                                <td style="text-align:right;">
+                                    <apex:outputField value="{!invoice.Total_Tax__c}" />
+                                </td>
+                            </tr>
+                            <tr style="background-color:white;">
+                                <td style="text-align:right; padding-right:0.2in;">
+                                    Retainage Held
+                                </td>
+                                <td style="text-align:right;">   
+                                    <apex:outputText value="{!neg}" />                           
+                                    <apex:outputField value="{!invoice.Retainage_Held__c}" />
+                                </td>
+                            </tr>
+                            <!--
+                            COMPANY: CLOUD SHERPAS
+                            EDITED BY: LENNARD SANTOS
+                            DESCRIPTION: ADDED TOTAL CREDITS FIELD ON PDF
+                            -->
+                            <apex:outputPanel layout="none" rendered="{!invoice.Total_Credits__c != 0}">
+                                <tr style="background-color:white;">
+                                    <td style="text-align:right; padding-right:0.2in;">
+                                        Payments / Deposits
+                                    </td>
+                                    <td style="text-align:right;border-bottom:solid 1px;">
+                                       - <apex:outputField value="{!invoice.Total_Credits__c}" />
+                                    </td>
+                                </tr>
+                            </apex:outputPanel>
+                            
+                            
+                            <tr style="background-color:white;">
+                                <td style="text-align:right; padding-right:0.2in; padding-top:0.05in;">
+                                    Net Due:
+                                </td>
+                                <td style="text-align:right; border-bottom:3px double gray; border-top: 1px solid gray; text-decoration:none; padding-top:0.05in;">
+                                    <apex:outputField value="{!invoice.Net_Due__c}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td> 
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:center; height:0.3in;margin-top:0.1in; padding-top:0.1in;">
+                        <p style="display:inline-block; width:4.5in; font-size:9pt; margin-top: 0.1in; padding-top: 0.1in;">
+                            All past-due balances shall be subject to interest
+                            at the rate of 1.5% per month or the maximum
+                            rate allowed by law, whichever is greater, until paid in full.
+
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </apex:define>
+    </apex:composition>
+</apex:page>

@@ -1,0 +1,28 @@
+<!--
+  @File Name          : ChatterAura.cmp
+  @Description        : 
+  @Author             : ChangeMeIn@UserSettingsUnder.SFDoc
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 11/25/2019, 7:35:33 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    10/31/2019   ChangeMeIn@UserSettingsUnder.SFDoc     Initial Version
+-->
+<aura:component controller="JobUtility" implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+  <aura:attribute name="jobId" type="Id"></aura:attribute> 
+  <aura:attribute name="recordId" type="Id" description="This attribute is for getting record id"/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<aura:if isTrue="{!v.jobId}">
+<lightning:tabset>
+  <lightning:tab  label="Job Chatter">
+<forceChatter:publisher context="RECORD" recordId="{!v.jobId}"/> 
+<forceChatter:feed type="record" subjectId="{!v.jobId}"/>
+</lightning:tab>
+<lightning:tab label="Log a Call">
+  <c:logCall recordId = "{!v.recordId}" onrecordChange= "{!c.refreshView}"></c:logCall>
+</lightning:tab>
+</lightning:tabset>
+
+</aura:if>
+</aura:component>

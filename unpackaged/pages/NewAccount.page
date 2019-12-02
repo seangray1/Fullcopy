@@ -1,0 +1,30 @@
+<apex:page standardController="Account" sidebar="false" showHeader="false">
+    <apex:include pageName="pca__Component"/>
+    
+<apex:form >
+
+    <apex:pageMessages escape="false" />
+    
+    <apex:pageBlock id="thePageBlock" mode="edit" title="Enter New Account">
+    
+        <apex:pageBlockButtons location="bottom">
+            <apex:commandButton value="Save" action="{!Save}"/>
+        </apex:pageBlockButtons>
+        
+
+        <apex:pageblockSection >         
+            <apex:inputField value="{!Account.name}"/>
+            <apex:inputField value="{!Account.type}" required="true"/>
+            <apex:inputField id="acc17street" value="{!Account.BillingStreet}" required="true"/>
+            <apex:inputfield id="acc17country" value="{!Account.BillingCountry}" required="true"/>
+            <apex:inputField id="acc17city" value="{!Account.BillingCity}" required="true"/>
+            <apex:inputField value="{!Account.Phone}" required="false"/>
+            <apex:inputField id="acc17state" value="{!Account.BillingState}" required="true"/>
+            <apex:inputField value="{!Account.Phone_Ext__c}"/>
+            <apex:inputField id="acc17zip" value="{!Account.BillingPostalCode}" required="true"/>
+        </apex:pageblockSection>
+
+
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

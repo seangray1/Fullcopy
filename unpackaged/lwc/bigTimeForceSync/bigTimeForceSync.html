@@ -1,0 +1,60 @@
+<!--
+  @File Name          : bigTimeForceSync.html
+  @Description        : 
+  @Author             : Sean Gray
+  @Group              : 
+  @Last Modified By   : Sean Gray
+  @Last Modified On   : 11/1/2019, 6:50:16 AM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    11/1/2019   Sean Gray     Initial Version
+-->
+<template>
+<template if:true={start} >
+    <div class="center">Send to Bigtime?</div>   
+
+<!-- <div class="buttons">
+         
+    <button  onclick={create} type="button" class="success">Create</button>
+        
+        
+    <button onclick={cancel} type="button" class="cancel">Cancel</button>
+       
+</div> -->
+
+<!-- <lightning-layout verticalalign="center" horizontalalign="center">
+            <lightning-layoutItem padding="around-small">
+                    <button onclick={create} type="button" class="slds-button slds-button_brand">Create</button>
+            </lightning-layoutItem>
+            <lightning-layoutItem padding="around-small">
+                    <button onclick={cancel} type="button" class="slds-button slds-button_brand">Cancel</button>
+            </lightning-layoutItem>
+        </lightning-layout> -->
+
+<!-- <div class="inline">
+        <div class="slds-float--center">
+            
+        </div>
+        <div class="slds-float--center">
+        
+        </div>
+        </div> -->
+        <div class="slds-align_absolute-center" style="height:5rem">
+                <button onclick={create} type="button" class="slds-button slds-button_brand">Create</button>
+                <button onclick={cancel} type="button" class="slds-button slds-button_brand">Cancel</button>
+                </div>
+</template>
+<template if:true={loading}>
+        <!--<div class="Spinner">
+            <lightning-spinner size="medium" variant="brand"></lightning-spinner>
+        </div>-->
+        <div class="waiting">Waiting on Response From BigTime</div>
+        <div class="exampleHolder">
+                <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+            </div>
+    </template>
+<template if:true={responseMessage}>
+        <div class="Message">{error}</div>
+    <lightning-button label="Close" onclick={cancel} type="button" variant="destructive" class=""></lightning-button>
+</template>
+</template>

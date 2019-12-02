@@ -1,0 +1,22 @@
+<apex:page standardController="Billing_Address__c">
+    <apex:pagemessages />
+    <apex:form >
+        <apex:sectionHeader title="Billing Address"/>
+        <apex:pageBlock title="Billing Address" mode="edit">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Save" action="{!Save}" />
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockButtons>
+            <apex:pageBlockSection title="Address Finder" >
+                <pca:AddressFinder label="Billing Address" record="{!Billing_Address__c}" address="BillingAddress" 
+                                 value="{!Billing_Address__c.Billing_Street__c}</br>{!Billing_Address__c.Billing_City__c} 
+                                        {!Billing_Address__c.Billing_State__c} 
+                                        {!Billing_Address__c.Billing_Zipcode__c} 
+               							{!Billing_Address__c.Billing_Country__c}"/> 
+                <apex:inputField value="{!Billing_Address__c.Account__c}"/>
+                <apex:inputField value="{!Billing_Address__c.Building_Suite__c}"/>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

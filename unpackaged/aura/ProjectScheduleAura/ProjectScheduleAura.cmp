@@ -1,0 +1,17 @@
+<!--
+  @Component Name     : ProjectScheduleAura.cmp
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 8/23/2019, 10:10:44 AM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    8/23/2019, 10:10:09 AM   sean.gray@atirestoration.com     Initial Version
+-->
+<aura:component implements="force:appHostable,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName" access="global">
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />        
+<!---<c:newProjectSchedule recordId = "{!v.recordId}"/> -->
+</aura:component>

@@ -1,0 +1,23 @@
+.selectedOption {
+    width: 99.5%;
+    position: absolute;
+    z-index: 10;
+}
+
+.targetOption {
+    position: relative;
+}
+
+.search-result_left-pad {
+    padding-left: 35px !important;
+}
+
+.slds-input-has-border_padding {
+    border: 1px solid grey;
+    padding: 3px;
+    background: white;
+}
+.Labels {
+    margin-left: 12px;
+    font-size: 95%;
+}

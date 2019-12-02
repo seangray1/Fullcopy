@@ -1,0 +1,2 @@
+<apex:page standardController="Work_Order__c"><apex:canvasApp namespacePrefix="efs" applicationName="Egnyte for Salesforce" parameters="{'id':'{!
+Work_Order__c.ATI_Job__r.id}'}" scrolling="auto" width="100%" height="500px"/></apex:page>

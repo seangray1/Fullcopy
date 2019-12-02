@@ -1,0 +1,69 @@
+<!--
+  @Page Name          : BudgetCloneButton.page
+  @Description        : 
+  @Author             : sean.gray@atirestoration.com
+  @Group              : 
+  @Last Modified By   : sean.gray@atirestoration.com
+  @Last Modified On   : 7/16/2019, 11:45:12 AM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    7/16/2019, 11:45:12 AM   sean.gray@atirestoration.com     Initial Version
+-->
+<apex:page standardController="Budget__c"  extensions="BudgetCloneController" standardStylesheets="false" >
+ <head>
+ <style>
+        .boldHighlight {
+            font-weight: bold;
+            font-size: 130%;
+            background-color: yellow;
+        }
+    </style>
+    <script type="text/javascript">
+    
+        function changeDesc(plName){
+            var plFieldId = plName.id;
+            var plIDsplitted = plFieldId.split(':NamePickList');
+            var changedPlID = document.getElementById(plIDsplitted[0]+":desc");
+            changedPlID .value = plName.value;                                   
+       }
+   </script>
+    
+    <apex:sectionHeader subtitle="{!Budget__c.Name}" title="Budget Sheet"/>
+
+    <apex:form id="BudgetSheet">
+        <apex:pageMessages id="messages"/>
+        <apex:pageBlock title="Budget Edit" mode="edit" id="BudgetpageBlock">
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save & Create" action="{!saveBudget}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection id="InfoSection" title="Information" collapsible="false" columns="2" >   
+                <apex:inputField value="{!Budget__c.Name}"/>
+
+                <apex:inputField value="{!Budget__c.ATI_Job__c}" required="true" id="jobField" onchange="passJob(this)"/>
+                
+                <apex:inputField value="{!Budget__c.Start_Date__c}"/>
+                <apex:inputField value="{!Budget__c.Regional_Manager__c}"/>
+                <apex:inputField value="{!Budget__c.Estimated_Completion_Date__c}"/>  
+                <apex:inputField value="{!Budget__c.Project_Director__c}"/>
+                <apex:inputfield value="{!Budget__c.Allocations__c}">
+                    <apex:actionSupport event="onchange" rerender="allocation"/>
+                </apex:inputfield>                
+                <apex:inputField value="{!Budget__c.Allocation_Overhead__c}"/>
+                <apex:inputField value="{!Budget__c.Project_Manager__c}"/>
+                <apex:inputfield value="{!Budget__c.X3_Program_Fees__c}"/>
+                <apex:outputtext value=""/>
+                <apex:inputField value="{!Budget__c.GP_Goal__c}"/>
+                <apex:outputtext value=""/>
+                <apex:outputField value="{!Budget__c.Sales_Tax__c}"/>
+                <apex:pageBlockSectionItem ></apex:pageblocksectionitem>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    </head>
+</apex:page>

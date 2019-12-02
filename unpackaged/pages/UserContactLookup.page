@@ -1,0 +1,223 @@
+<apex:page showHeader="false" sidebar="false" id="pg" controller="UserContactLookup" action="{!DoSearchAll}">
+    <script>
+        .align_center
+        {
+            text-align: center;
+        }
+    </script>
+    <script type="text/javascript">
+        function setAllCheckbox(thisInput)
+        {
+            var checkboxes = document.getElementsByName('conItem');
+            for(var i = 0; i < checkboxes.length; i++)
+            { 
+                checkboxes[i].checked = thisInput.checked;
+            }
+        }
+        
+        function setAllCheckboxUser(thisInput)
+        {
+            var checkboxes = document.getElementsByName('userItem');
+            for(var i = 0; i < checkboxes.length; i++)
+            { 
+                checkboxes[i].checked = thisInput.checked;
+            }
+        }
+        
+        function enterAttName()
+        {
+            var checkboxes = document.getElementsByName('conItem');
+            var checkboxesuser = document.getElementsByName('userItem');
+            var names = '';
+            var emails = '';
+            var contactIds = '';
+            
+            for(var i = 0; i < checkboxes.length; i++)
+            {
+                if(checkboxes[i].checked)
+                {
+                     names += checkboxes[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     contactIds += checkboxes[i].parentNode.lastChild.value + ',';
+                     emails += checkboxes[i].parentNode.nextSibling.lastChild.value + ',';         
+                }
+            }
+            
+            for(var i = 0; i < checkboxesuser.length; i++)
+            {
+                if(checkboxesuser[i].checked)
+                {
+                     names += checkboxesuser[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     emails += checkboxesuser[i].parentNode.nextSibling.lastChild.value + ',';              
+                }
+            }
+            
+            var preSelectEmails = document.getElementById('pg:frm:hdnEmails').value;
+            var preSelectNames = document.getElementById('pg:frm:hdnNames').value;
+            var preSelectContactIds = document.getElementById('pg:frm:hdnContactIds').value;
+            
+            if(preSelectEmails != null && preSelectEmails != ''){
+                emails = preSelectEmails  + emails;
+            }
+            if(preSelectNames != null && preSelectNames != ''){
+                names = preSelectNames  + names;
+            }
+            
+            if(preSelectContactIds != null && preSelectContactIds != ''){
+                contactIds = preSelectNames  + contactIds;
+            }
+              
+            window.opener.document.getElementById('page:form:block:section:additionalToItem{!IsCC}:additionalToNames{!IsCC}').value = names.substring(0, names.length-2);
+            window.opener.document.getElementById('page:form:additionalToEmails{!IsCC}').value = emails.substring(0, emails.length-1);
+            
+            if( window.opener.document.getElementById('page:form:additionalToContactIDs{!IsCC}')){
+                window.opener.document.getElementById('page:form:additionalToContactIDs{!IsCC}').value = contactIds.substring(0, contactIds.length-1);
+            }
+            window.close();
+        }
+        
+        
+        function fncPreSelect(){
+         try{
+            var checkboxes = document.getElementsByName('conItem');
+            var checkboxesuser = document.getElementsByName('userItem');
+            var names = '';
+            var emails = '';
+            var contactIds = '';
+            
+            for(var i = 0; i < checkboxes.length; i++)
+            {
+                if(checkboxes[i].checked)
+                {
+                     names += checkboxes[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     contactIds += checkboxes[i].parentNode.lastChild.value + ',';
+                     emails += checkboxes[i].parentNode.nextSibling.lastChild.value + ',';              
+                }
+            }
+            
+            for(var i = 0; i < checkboxesuser.length; i++)
+            {
+                if(checkboxesuser[i].checked)
+                {
+                     names += checkboxesuser[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     emails += checkboxesuser[i].parentNode.nextSibling.lastChild.value + ',';              
+                }
+            }
+            
+            var preSelectEmails = document.getElementById('pg:frm:hdnEmails').value;
+            var preSelectNames = document.getElementById('pg:frm:hdnNames').value;
+            
+            var preSelectContactIds = document.getElementById('pg:frm:hdnContactIds').value;
+            
+            if(preSelectEmails != null && preSelectEmails != ''){
+                preSelectEmails = preSelectEmails  + emails;
+            }
+            else{
+                preSelectEmails = emails;
+            }
+            
+            if(preSelectNames != null && preSelectNames != ''){
+                preSelectNames = preSelectNames  + names;
+            }
+            else{
+                preSelectNames = names;
+            }
+            
+            if(preSelectContactIds != null && preSelectContactIds != ''){
+                preSelectContactIds = preSelectContactIds  + contactIds;
+            }
+            else{
+                preSelectContactIds = contactIds;
+            }
+            
+            
+            //alert(preSelectEmails);
+            document.getElementById('pg:frm:hdnEmails').value = preSelectEmails;
+            document.getElementById('pg:frm:hdnNames').value = preSelectNames;
+            
+            document.getElementById('pg:frm:hdnContactIds').value = preSelectContactIds;
+            
+          }
+          catch(e){
+            //alert(e);
+          }  
+        }
+        
+    </script>
+    <apex:form id="frm">
+     <apex:pageMessages />
+     
+     <apex:inputHidden id="hdnEmails" value="{!SelectedEmails}" />
+     <apex:inputHidden id="hdnNames" value="{!SelectedNames}" />
+     <apex:inputHidden id="hdnContactIds" value="{!SelectedContactIds}" />
+     
+     <apex:pageBlock title="Search">
+     
+     Keyword:&nbsp;<apex:inputText value="{!QueryString}" /> &nbsp;     
+              <apex:commandButton value="Search User" action="{!DoSearchUser}" onclick="fncPreSelect();" />&nbsp;     
+              <apex:commandButton value="Search Contact" action="{!DoSearchContact}" onclick="fncPreSelect();" />
+    </apex:pageBlock>
+     <br/>
+     
+     <apex:outputText style="color:red;" value="You have already selected the following names: {!SelectedNames}" rendered="{!IF(SelectedNames != null && SelectedNames != '', true, false)}" />
+      
+        <apex:pageBlock title="Contacts">
+           
+            <apex:pageBlockButtons location="top">
+               <apex:commandButton onclick="enterAttName()" value="Select"/>
+            </apex:pageBlockButtons>
+            
+            <div style="height:160px;width:100%;overflow:auto;">    
+            <apex:pageBlockTable value="{!Contacts}" var="con">
+                <apex:column styleClass="align_center" headerClass="align_center">
+                    <apex:facet name="header">
+                        <input id="checkbox" type="checkbox" onclick="setAllCheckbox(this);"/>
+                    </apex:facet>
+                    <input name="conItem" type="checkbox"/> 
+                    <apex:inputHidden value="{!con.Id}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputText value="{!con.Name}"/>
+                    <apex:inputHidden value="{!con.Email}"/>
+                </apex:column>
+           
+                <apex:column >
+                    <apex:facet name="header">Email</apex:facet>
+                    <apex:outputText value="{!con.Email}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            </div>
+            
+        </apex:pageBlock>
+        
+         <apex:pageBlock title="Users">
+           
+            <apex:pageBlockButtons location="bottom">
+               <apex:commandButton onclick="enterAttName()" value="Select"/>
+            </apex:pageBlockButtons>
+            
+            <div style="height:160px;width:100%;overflow:auto;">    
+            <apex:pageBlockTable value="{!Users}" var="user">
+                <apex:column styleClass="align_center" headerClass="align_center">
+                    <apex:facet name="header">
+                        <input id="checkbox" type="checkbox" onclick="setAllCheckboxUser(this);"/>
+                    </apex:facet>
+                    <input name="userItem" type="checkbox"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputText value="{!user.Name}"/> 
+                    <apex:inputHidden value="{!user.Email}"/>
+                </apex:column>
+           
+                <apex:column >
+                    <apex:facet name="header">Email</apex:facet>
+                    <apex:outputText value="{!user.Email}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            </div>
+            
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

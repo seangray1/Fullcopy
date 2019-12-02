@@ -1,0 +1,61 @@
+<apex:page StandardController="Expense_Line_Item__c" extensions="ExpenseInsertSFDC" showHeader="false">
+
+    <apex:form id="expenseForm">
+    
+        <apex:pageMessages id="messages"/>
+ 
+        
+        <apex:pageBlock title="Expense Line Item" mode="edit" id="ExpensepageBlock">
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!Save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection id="InfoSection" title="Information" collapsible="false" columns="2" >   
+               <!-- <apex:inputField id="ExpenseNameField" value="{!Expense_Line_Item__c.Name}" required="true"/ -->              
+        
+         <font color="red"><b>Please enter a 'Description' that is different from any of the previous line items entries.</b></font>
+                <apex:outputLabel />
+                <apex:inputField value="{!Expense_Line_Item__c.Payee__c}"/>
+                <apex:inputField value="{!Expense_Line_Item__c.Name}"/>
+                <apex:inputField value="{!Expense_Line_Item__c.Contact__c}" required="true"/>
+                <apex:inputField value="{!Expense_Line_Item__c.Code__c}"/>
+                <apex:inputField value="{!Expense_Line_Item__c.Amount__c}"/>
+               <!-- <apex:inputField value="{!Expense_Line_Item__c.Opportunity__c}"/> -->
+                <apex:inputField value="{!Expense_Line_Item__c.ATI_Job__c}"/>
+                <apex:inputField value="{!Expense_Line_Item__c.Date_of_Expense__c}" />
+                <apex:inputField value="{!Expense_Line_Item__c.Office__c}"/>
+                
+                
+               
+             
+                <apex:pageBlockSectionItem ></apex:pageblocksectionitem>
+                
+                                
+            </apex:pageBlockSection>
+            
+          <!--
+            *******************************
+            Expense Line Item Related List
+            *******************************
+        -->
+        <apex:actionRegion immediate="true"> 
+            <apex:pageBlockSection title="Additional Contacts" >
+          
+            <apex:commandButton value="Add Contact" action="{!addRow}" reRender="table"/>
+           <br/>
+          
+             <apex:pageBlockTable value="{!expenseContect}" var="a" id="table">               
+                <apex:column headerValue="Contact">
+                    <apex:inputField value="{!a.Contact__c}" required="false"/>
+                </apex:column>                                       
+            </apex:pageBlockTable>
+            <br/>
+            <apex:commandButton value="Remove Contact" action="{!removerow}" reRender="table"/>
+            </apex:pageBlockSection>
+            </apex:actionRegion>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

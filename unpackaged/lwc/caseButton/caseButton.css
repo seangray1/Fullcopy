@@ -1,0 +1,14 @@
+.spaceRight{
+    padding-left: 1%;
+
+}
+.THIS label.slds-form-element__label {
+    display: none;
+}
+.Labels {
+    margin-left: 12px;
+    font-size: 95%;
+}
+.hidden {
+    display: none;
+}

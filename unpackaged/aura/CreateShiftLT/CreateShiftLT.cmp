@@ -1,0 +1,11 @@
+<aura:component controller="CKSW_ATI_Ctrl01_NewWOShift" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" >
+    <aura:attribute name="hasErrors" type="Boolean" default="false" description="Indicate if there were failures occured." />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:if isTrue="{!v.hasErrors}">
+        <div class="recordSaveError">
+            <ui:message title="Error" severity="error" closable="true">
+                {!$Label.c.LT_ErrorOnPage}
+            </ui:message>
+        </div>
+    </aura:if>
+</aura:component>

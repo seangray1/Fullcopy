@@ -1,0 +1,95 @@
+<apex:page standardController="Schedule__c"  extensions="ScheduleController" standardStylesheets="false" >
+ <head>
+ <style>
+        .boldHighlight {
+            font-weight: bold;
+            font-size: 130%;
+            background-color: yellow;
+        }
+    </style>
+    <script type="text/javascript">
+    
+        function changeDesc(plName){
+            var plFieldId = plName.id;
+            var plIDsplitted = plFieldId.split(':NamePickList');
+            var changedPlID = document.getElementById(plIDsplitted[0]+":desc");
+            changedPlID .value = plName.value;                                   
+       }
+   </script>
+    
+     <apex:sectionHeader subtitle="{!Schedule__c.Name}" title="Schedule"/>
+
+    <apex:form id="Schedule">
+        <apex:pageMessages id="messages"/>
+        <apex:pageBlock title="Schedule Edit" mode="edit" id="SchedulePageBlock">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!quickSaveSchedule}" rerender="messages,Schedule, LineItem, test" />
+                <apex:commandButton value="Save & Close" action="{!saveSchedule}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection id="InfoSection" title="Information" collapsible="false" columns="2" >   
+                <apex:inputField value="{!Schedule__c.Name}"/>
+                <apex:inputField value="{!Schedule__c.Project_Director__c}"/>
+                <apex:inputField value="{!Schedule__c.ATI_Job__c}" required="true" id="jobField" onchange="passJob(this)"/>
+                <apex:inputField value="{!Schedule__c.Project_Manager__c}"/>  
+                <apex:inputField value="{!Schedule__c.Project_Site_Address__c}"/>
+                <apex:outputfield value="{!Schedule__c.createddate}"/>
+                
+                <!--apex:inputField value="{!Schedule__c.Project_Director__c}"/>
+                <apex:inputField value="{!Schedule__c.Project_Manager__c}"/>  
+                <apex:inputField value="{!Schedule__c.Project_Director__c}"/>
+                <apex:inputfield value="{!Schedule__c.Allocations__c}">
+                    <apex:actionSupport event="onchange" rerender="allocation"/>
+                </apex:inputfield>
+                <apex:outputtext value=""/>
+                <apex:inputfield value="{!Schedule__c.X3_Program_Fees__c}"/>
+                <apex:inputField value="{!Schedule__c.Project_Manager__c}"/>                
+                <!-- apex:inputField value="{!Schedule__c.Supervisor__c}"/  -->
+                <apex:pageBlockSectionItem ></apex:pageblocksectionitem>
+                
+            </apex:pageBlockSection>
+            <!--
+            *******************************
+            Budget Line Item Related List
+            *******************************
+            -->
+            <apex:actionRegion immediate="true">                  
+                <apex:pageBlockSection title="Line Item" >
+                   
+                    <apex:pageBlockTable value="{!wrapSchedule}" var="wrap" id="LineItem" >
+                        <apex:column >
+                            <apex:commandButton value="Delete" action="{!DeleteLineItem}" reRender="LineItem">
+                                <apex:param name="wrpIndxParam" value="{!wrap.indx}" assignTo="{!count}"/>
+                            </apex:commandbutton>
+                        </apex:column>
+                        <apex:column headerValue="Products" >
+                            <apex:inputField value="{!wrap.Schedule.Product_Options__c}" style="width:100px" id="NamePickList" onChange="changeDesc(this);"/>
+                        </apex:column>
+                        <apex:column headerValue="Product Description">
+                            <apex:inputField value="{!wrap.Schedule.Products__c}" id="desc"/>
+                        </apex:column>
+                        <apex:column headerValue="Start Date">
+                            <apex:inputField value="{!wrap.Schedule.Start_Date__c}" style="width:100px"/>
+                        </apex:column>
+                        <apex:column headerValue="Completion Date">
+                            <apex:inputField value="{!wrap.Schedule.Completion_Date__c}" style="width:100px"/>
+                    </apex:column>
+                        
+                      <apex:column breakBefore="true" colspan="1">
+
+                        </apex:column>
+                    </apex:pageBlockTable> 
+                    <br/>
+                     <apex:commandButton value="Add Line Item" action="{!addrow}" reRender="LineItem"/>
+                 
+                </apex:pageBlockSection>
+            </apex:actionRegion>
+         
+            <apex:pageBlockSection >
+                <apex:inputField value="{!Schedule__c.Final_Completion_Date__c}"/>
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+    </head>
+</apex:page>

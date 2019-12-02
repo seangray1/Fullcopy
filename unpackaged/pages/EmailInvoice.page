@@ -1,0 +1,366 @@
+<apex:page id="page" controller="EmailInvoice">
+
+    <style>
+        .align_center
+        {
+            text-align: center;
+        }
+      
+     .activeTab {background-color: #78AECE; color:white; background-image:none}
+     .inactiveTab { background-color: #888888; color:white; background-image:none font-size: 100%;}
+  </style>
+  
+    <script type="text/javascript">
+        function setAllCheckbox(thisInput)
+        {
+            var checkboxes = document.getElementsByName('attItem');
+            for(var i = 0; i < checkboxes.length; i++)
+            { 
+                checkboxes[i].checked = thisInput.checked;
+            }
+        }
+        
+        function setAllCheckboxDoc(thisInput)
+        {
+            var checkboxes = document.getElementsByName('docItem');
+            for(var i = 0; i < checkboxes.length; i++)
+            { 
+                checkboxes[i].checked = thisInput.checked;
+            }
+        }
+        
+        function setAllCheckboxContent(thisInput)
+        {
+            var checkboxes = document.getElementsByName('conItem');
+            for(var i = 0; i < checkboxes.length; i++)
+            { 
+                checkboxes[i].checked = thisInput.checked;
+            }
+        }
+        
+        function enterAttName()
+        {
+            var checkboxes = document.getElementsByName('attItem');
+            var checkboxesDoc = document.getElementsByName('docItem');
+            var checkboxesContent = document.getElementsByName('conItem');
+            
+            var name = '';
+            var ids = '';
+            for(var i = 0; i < checkboxes.length; i++)
+            {
+                if(checkboxes[i].checked)
+                {
+                     name += checkboxes[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     ids += checkboxes[i].parentNode.nextSibling.lastChild.value + ',';                 
+                }
+            }
+            
+            document.getElementById('page:form:attNames').value = name.substring(0, name.length-2);
+            document.getElementById('page:form:attIds').value = ids.substring(0, ids.length-1);
+            
+            name = '';
+            ids = '';
+            
+            for(var i = 0; i < checkboxesDoc.length; i++)
+            {
+                if(checkboxesDoc[i].checked)
+                {
+                     name += checkboxesDoc[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     ids += checkboxesDoc[i].parentNode.nextSibling.lastChild.value + ',';                 
+                }
+            }
+            
+            document.getElementById('page:form:docNames').value = name.substring(0, name.length-2);
+            document.getElementById('page:form:docIds').value = ids.substring(0, ids.length-1);
+            
+            name = '';
+            ids = '';
+            
+            for(var i = 0; i < checkboxesContent.length; i++)
+            {
+                if(checkboxesContent[i].checked)
+                {
+                     name += checkboxesContent[i].parentNode.nextSibling.firstChild.nodeValue + ', ';
+                     ids += checkboxesContent[i].parentNode.nextSibling.lastChild.value + ',';                 
+                }
+            }
+            
+            document.getElementById('page:form:conNames').value = name.substring(0, name.length-2);
+            document.getElementById('page:form:conIds').value = ids.substring(0, ids.length-1);
+        }
+        
+        function gotoTemplateLooking()
+        {
+            var lookingUrl = '{!$Site.Prefix}/apex/TemplateLooking';
+            window.open(lookingUrl, '' ,'fullscreen=no, height=500px, width=900px, top=100, left=150, scrollbars=1');
+        }
+        
+        function gotoContactLooking()
+        {
+            var lookingUrl = '{!$Site.Prefix}/apex/ContactLooking?id=' + '{!ObjectId}';
+            window.open(lookingUrl, '' ,'fullscreen=no, height=500px, width=900px, top=100, left=150, scrollbars=1'); 
+        }
+        
+         function gotoUserContactLooking()
+        {
+            var lookingUrl = '{!$Site.Prefix}/apex/UserContactLookup?id=' + '{!ObjectId}';
+            var keyW = '';
+            if(document.getElementById('page:form:block:section:additionalToItem:additionalToNames')){
+               
+               keyW = document.getElementById('page:form:block:section:additionalToItem:additionalToNames').value;
+            }
+            if(keyW != null && keyW != ''){
+                lookingUrl = lookingUrl + '&keyword=' + keyW;
+            } 
+            
+            window.open(lookingUrl, '' ,'fullscreen=no, height=610px, width=900px, top=10, left=70, scrollbars=1');
+        }
+        
+        function gotoUserContactLookingCC()
+        {
+            var lookingUrl = '{!$Site.Prefix}/apex/UserContactLookup?id=' + '{!ObjectId}&CC=YES';
+            var keyW = '';
+            if(document.getElementById('page:form:block:section:additionalToItemCC:additionalToNamesCC')){
+               
+               keyW = document.getElementById('page:form:block:section:additionalToItemCC:additionalToNamesCC').value;
+            }
+            if(keyW != null && keyW != ''){
+                lookingUrl = lookingUrl + '&keyword=' + keyW;
+            } 
+            
+            window.open(lookingUrl, '' ,'fullscreen=no, height=610px, width=900px, top=10, left=70, scrollbars=1');
+        }
+        
+        
+    </script>
+    
+    <apex:form id="form">
+        <apex:inputHidden id="attNames" value="{!ForSendAttachmentNames}"/>
+        <apex:inputHidden id="attIds" value="{!ForSendAttachmentIds}"/>
+        <apex:inputHidden id="docNames" value="{!ForSendDocumentNames}"/>
+        <apex:inputHidden id="docIds" value="{!ForSendDocumentIds}"/>
+        <apex:inputHidden id="conNames" value="{!ForSendContentNames}"/>
+        <apex:inputHidden id="conIds" value="{!ForSendContentIds}"/>
+        
+        <apex:inputHidden id="templateId" value="{!TemplateId}"/>
+        <apex:inputHidden id="contactEmails" value="{!ContactEmails}"/>
+        
+        <apex:inputHidden id="additionalToEmails" value="{!AdditionalToEmails}"/> 
+        <apex:inputHidden id="additionalToContactIDs" value="{!AdditionalToContactIds}"/>
+        
+        <apex:inputHidden id="additionalToEmailsCC" value="{!AdditionalToEmailsCC}"/> 
+        <apex:inputHidden id="additionalToContactIDsCC" value="{!AdditionalToContactIdsCC}"/>
+        
+        <apex:actionFunction name="displayEmailBody" action="{!showEmailBody}">
+        </apex:actionFunction>
+        
+        <apex:pageBlock id="attblock" title="Attachments" rendered="{!showAttachment}">
+            <apex:pageMessages />
+            
+            <apex:pageBlockButtons location="top" >
+               <apex:commandButton onclick="enterAttName()" action="{!selectAttachments}" value="Select"/>
+               <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            
+            <apex:tabPanel tabClass="activeTab" inactiveTabClass="inactiveTab">
+                <apex:tab label="Attachments" switchType="client" > 
+                    <apex:pageBlockTable value="{!AttachmentInfos}" var="att" id="table">
+                        <apex:column styleClass="align_center" headerClass="align_center">
+                            <apex:facet name="header">
+                                <input id="checkbox" type="checkbox" onclick="setAllCheckbox(this);"/>
+                            </apex:facet>
+                            <input name="attItem" type="checkbox"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Attachment Name</apex:facet>
+                            <apex:outputText value="{!att.AttachemntName}"/>
+                            <apex:inputHidden value="{!att.AttachmentId}"/>
+                        </apex:column>
+                         <apex:column >
+                            <apex:facet name="header">Type</apex:facet>
+                            <apex:outputText value="{!att.AttachmentType}"/> 
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Last Modified By</apex:facet>
+                            <apex:outputText value="{!att.LastModifiedBy}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Created By</apex:facet>
+                            <apex:outputText value="{!att.CreatedBy}"/>
+                        </apex:column>
+                   </apex:pageBlockTable>
+               </apex:tab>
+               
+               <apex:tab label="Documents" switchType="client" >           
+                    <apex:selectList value="{!FolderId}" size="1">
+                        <apex:selectOptions value="{!DocFolders}" />
+                    </apex:selectList>
+                    &nbsp;
+                    <apex:inputText value="{!DocumenterSearchQuery}" />
+                    &nbsp;
+                    <apex:commandButton value="Search" action="{!DoNothing}" />
+                    
+                    <apex:pageBlockTable value="{!Documents}" var="att" id="table1">
+                        <apex:column styleClass="align_center" headerClass="align_center">
+                            <apex:facet name="header">
+                                <input id="checkbox" type="checkbox" onclick="setAllCheckboxDoc(this);"/>
+                            </apex:facet>
+                            <input name="docItem" type="checkbox"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Document Name</apex:facet>
+                            <apex:outputText value="{!att.Name}"/>
+                            <apex:inputHidden value="{!att.Id}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Type</apex:facet>
+                            <apex:outputText value="{!att.Type}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Description</apex:facet>
+                            <apex:outputText value="{!att.Description}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+               </apex:tab>
+               
+               <apex:tab label="My Computer" switchType="client" >
+                   <apex:pageBlockSection columns="1">
+                       <apex:repeat value="{!listFileObj}" var="FileObj">
+                       <apex:pageBlockSectionItem >
+                          <apex:outputLabel value="File" for="file"/>
+                          <apex:outputPanel >
+                          <apex:inputFile value="{!FileObj.FileBody}" filename="{!FileObj.FileName}" id="file"/> 
+                          </apex:outputPanel>
+                       </apex:pageBlockSectionItem>
+                       </apex:repeat>
+                   </apex:pageBlockSection>
+               </apex:tab>
+               
+               <apex:tab label="Content" switchType="client" rendered="{!showContents}">           
+                  <apex:selectList value="{!WorkSpaceId}" size="1">  
+                        <apex:selectOptions value="{!WorkSpace}" />    
+                    </apex:selectList>   
+                    &nbsp;
+                    <apex:inputText value="{!ContentSearchQuery}" />
+                    &nbsp;
+                    <apex:commandButton value="Find Content" action="{!DoNothing}" />  
+                    
+                    <apex:pageBlockTable value="{!Contents}" var="con" id="table4">
+                        <apex:column styleClass="align_center" headerClass="align_center">
+                            <apex:facet name="header">
+                                <input id="checkbox" type="checkbox" onclick="setAllCheckboxContent(this);"/>
+                            </apex:facet>
+                            <input name="conItem" type="checkbox"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Content Name</apex:facet>
+                            <apex:outputText value="{!con.PathOnClient}"/>
+                            <apex:inputHidden value="{!con.Id}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Type</apex:facet>
+                            <apex:outputText value="{!con.FileType}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Author</apex:facet>
+                            <apex:outputText value="{!con.Owner.Name}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Version</apex:facet>
+                            <apex:outputText value="{!con.VersionNumber}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Description</apex:facet>
+                            <apex:outputText value="{!con.Description}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+               </apex:tab>
+               
+           </apex:tabPanel> 
+        </apex:pageBlock>
+
+        <apex:pageBlock id="block" title="Send Email" rendered="{!NOT(showAttachment)}">
+            <apex:pageMessages />
+            
+            <apex:pageBlockButtons >
+               <apex:commandButton action="{!save}" value="Send"/>
+              
+               <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection id="section" columns="1">
+               
+
+                <apex:pageBlockSectionItem id="additionalToItem" HelpText="Click on this corresponding magnifying glass to initiate your search for other Coworkers/fellow Salesforce Users and or Contacts that may or may not be related to this record." >
+                    <apex:outputLabel >Bill To</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:inputText id="additionalToNames" value="{!AdditionalToNames}" style="width:320px;"/>
+                        <a href="#" onclick="gotoUserContactLooking();return false;"><img src="/s.gif" alt="search" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="search"/></a>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem id="additionalToItemCC" HelpText="Click on this corresponding magnifying glass to initiate your search for other Coworkers/fellow Salesforce Users and or Contacts that may or may not be related to this record." >
+                    <apex:outputLabel >Bill To CC</apex:outputLabel>
+                    <apex:outputPanel >
+                        <apex:inputText id="additionalToNamesCC" value="{!AdditionalToNamesCC}" style="width:320px;"/>
+                        <a href="#" onclick="gotoUserContactLookingCC();return false;"><img src="/s.gif" alt="search" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="search"/></a>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem HelpText="Manually type in any email address you choose to in this field. You just separate each email address with a comma (,)">
+                    <apex:outputLabel >Additional To</apex:outputLabel>
+                    <apex:inputText id="TO" value="{!ToCopy}"  style="width:320px;" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem HelpText="Manually type in any email address you choose to in this field. You just separate each email address with a comma (,)" >
+                    <apex:outputLabel >Additional To CC</apex:outputLabel>
+                    <apex:inputText id="CC" value="{!CarbonCopy}"  style="width:320px;" />
+                </apex:pageBlockSectionItem>
+               
+                <apex:pageBlockSectionItem rendered="{!IF(HideAttachmentType != 'YES', true, false)}">
+                    <apex:outputLabel >Attachment Type</apex:outputLabel>
+                    <apex:selectList value="{!Type}" size="1" multiselect="false">
+                        <apex:selectOptions value="{!AttachmentTypes}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >BCC Me</apex:outputLabel>
+                    <apex:inputCheckbox id="BCC" value="{!BccMe}"/>
+                </apex:pageBlockSectionItem>
+               
+                <apex:pageBlockSectionItem id="item">
+                    <apex:outputLabel >Subject</apex:outputLabel>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:outputPanel layout="block" styleClass="requiredBlock"></apex:outputPanel>
+                        <apex:outputPanel layout="block">
+                            <apex:inputText id="subject" value="{!Subject}" size="60"/>              
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="bodyItem">
+                    <apex:outputLabel >E-mail Body</apex:outputLabel>
+                    <apex:outputPanel >
+                      
+                      <apex:inputTextarea id="body" value="{!Content}" richText="true" cols="100" rows="15" />
+                       
+                          
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="sectionItem">
+                    <apex:outputLabel >Added attachement</apex:outputLabel>
+                    <apex:outputLabel >{!AttachmentNames}</apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem rendered="{!IF(HideActivityStatus != 'YES', true, false)}">
+                    <apex:outputLabel >Activity Status</apex:outputLabel>
+                    <apex:selectList value="{!ActivityStatus}" size="1">
+                      <apex:selectOptions value="{!AllActivityStatus}" />
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>
