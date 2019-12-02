@@ -1,0 +1,9 @@
+table .slds-button{text-align: left;}
+@media only screen and (max-width: 600px) {
+    .OverRideListWrapper .slds-table th, .OverRideListWrapper .slds-table td{white-space:normal!important;}
+    .OverRideListWrapper .slds-table th:nth-child(2), .OverRideListWrapper .slds-table th:nth-child(2) .slds-cell-fixed,
+    .OverRideListWrapper .slds-table th:nth-child(3), .OverRideListWrapper .slds-table th:nth-child(3) .slds-cell-fixed, .OverRideListWrapper .slds-table th:nth-child(4), .OverRideListWrapper .slds-table th:nth-child(4) .slds-cell-fixed,
+    .OverRideListWrapper .slds-table th:nth-child(5), .OverRideListWrapper .slds-table th:nth-child(5) .slds-cell-fixed{width:160px!important;}
+    .OverRideListWrapper .slds-table_header-fixed_container .slds-scrollable_y{width:100; overflow: unset; overflow-y: unset;}
+    .OverRideListWrapper .slds-truncate{text-overflow: unset; white-space:normal;}
+}
